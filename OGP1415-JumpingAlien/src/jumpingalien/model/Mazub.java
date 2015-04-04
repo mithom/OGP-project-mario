@@ -76,6 +76,8 @@ public class Mazub extends GameObject{
 		direction= Direction.STALLED;
 	}
 	
+	//GEWOON EFFE TEST
+	
 	/**
 	 * 
 	 * @param pixelLeftX	|the most left position that is part from the currently showing Sprite.
