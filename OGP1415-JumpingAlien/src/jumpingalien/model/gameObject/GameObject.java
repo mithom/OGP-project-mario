@@ -1,7 +1,10 @@
 package jumpingalien.model.gameObject;
 
 import be.kuleuven.cs.som.annotate.*;
+import jumpingalien.exception.IllegalMazubStateException;
+import jumpingalien.exception.IllegalMovementException;
 import jumpingalien.exception.IllegalSizeException;
+import jumpingalien.exception.IllegalTimeException;
 import jumpingalien.exception.PositionOutOfBoundsException;
 import jumpingalien.model.World;
 import jumpingalien.util.ModelException;
@@ -118,4 +121,5 @@ public abstract class GameObject {
 		return currentSpriteNb >= 0 && currentSpriteNb < spriteList.length;
 	}
 	
+	public abstract void advanceTime(double dt) throws IllegalMovementException,IllegalMazubStateException,IllegalTimeException,PositionOutOfBoundsException;
 }

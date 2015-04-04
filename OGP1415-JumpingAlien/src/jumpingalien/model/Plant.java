@@ -10,5 +10,8 @@ public class Plant extends GameObject{
 		super(x,y,sprites);
 	}
 	
-	
+	@Override
+	public void advanceTime(double dt){
+		//TODO implement this function
+	}
 }

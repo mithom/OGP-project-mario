@@ -8,5 +8,9 @@ public class Shark extends GameObject{
 	public Shark(int x, int y, Sprite[] sprites)throws PositionOutOfBoundsException{
 		super(x,y,sprites);
 	}
-
+	
+	@Override
+	public void advanceTime(double dt){
+		//TODO implement this function
+	}
 }

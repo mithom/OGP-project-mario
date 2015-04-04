@@ -45,6 +45,7 @@ public class Mazub extends GameObject{
 	private double timeSinceLastMovement;
 	private Direction lastMovingDirection = Direction.STALLED;
 	private double maxDuckingVelocity = 1.0d;
+	private boolean movingOtherSideAfterRelease = false;
 
 	/**
 	 * 
@@ -135,6 +136,7 @@ public class Mazub extends GameObject{
 	 * 			|animate()
 	 */
 	//moveHor publiek maken of @effect vervangen door doc.
+	@Override
 	public void advanceTime(double dt) throws IllegalMovementException,IllegalMazubStateException,IllegalTimeException,PositionOutOfBoundsException {
 		if(dt <0 || dt > 0.2 || dt == Double.NaN){
 			throw new IllegalTimeException(dt);
@@ -360,7 +362,10 @@ public class Mazub extends GameObject{
 	 */
 	public void startMove(Direction dir){
 		assert dir != null && dir != Direction.STALLED;
-		assert this.initialHorizontalVelocity>0;
+		assert this.initialHorizontalVelocity>=0;
+		if((direction == Direction.RIGHT && dir == Direction.LEFT) || 
+				(direction == Direction.LEFT && dir == Direction.RIGHT))
+			movingOtherSideAfterRelease = true;
 		this.direction = dir;
 		this.lastMovingDirection = dir;
 		this.setHorizontalVelocity(this.initialHorizontalVelocity*dir.getSign());
@@ -381,8 +386,20 @@ public class Mazub extends GameObject{
 		//recht,links,links los->zou rehcts moeten wandelen, doet nu niet
 		assert dir != null && dir != Direction.STALLED;
 		if(dir.getSign()== Math.signum(getHorizontalVelocity())){
+			if(movingOtherSideAfterRelease){
+				Direction dir2;
+				if(dir==Direction.RIGHT) {
+					dir2 = Direction.LEFT;
+				}else{
+					dir2 = Direction.RIGHT;
+				}
+				this.setHorizontalVelocity(this.initialHorizontalVelocity*dir2.getSign());
+				this.direction = dir2;
+			}
 			this.setHorizontalVelocity(0.0d);
 			this.direction = Direction.STALLED;
+		}else{
+			movingOtherSideAfterRelease = false;
 		}
 		return;
 	}

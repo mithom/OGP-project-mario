@@ -106,7 +106,7 @@ public class Facade implements IFacade{
 		alien.endDuck();
 	};
 
-	@Override
+	@Override @Deprecated
 	public void advanceTime(Mazub alien, double dt) throws ModelException{
 		try{
 			alien.advanceTime(dt);
@@ -116,6 +116,8 @@ public class Facade implements IFacade{
 			throw new ModelException("invalid state of mazub");
 		}catch(IllegalMovementException exc){
 			throw new ModelException(exc.getMessage());
+		}catch(PositionOutOfBoundsException exce){
+			throw new ModelException("failed");
 		}
 	}
 }

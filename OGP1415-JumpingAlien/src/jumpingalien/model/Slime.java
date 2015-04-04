@@ -40,4 +40,10 @@ public class Slime extends GameObject{
 	public School getSchool(){
 		return school;
 	}
+	
+	@Override
+	public void advanceTime(double dt){
+		//TODO implement this function
+	}
+	
 }
