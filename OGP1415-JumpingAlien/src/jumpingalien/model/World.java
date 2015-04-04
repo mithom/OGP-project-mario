@@ -126,4 +126,12 @@ public class World {
 	public void addSchool(School school){
 		//TODO implement this function
 	}
+	
+	public ArrayList<Slime> getSlimes(){
+		ArrayList<Slime> slimes= new ArrayList<Slime>();
+		for(School school : schools){
+			slimes.addAll(school.getSlimes());
+		}
+		return slimes;
+	}
 }

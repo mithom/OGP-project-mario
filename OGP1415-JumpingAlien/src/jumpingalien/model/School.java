@@ -9,6 +9,10 @@ public class School {
 		
 	}
 	
+	public ArrayList<Slime> getSlimes(){
+		return new ArrayList<Slime>(slimes);
+	}
+	
 	public void addSlime(Slime slime){
 		if(slime.getSchool()==this){
 			slimes.add(slime);
