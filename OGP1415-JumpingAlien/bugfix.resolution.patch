@@ -1,0 +1,59 @@
+From cdeb829c02a5e3fecd8b519bd0214d7ae6c56003 Mon Sep 17 00:00:00 2001
+From: Koen Yskout <koen.yskout@cs.kuleuven.be>
+Date: Wed, 25 Feb 2015 21:09:03 +0100
+Subject: [PATCH] fixed bug with lower screen resolution
+
+---
+ .../part1/internal/Part1GameScreen.java            | 29 ++++++++++++++--------
+ 1 file changed, 18 insertions(+), 11 deletions(-)
+
+diff --git a/code/OGP1415-JumpingAlien/src-provided/jumpingalien/part1/internal/Part1GameScreen.java b/code/OGP1415-JumpingAlien/src-provided/jumpingalien/part1/internal/Part1GameScreen.java
+index d968f04..0a4a304 100644
+--- a/code/OGP1415-JumpingAlien/src-provided/jumpingalien/part1/internal/Part1GameScreen.java
++++ b/code/OGP1415-JumpingAlien/src-provided/jumpingalien/part1/internal/Part1GameScreen.java
+@@ -51,24 +51,31 @@ public class Part1GameScreen extends
+ 					/ DEBUG_PIXELS_ZOOM, worldHeight / DEBUG_PIXELS_ZOOM),
+ 					new Rectangle(0, 0, getScreenWidth(), getScreenHeight()));
+ 		} else {
+-			int screenWidth = getScreenWidth();
+-			int screenHeight = getScreenHeight();
++			int widthOnScreen = getScreenWidth();
++			int heightOnScreen = getScreenHeight();
+ 
+-			if (screenWidth < worldWidth) {
+-				throw new IllegalStateException(
+-						"Screen must be wider than world");
++			double scale = 1.0;
++
++			if (widthOnScreen < worldWidth) {
++				scale = (double) widthOnScreen / worldWidth;
+ 			}
+-			if (screenHeight < worldHeight) {
+-				throw new IllegalStateException(
+-						"Screen must be higher than world");
++
++			if (heightOnScreen < worldHeight) {
++				scale = Math.min(scale, (double) heightOnScreen / worldHeight);
+ 			}
+ 
+-			int screenX = (screenWidth - worldWidth) / 2;
+-			int screenY = (screenHeight - worldHeight) / 2;
++			heightOnScreen = (int) (scale * worldHeight);
++			widthOnScreen = (int) (scale * worldWidth);
++			int screenX = (getScreenWidth() - widthOnScreen) / 2;
++			int screenY = (getScreenHeight() - heightOnScreen) / 2;
+ 
+ 			mainCamera = new Camera(
+ 					new Rectangle(0, 0, worldWidth, worldHeight),
+-					new Rectangle(screenX, screenY, worldWidth, worldHeight));
++					new Rectangle(screenX, screenY, widthOnScreen,
++							heightOnScreen));
++			mainCamera.setBorderColor(Color.CYAN);
++			mainCamera.showBorder(true);
++			System.out.println(mainCamera);
+ 		}
+ 		addCamera(mainCamera);
+ 	}
+-- 
+1.9.3 (Apple Git-50)
+
