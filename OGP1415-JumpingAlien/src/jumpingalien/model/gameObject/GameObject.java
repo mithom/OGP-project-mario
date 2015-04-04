@@ -13,12 +13,31 @@ public abstract class GameObject {
 	protected int currentSpriteNumber=0;
 	protected World world;
 	protected boolean terminated = false;
+	protected HitPoint hitPoint;
+	protected int m;
 	
 	@Raw
-	protected GameObject(int x, int y, Sprite[] sprites) throws PositionOutOfBoundsException{
-		//position = new Position(new double[]{x,y});
-		
+	protected GameObject(int pixelLeftX, int pixelBottomY, Sprite[] sprites) throws PositionOutOfBoundsException{
+		position = new Position(new double[]{pixelLeftX,pixelBottomY});
+		this.spriteList = sprites;
+		this.m = (spriteList.length-8)/2;
+		hitPoint = new HitPoint(0,500,100);
 	};
+	
+	public void loseHp(int amount){
+		hitPoint.loseHP(amount);
+	}
+	
+	public void addHp(int amount){
+		hitPoint.addHP(amount);
+	}
+	
+	public boolean hasMaxHp(){
+		if(hitPoint.getCurrent() == hitPoint.getMaximum()){
+			return true;
+		}
+		return false;
+	}
 	
 	@Basic
 	public World getWorld(){
@@ -44,6 +63,24 @@ public abstract class GameObject {
 	@Basic
 	public Position getPosition(){
 		return position;
+	}
+	
+	@Basic
+	public double getPositionY(){
+		return position.getPositions()[1];
+	}
+	
+	@Basic
+	public double getPositionX(){
+		return position.getPositions()[0];
+	}
+	
+	public void setPositionX(double x) throws PositionOutOfBoundsException{
+		position = new Position(world,new double[]{x,getPositionY()}); 
+	}
+	
+	public void setPositionY(double y) throws PositionOutOfBoundsException{
+		position = new Position(world,new double[]{getPositionX(),y}); 
 	}
 
 	/**
@@ -80,4 +117,5 @@ public abstract class GameObject {
 	protected boolean isValidSpriteNumber(int currentSpriteNb) {
 		return currentSpriteNb >= 0 && currentSpriteNb < spriteList.length;
 	}
+	
 }

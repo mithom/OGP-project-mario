@@ -16,14 +16,12 @@ public class School {
 	public void addSlime(Slime slime){
 		if(slime.getSchool()==this){
 			slimes.add(slime);
-			//TODO Changes of HP still have to happen
 		}
 	}
 	
 	public void removeSlime(Slime slime){
 		if(this.hasAsSlime(slime)){
 			slimes.remove(slime);
-			//TODO changes of hp still have to happen
 		}
 	}
 	

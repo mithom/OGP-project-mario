@@ -6,7 +6,7 @@ import jumpingalien.model.World;
 
 public class Position {
 	private final double[] position;
-	private final World world; 
+	private World world; 
 	/*
 	public Position(World world,double[] coordinates) throws PositionOutOfBoundsException{
 		positions = new ArrayList<double[]>();
@@ -20,12 +20,25 @@ public class Position {
 		}
 	}*/
 	
-	public Position(World world,double[] coordinate)throws PositionOutOfBoundsException{
-		this.world = world;
-		if(isValidCoordinate(coordinate)){
+	public Position(double[] coordinate)throws PositionOutOfBoundsException{
+		/*if(isValidCoordinate(coordinate)){
 			position = coordinate;
 		}else{
 			throw new PositionOutOfBoundsException(coordinate[0],coordinate[1]);
+		}*/
+		position = coordinate;
+	}
+	
+	public Position(World world,double[] coordinate) throws PositionOutOfBoundsException{
+		this.world = world;
+		if(world != null){
+			if(isValidCoordinate(coordinate)){
+				position = coordinate;
+			}else{
+				throw new PositionOutOfBoundsException(coordinate[0],coordinate[1]);
+			}
+		}else{
+			position =coordinate;
 		}
 	}
 	

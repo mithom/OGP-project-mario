@@ -33,8 +33,6 @@ public class Mazub extends GameObject{
 	private final static double horizontalAcceleration = 0.9d;
 	private final static double verticalAcceleration = -10d;
 	private double verticalVelocity;
-	private double positionX; //voor pixels als intege, dit is echte plaats
-	private double positionY;
 	private double maxHorizontalVelocity;
 	private final static int gameWidth = 1024;
 	private final static int gameHeight = 768;
@@ -46,7 +44,6 @@ public class Mazub extends GameObject{
 	private double timeSinceLastAnimation;
 	private double timeSinceLastMovement;
 	private Direction lastMovingDirection = Direction.STALLED;
-	private int m;
 	private double maxDuckingVelocity = 1.0d;
 
 	/**
@@ -67,14 +64,10 @@ public class Mazub extends GameObject{
 	 */
 	public Mazub(int pixelLeftX, int pixelBottomY, Sprite[] sprites) throws PositionOutOfBoundsException{
 		super(pixelLeftX, pixelBottomY, sprites);
-		this.spriteList = sprites;
-		this.positionX = (double)pixelLeftX/100d;
-		this.positionY = (double)pixelBottomY/100d;
-		this.m = (spriteList.length-8)/2;
 		this.maxHorizontalVelocity = 3d;
 		this.initialHorizontalVelocity=1d;
 		duckState  = DuckState.STRAIGHT;
-		if(this.positionY==0){
+		if(this.getPositionY()==0){
 			groundState =GroundState.GROUNDED;
 		}else{
 			groundState = GroundState.AIR;
@@ -106,14 +99,11 @@ public class Mazub extends GameObject{
 	 */
 	public Mazub(int pixelLeftX, int pixelBottomY,double initHorVel,double maxHorVel, Sprite[] sprites)throws PositionOutOfBoundsException{
 		super(pixelLeftX, pixelBottomY, sprites);
-		this.spriteList = sprites;
-		this.positionX = (double)pixelLeftX/100d;
-		this.positionY = (double)pixelBottomY/100d;
 		this.m = (spriteList.length-8)/2;
 		this.maxHorizontalVelocity = maxHorVel;
 		this.initialHorizontalVelocity = initHorVel;
 		duckState  = DuckState.STRAIGHT;
-		if(this.positionY==0){
+		if(this.getPositionY()==0){
 			groundState =GroundState.GROUNDED;
 		}else{
 			groundState = GroundState.AIR;
@@ -145,7 +135,7 @@ public class Mazub extends GameObject{
 	 * 			|animate()
 	 */
 	//moveHor publiek maken of @effect vervangen door doc.
-	public void advanceTime(double dt) throws IllegalMovementException,IllegalMazubStateException,IllegalTimeException {
+	public void advanceTime(double dt) throws IllegalMovementException,IllegalMazubStateException,IllegalTimeException,PositionOutOfBoundsException {
 		if(dt <0 || dt > 0.2 || dt == Double.NaN){
 			throw new IllegalTimeException(dt);
 		}
@@ -161,7 +151,7 @@ public class Mazub extends GameObject{
 	/**
 	 * changes the position,acceleration and velocity of the mazub according to the horizontal axis for a given time dt.
 	 */
-	private void moveHorizontal(double dt) throws IllegalMovementException{
+	private void moveHorizontal(double dt) throws IllegalMovementException,PositionOutOfBoundsException{
 		//update position and speed (still need to compensate for velocity over max first time)
 		int dirSign =this.direction.getSign(); 
 		double newSpeed = this.getHorizontalVelocity()+this.getHorizontalAcceleration()*dt;
@@ -171,22 +161,23 @@ public class Mazub extends GameObject{
 			if(getHorizontalAcceleration()==0)throw new IllegalMovementException("impossible to divide by zero");
 			double accDt = (this.getMaxHorizontalVelocity()- this.getHorizontalVelocity()*dirSign)/(getHorizontalAcceleration()*dirSign);
 			s= travelledHorizontalDistance(accDt, dirSign)+travelledHorizontalDistance(dt-accDt, 0);
-			positionX = positionX + s;
+			setPositionX(getPositionX() + s);
 			this.setHorizontalVelocity(this.getMaxHorizontalVelocity()*dirSign);
 		}
 		else{
 			s= travelledHorizontalDistance(dt,dirSign);
-			positionX =positionX +s;
+			setPositionX(getPositionX() +s);
 			this.setHorizontalVelocity(newSpeed);
 		}
-		if(((positionX <=0d || s<0)&& dirSign>0 )|| (s>0 && dirSign<0)){
+		if(((getPositionX() <=0d || s<0)&& dirSign>0 )|| (s>0 && dirSign<0)){
 			throw new IllegalMovementException("positionX overflowed");
 		}
 		//correct position if out of window
-		if(positionX<0){
-			positionX = 0;
+		if(getPositionX() <0){
+			setPositionX(0);
 		}
-		if(positionX>(gameWidth-1)/100d) positionX = (gameWidth-1)/100d;
+		if(getPositionX()>(gameWidth-1)/100d)
+			setPositionX((gameWidth-1)/100d);
 		return;
 	}
 	
@@ -208,23 +199,24 @@ public class Mazub extends GameObject{
 	/**
 	 * changes the position,acceleration and velocity of the mazub according to the horizontal axis for a given time dt.
 	 */
-	private void moveVertical(double dt){
+	private void moveVertical(double dt)throws PositionOutOfBoundsException{
 		//update position and speed (still need to compensate for velocity over max first time)
 		int stateSign =this.groundState.getSign(); 
 		double newSpeed = this.getVerticalVelocity() + this.getVerticalAcceleration()*dt*stateSign;
 		
-		positionY =positionY + travelledVerticalDistance(dt,stateSign);
+		setPositionY(getPositionY() + travelledVerticalDistance(dt,stateSign));
 		this.setVerticalVelocity(newSpeed);
 
 		//correct position if out of window && notice grounded
-		if(positionY <= 0){
-			positionY = 0;
+		if(getPositionY() <= 0){
+			setPositionY(0);
 			if(getVerticalVelocity()<=0){
 				this.groundState = GroundState.GROUNDED;
 				setVerticalVelocity(0d);
 			}
 		}
-		if(positionY>gameHeight/100d) positionY = gameHeight/100d;
+		if(getPositionY()>gameHeight/100d)
+			setPositionY(gameHeight/100d);
 		return;
 	}
 	
@@ -454,12 +446,12 @@ public class Mazub extends GameObject{
 	 */
 	@Basic //basic inspectors moeten basic zijn, nooit exception.
 	public int getPixel_x()throws PositionOutOfBoundsException{
-		if(!hasValidPosition()) throw new PositionOutOfBoundsException(positionX,positionY);
-		return (int)(this.positionX*100);//
+		if(!hasValidPosition()) throw new PositionOutOfBoundsException(getPositionX(),getPositionY());
+		return (int)(this.getPositionX()*100);//
 	}
 	
 	public boolean hasValidPosition(){// bij setter->class invar
-		return ! (positionX<0 || positionX>= (gameWidth)/100.0d) || (positionY<0 || positionY >= gameHeight/100.0d);
+		return ! (getPositionX()<0 || getPositionX() >= (gameWidth)/100.0d) || (getPositionY()<0 || getPositionY() >= gameHeight/100.0d);
 	}
 	/**
 	 * returns the index of the lowest pixel used by mazub. Each pixel represents 0.01m
@@ -470,8 +462,8 @@ public class Mazub extends GameObject{
 	 */
 	@Basic
 	public int getPixel_y() throws PositionOutOfBoundsException{
-		if(! hasValidPosition()) throw new PositionOutOfBoundsException(positionX,positionY);
-		return (int)(this.positionY*100);
+		if(! hasValidPosition()) throw new PositionOutOfBoundsException(getPositionX(),getPositionY());
+		return (int)(getPositionY()*100);
 	}
 	
 	private boolean isValidState(Direction direction,GroundState groundState,DuckState duckState){

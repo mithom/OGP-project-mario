@@ -15,7 +15,22 @@ public class Slime extends GameObject{
 	
 	public void setSchool(School school){
 		if(getSchool() != null){
+			int difference = 0;
 			this.school.removeSlime(this);
+			for(Slime slime:this.school.getSlimes()){
+				if(!slime.hasMaxHp()){
+					slime.addHp(1);
+					difference-=1;
+				}
+			}
+			for(Slime slime:school.getSlimes()){
+				if(difference<(hitPoint.getMaximum()-hitPoint.getCurrent())){
+					slime.loseHp(1);
+					difference+=1;
+				}
+			}
+			this.addHp(difference);
+			
 		}
 		this.school = school;
 		school.addSlime(this);
