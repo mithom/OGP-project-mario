@@ -1,6 +1,5 @@
 package jumpingalien.part2.facade;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
 import jumpingalien.exception.PositionOutOfBoundsException;
@@ -108,8 +107,7 @@ public class Facade extends jumpingalien.part1.facade.Facade implements IFacadeP
 
 	@Override
 	public int getNbHitPoints(GameObject alien) {
-		// TODO Auto-generated method stub
-		return 0;
+		return alien.getNbHitPoints();
 	}
 
 	@Override
@@ -138,8 +136,7 @@ public class Facade extends jumpingalien.part1.facade.Facade implements IFacadeP
 	
 	@Override
 	public int getTileLength(World world){
-		//TODO implement this function
-		return 0;
+		return world.getTileLenght();
 	};
 	
 	@Override
@@ -161,8 +158,7 @@ public class Facade extends jumpingalien.part1.facade.Facade implements IFacadeP
 	
 	@Override
 	public int[] getVisibleWindow(World world){
-		//TODO implement this function
-		return new int[]{};
+		return world.getVisibleWindow();
 	};
 	
 	@Override
@@ -173,15 +169,15 @@ public class Facade extends jumpingalien.part1.facade.Facade implements IFacadeP
 	@Override
 	public 	int[][] getTilePositionsIn(World world, int pixelLeft, int pixelBottom,
 			int pixelRight, int pixelTop){
-		//TODO implement this function
-		return new int[][]{};
+		return world.getTilePositionsIn(pixelLeft, pixelBottom, pixelRight, pixelTop);
 	};
 	
 	@Override
-	public int getGeologicalFeature(World world, int pixelX, int pixelY)
-			throws ModelException{
-		//TODO implement this function
-		return 0;
+	public int getGeologicalFeature(World world, int pixelX, int pixelY)throws ModelException{
+		try{return world.getGeologicalFeature(pixelX, pixelY);}
+		catch(Exception e){
+			throw new ModelException("invalid key exception");
+		}
 	};
 	
 	@Override
@@ -209,26 +205,22 @@ public class Facade extends jumpingalien.part1.facade.Facade implements IFacadeP
 	
 	@Override
 	public void addPlant(World world, Plant plant){
-		//TODO implement this function
+		world.addPlant(plant);
 	};
 	
 	@Override
 	public Collection<Plant> getPlants(World world){
-		//TODO implement this function
-		//can be of other collection then ArrayList
-		return new ArrayList<Plant>(); 
+		return world.getPlants(); 
 	};
 	
 	@Override
 	public int[] getLocation(Plant plant){
-		//TODO implement this function
-		return new int[]{};
+		return plant.getPosition().getPixelPosition();
 	};
 	
 	@Override
 	public Sprite getCurrentSprite(Plant plant){
-		//TODO implement this function
-		return new Sprite("hallo", 0, 0);
+		return plant.getCurrentSprite();
 	};
 	
 	@Override
@@ -242,30 +234,27 @@ public class Facade extends jumpingalien.part1.facade.Facade implements IFacadeP
 	
 	@Override
 	public void addShark(World world, Shark shark){
-		//TODO implement this function
+		world.addShark(shark);
 	};
 	
 	@Override
 	public Collection<Shark> getSharks(World world){
-		//TODO implement this fucntion
-		return new ArrayList<Shark>();
+		return world.getSharks();
 	};
 	
 	@Override
 	public int[] getLocation(Shark shark){
-		//TODO implement this function
-		return new int[]{};
+		return shark.getPosition().getPixelPosition();
 	};
 	
 	@Override
 	public Sprite getCurrentSprite(Shark shark){
-		//TODO implment this function
-		return new Sprite("hallo", 0, 0);
+		return shark.getCurrentSprite();
 	};
 	
 	@Override
 	public School createSchool(){
-		//TODO implement this function
+		//TODO check this function (I think it's complete)
 		return new School();
 	};
 	
@@ -285,25 +274,21 @@ public class Facade extends jumpingalien.part1.facade.Facade implements IFacadeP
 	
 	@Override
 	public Collection<Slime> getSlimes(World world){
-		//TODO implement this function
-		return new ArrayList<Slime>();
+		return world.getSlimes();
 	};
 	
 	@Override
 	public int[] getLocation(Slime slime){
-		//TODO implement this function
-		return new int[]{};
+		return slime.getPosition().getPixelPosition();
 	};
 	
 	@Override
 	public Sprite getCurrentSprite(Slime slime){
-		//TODO implement this function
-		return new Sprite("hallo", 0, 0);
+		return slime.getCurrentSprite();
 	};
 	
 	@Override
 	public School getSchool(Slime slime){
-		//TODO implement this function
-		return new School();
+		return slime.getSchool();
 	};
 }

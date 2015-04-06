@@ -47,6 +47,10 @@ public class Position {
 		return position.clone();
 	}
 	
+	public int[] getPixelPosition(){//TODO check if position is used here in pixels or meter (convert maybe everything to 1pixel = 1)
+		return new int[]{(int)position[0], (int)position[1] };
+	}
+	
 	public boolean isValidCoordinate(double[] coordinate){
 		if(coordinate.length == 2){
 			if(coordinate[0] < 0 || coordinate[0]>= world.getWidth()/100.0d ||

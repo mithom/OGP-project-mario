@@ -43,6 +43,11 @@ public abstract class GameObject {
 	}
 	
 	@Basic
+	public int getNbHitPoints(){
+		return hitPoint.getCurrent();
+	}
+	
+	@Basic
 	public World getWorld(){
 		return this.world;
 	}

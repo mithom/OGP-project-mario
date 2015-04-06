@@ -76,7 +76,7 @@ public class World {
 	public int[] getVisibleWindow(){
 		//order: left,bottom,right,top
 		//TODO implement this function
-		return new int[]{};
+		return new int[]{0,0,100,200};
 	}
 	
 	public ArrayList<Plant> getPlants(){
@@ -133,5 +133,9 @@ public class World {
 			slimes.addAll(school.getSlimes());
 		}
 		return slimes;
+	}
+	
+	public int getTileLenght(){
+		return this.tileSize;
 	}
 }
