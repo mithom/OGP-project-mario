@@ -19,84 +19,84 @@ public class Facade extends jumpingalien.part1.facade.Facade implements IFacadeP
 	/*//al het volgende zit in de extends part1.facade.Facade
 	@Override
 	public Mazub createMazub(int pixelLeftX, int pixelBottomY, Sprite[] sprites) {
-		// TODO Auto-generated method stub
+		// TODO check old version
 		return null;
 	}
 
 	@Override
 	public int[] getLocation(Mazub alien) {
-		// TODO Auto-generated method stub
+		// TODO check old version
 		return null;
 	}
 
 	@Override
 	public double[] getVelocity(Mazub alien) {
-		// TODO Auto-generated method stub
+		// TODO check old version
 		return null;
 	}
 
 	@Override
 	public double[] getAcceleration(Mazub alien) {
-		// TODO Auto-generated method stub
+		// TODO check old version
 		return null;
 	}
 
 	@Override
 	public int[] getSize(GameObject alien) {
-		// TODO Auto-generated method stub
+		// TODO check old version
 		return null;
 	}
 
 	@Override
 	public Sprite getCurrentSprite(GameObject alien) {
-		// TODO Auto-generated method stub
+		// TODO check old version
 		return null;
 	}
 
 	@Override
 	public void startJump(Mazub alien) {
-		// TODO Auto-generated method stub
+		// TODO check old version
 
 	}
 
 	@Override
 	public void endJump(Mazub alien) {
-		// TODO Auto-generated method stub
+		// TODO check old version
 
 	}
 
 	@Override
 	public void startMoveLeft(Mazub alien) {
-		// TODO Auto-generated method stub
+		// TODO check old version
 
 	}
 
 	@Override
 	public void endMoveLeft(Mazub alien) {
-		// TODO Auto-generated method stub
+		// TODO check old version
 
 	}
 
 	@Override
 	public void startMoveRight(Mazub alien) {
-		// TODO Auto-generated method stub
+		// TODO check old version
 	}
 
 	@Override
 	public void endMoveRight(Mazub alien) {
-		// TODO Auto-generated method stub
+		// TODO check old version
 
 	}
 
 	@Override
 	public void startDuck(Mazub alien) {
-		// TODO Auto-generated method stub
+		// TODO check old version
 
 	}
 
 	@Override
 	public void endDuck(Mazub alien) {
-		// TODO Auto-generated method stub
+		// TODO check old version
 
 	}*/
 
