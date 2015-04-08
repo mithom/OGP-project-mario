@@ -68,6 +68,16 @@ public abstract class GameObject {
 		return terminated;
 	}
 	
+	public double[] getPerimeters(){
+		//order: left,bottom,right,top
+		double[] perimeters = new double[4];
+		perimeters[0] = position.getPositions()[0];
+		perimeters[1]=position.getPositions()[1];
+		perimeters[2] = position.getPositions()[0]+ getCurrentSprite().getWidth()/100.0d;
+		perimeters[3] = position.getPositions()[1]+ getCurrentSprite().getHeight()/100.0d;
+		return perimeters;
+	}
+	
 	@Basic
 	public Position getPosition(){
 		return position;
