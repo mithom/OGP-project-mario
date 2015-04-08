@@ -231,7 +231,7 @@ public class Mazub extends GameObject{
 			timeSinceLastMovement += dt;
 		}else{
 			timeSinceLastMovement = 0;
-			System.out.println(timeSinceLastMovement);
+			//System.out.println(timeSinceLastMovement);
 		}
 		if(getOriëntation() == Direction.STALLED){
 			if(timeSinceLastMovement>=1){
@@ -267,7 +267,7 @@ public class Mazub extends GameObject{
 				}
 			}
 		}
-		System.out.println(currentSpriteNumber);
+		//System.out.println(currentSpriteNumber);
 		return;
 	}
 	/**
@@ -509,5 +509,13 @@ public class Mazub extends GameObject{
 	
 	public static int getGameWidth(){
 		return gameWidth;
+	}
+	
+	@Override
+	public void addToWorld(World world){
+		if(this.world == null && canHaveAsWorld(world)){
+			this.world = world;
+			world.addMazub(this);
+		}
 	}
 }

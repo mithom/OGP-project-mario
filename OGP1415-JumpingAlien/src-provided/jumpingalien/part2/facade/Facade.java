@@ -2,6 +2,9 @@ package jumpingalien.part2.facade;
 
 import java.util.Collection;
 
+import jumpingalien.exception.IllegalMazubStateException;
+import jumpingalien.exception.IllegalMovementException;
+import jumpingalien.exception.IllegalTimeException;
 import jumpingalien.exception.PositionOutOfBoundsException;
 import jumpingalien.model.Plant;
 import jumpingalien.model.School;
@@ -100,8 +103,12 @@ public class Facade extends jumpingalien.part1.facade.Facade implements IFacadeP
 	}*/
 
 	@Override
-	public void advanceTime(World world, double dt) {
-		// TODO Auto-generated method stub
+	public void advanceTime(World world, double dt)throws ModelException {
+		try{
+			world.advanceTime(dt);
+		}catch(IllegalMovementException|IllegalMazubStateException|IllegalTimeException|PositionOutOfBoundsException e){
+			throw new ModelException("advanceTime failed");
+		}
 
 	}
 
@@ -130,8 +137,7 @@ public class Facade extends jumpingalien.part1.facade.Facade implements IFacadeP
 	
 	@Override
 	public int[] getWorldSizeInPixels(World world){
-		//TODO implement this function
-		return new int[]{};
+		return world.getWorldSizeInPixels();
 	};
 	
 	@Override
@@ -191,12 +197,11 @@ public class Facade extends jumpingalien.part1.facade.Facade implements IFacadeP
 	
 	@Override
 	public void setMazub(World world, GameObject alien){
-		//TODO implement this function
+		alien.addToWorld(world);
 	};
 	
 	@Override
 	public Plant createPlant(int x, int y, Sprite[] sprites){
-		//TODO implement this function
 		try{return new Plant(x,y,sprites);}
 		catch(PositionOutOfBoundsException e){
 			throw new ModelException("invalid position");
@@ -225,7 +230,6 @@ public class Facade extends jumpingalien.part1.facade.Facade implements IFacadeP
 	
 	@Override
 	public Shark createShark(int x, int y, Sprite[] sprites){
-		//TODO implement this function
 		try{return new Shark(x,y,sprites);}
 		catch(PositionOutOfBoundsException e){
 			throw new ModelException("invalid position");
@@ -254,13 +258,11 @@ public class Facade extends jumpingalien.part1.facade.Facade implements IFacadeP
 	
 	@Override
 	public School createSchool(){
-		//TODO check this function (I think it's complete)
 		return new School();
 	};
 	
 	@Override
 	public Slime createSlime(int x, int y, Sprite[] sprites, School school){
-		//TODO implement this function
 		try{return new Slime(x,y,sprites,school);}
 		catch(PositionOutOfBoundsException e){
 			throw new ModelException("invalid position");
@@ -269,7 +271,7 @@ public class Facade extends jumpingalien.part1.facade.Facade implements IFacadeP
 	
 	@Override
 	public void addSlime(World world, Slime slime){
-		//TODO implement this function
+		slime.addToWorld(world);
 	};
 	
 	@Override

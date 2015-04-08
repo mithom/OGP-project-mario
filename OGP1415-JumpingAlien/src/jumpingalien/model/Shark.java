@@ -13,4 +13,12 @@ public class Shark extends GameObject{
 	public void advanceTime(double dt){
 		//TODO implement this function
 	}
+	
+	@Override
+	public void addToWorld(World world){
+		if(this.world == null && canHaveAsWorld(world)){
+			this.world = world;
+			world.addShark(this);
+		}
+	}
 }

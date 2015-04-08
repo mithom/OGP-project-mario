@@ -5,22 +5,28 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import be.kuleuven.cs.som.annotate.*;
+import jumpingalien.exception.IllegalMazubStateException;
+import jumpingalien.exception.IllegalMovementException;
+import jumpingalien.exception.IllegalTimeException;
 import jumpingalien.exception.PositionOutOfBoundsException;
+import jumpingalien.model.gameObject.GameObject;
 import jumpingalien.model.gameObject.Position;
 import jumpingalien.model.gameObject.GeologicalFeature;
 
 public class World {
-	private final int height;
-	private final int width;
-	private final int viewHeight;
-	private final int viewWidth;
-	private final Position targetTile;
+	private final int height;//in pixels
+	private final int width;//in pixels
+	private final int viewHeight;//in pixels
+	private final int viewWidth;//in pixels
+	private Position cameraLocation;//position is in m
+	private final Position targetTile;//position is in m
 	private GeologicalFeature[][] tileTypes;
-	private final int tileSize;
+	private final int tileSize;//in pixels
 	private ArrayList<Shark> sharks = new ArrayList<Shark>();
 	private ArrayList<Plant> plants = new ArrayList<Plant>();
 	private ArrayList<School> schools= new ArrayList<School>();
 	private boolean terminated = false;
+	private Mazub mazub;
 	
 	public World(int tileSize, int nbTilesX, int nbTilesY,
 			int visibleWindowWidth, int visibleWindowHeight, int targetTileX,
@@ -35,11 +41,17 @@ public class World {
 		}
 		this.tileSize = tileSize;
 		targetTile = new Position(this, new double[]{targetTileX*tileSize/100.0d,targetTileY*tileSize/100.0d});
+		cameraLocation = new Position(this, new double[]{0,0});
 	}
 	
 	@Basic
 	public int getHeight(){
 		return height;
+	}
+	
+	public void addMazub(Mazub mazub){
+		if(mazub.getWorld()==this)
+			this.mazub = mazub;
 	}
 	
 	@Basic
@@ -74,9 +86,13 @@ public class World {
 	}
 	
 	public int[] getVisibleWindow(){
+		int[] visibleWindow = new int[4];
+		visibleWindow[0]=cameraLocation.getPixelPosition()[0];
+		visibleWindow[1]=cameraLocation.getPixelPosition()[1];
+		visibleWindow[2] = visibleWindow[0]+ viewWidth;
+		visibleWindow[3]= visibleWindow[1] + viewHeight;
+		return visibleWindow;
 		//order: left,bottom,right,top
-		//TODO implement this function
-		return new int[]{0,0,100,200};
 	}
 	
 	public ArrayList<Plant> getPlants(){
@@ -124,7 +140,14 @@ public class World {
 	}
 	
 	public void addSchool(School school){
-		//TODO implement this function
+		if(schools.size()<10){
+			schools.add(school);
+			school.addWorld(this);
+		}
+	}
+	
+	public ArrayList<School> getSchools(){
+		return new ArrayList<School>(schools);
 	}
 	
 	public ArrayList<Slime> getSlimes(){
@@ -137,5 +160,25 @@ public class World {
 	
 	public int getTileLenght(){
 		return this.tileSize;
+	}
+	
+	public void advanceTime(double dt)throws IllegalMovementException,IllegalMazubStateException,IllegalTimeException,PositionOutOfBoundsException{
+		ArrayList<GameObject> worldObjects = new ArrayList<GameObject>();
+		worldObjects.add(mazub);
+		worldObjects.addAll(plants);
+		worldObjects.addAll(getSlimes());
+		worldObjects.addAll(sharks);
+		
+		for(GameObject worldObject:worldObjects){
+			worldObject.advanceTime(dt);
+		}
+	}
+	
+	public int[] getWorldSizeInPixels(){
+		return new int[]{width,height};
+	}
+	
+	public void addSlime(Slime slime){
+		//TODO implement... (begint afgezaagd te worden die implements
 	}
 }

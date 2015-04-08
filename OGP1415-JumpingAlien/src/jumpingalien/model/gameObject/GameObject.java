@@ -52,11 +52,7 @@ public abstract class GameObject {
 		return this.world;
 	}
 	
-	public void addToWorld(World world){
-		if(this.world == null && canHaveAsWorld(world)){
-			this.world = world;
-		}
-	}
+	public abstract void addToWorld(World world);
 	
 	protected boolean canHaveAsWorld(World world){
 		if(!world.isTerminated() && !this.isTerminated() && this.world==null)

@@ -5,7 +5,7 @@ import be.kuleuven.cs.som.annotate.*;
 import jumpingalien.model.World;
 
 public class Position {
-	private final double[] position;
+	private final double[] position;//in meters!, pixel is 0.01m = 1cm
 	private World world; 
 	/*
 	public Position(World world,double[] coordinates) throws PositionOutOfBoundsException{
@@ -47,7 +47,7 @@ public class Position {
 		return position.clone();
 	}
 	
-	public int[] getPixelPosition(){//TODO check if position is used here in pixels or meter (convert maybe everything to 1pixel = 1)
+	public int[] getPixelPosition(){
 		return new int[]{(int)position[0], (int)position[1] };
 	}
 	
