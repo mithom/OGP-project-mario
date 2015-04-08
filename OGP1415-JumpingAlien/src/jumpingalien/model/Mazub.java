@@ -205,20 +205,24 @@ public class Mazub extends GameObject{
 		//update position and speed (still need to compensate for velocity over max first time)
 		int stateSign =this.groundState.getSign(); 
 		double newSpeed = this.getVerticalVelocity() + this.getVerticalAcceleration()*dt*stateSign;
-		
-		setPositionY(getPositionY() + travelledVerticalDistance(dt,stateSign));
-		this.setVerticalVelocity(newSpeed);
-
-		//correct position if out of window && notice grounded
-		if(getPositionY() <= 0){
-			setPositionY(0);
-			if(getVerticalVelocity()<=0){
-				this.groundState = GroundState.GROUNDED;
-				setVerticalVelocity(0d);
+		try{setPositionY(getPositionY() + travelledVerticalDistance(dt,stateSign));}
+		catch(PositionOutOfBoundsException e){
+			//correct position if out of window && notice grounded
+			if(e.getLocation()[1] < 0){
+				setPositionY(0);
+				if(getVerticalVelocity()<=0){
+					this.groundState = GroundState.GROUNDED;
+					setVerticalVelocity(0d);
+				}
+			}else{
+				if(getPositionY()>gameHeight/100d){
+					setPositionY(gameHeight/100d);
+				}else{
+					throw new PositionOutOfBoundsException(getPositionX(), getPositionY());
+				}
 			}
 		}
-		if(getPositionY()>gameHeight/100d)
-			setPositionY(gameHeight/100d);
+		this.setVerticalVelocity(newSpeed);
 		return;
 	}
 	

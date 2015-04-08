@@ -75,14 +75,14 @@ public class World {
 	}
 	
 	public int[][] getTilePositionsIn(int pixelLeft, int pixelBottom,
-			int pixelRight, int pixelTop){//lang leve integer division
-		int[][] tilePositions = new int[((pixelRight-pixelLeft)/tileSize)*((pixelTop-pixelBottom)/tileSize)][2];
-		for(int TileRow=pixelBottom/tileSize;TileRow<pixelTop/tileSize;TileRow++){
-			for(int TileCollumn = pixelLeft/tileSize;TileCollumn<pixelRight/tileSize;TileCollumn++){
-				tilePositions[TileRow*((pixelRight-pixelLeft)/tileSize)+TileCollumn]=new int[]{TileCollumn,TileRow};
+			int pixelRight, int pixelTop){
+		ArrayList<int[]> tilePositions = new ArrayList<int[]>();
+		for(int rowPos = (pixelBottom/tileSize)*tileSize; rowPos <= pixelTop; rowPos+=tileSize){
+			for(int colPos = (pixelLeft/tileSize)*tileSize;colPos <= pixelRight;colPos+=tileSize){
+				tilePositions.add(new int[]{colPos/tileSize,rowPos/tileSize});
 			}
 		}
-		return tilePositions;
+		return tilePositions.toArray(new int[tilePositions.size()][]);
 	}
 	
 	public int[] getVisibleWindow(){
