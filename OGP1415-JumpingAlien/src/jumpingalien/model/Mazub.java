@@ -76,7 +76,7 @@ public class Mazub extends GameObject{
 		direction= Direction.STALLED;
 	}
 	
-	//GEWOON EFFE TEST
+	//GEWOON EFFE TEST dit is 2de keer
 	
 	/**
 	 * 
