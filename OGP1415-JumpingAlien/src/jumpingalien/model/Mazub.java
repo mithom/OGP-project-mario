@@ -12,7 +12,7 @@ import jumpingalien.state.Direction;
 import jumpingalien.state.DuckState;
 import jumpingalien.state.GroundState;
 import jumpingalien.util.Sprite;
-/**
+/**test
  * Mazub is a class representing a character off the game. 
  * @author Meerten Wouter & Michiels Thomas
  * @version 1.0
