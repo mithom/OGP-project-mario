@@ -106,8 +106,14 @@ public class Facade extends jumpingalien.part1.facade.Facade implements IFacadeP
 	public void advanceTime(World world, double dt)throws ModelException {
 		try{
 			world.advanceTime(dt);
-		}catch(IllegalMovementException|IllegalMazubStateException|IllegalTimeException|PositionOutOfBoundsException e){
-			throw new ModelException("advanceTime failed");
+		}catch(IllegalMovementException e){
+			throw new ModelException("illegalMovementException");
+		}catch(IllegalMazubStateException ex){
+			throw new ModelException("illegalMazubState");
+		}catch(IllegalTimeException exc){
+			throw new ModelException("illegalTime");
+		}catch(PositionOutOfBoundsException exce){
+			throw new ModelException("positionOutOfBounds" + exce.getLocation()[0] + " ," + exce.getLocation()[1]);
 		}
 
 	}
@@ -153,7 +159,7 @@ public class Facade extends jumpingalien.part1.facade.Facade implements IFacadeP
 	@Override
 	public boolean isGameOver(World world){
 		//TODO implement this function
-		return true;
+		return false;
 	};
 
 	@Override

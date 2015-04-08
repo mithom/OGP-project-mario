@@ -21,7 +21,7 @@ public abstract class GameObject {
 	
 	@Raw
 	protected GameObject(int pixelLeftX, int pixelBottomY, Sprite[] sprites) throws PositionOutOfBoundsException{
-		position = new Position(new double[]{pixelLeftX,pixelBottomY});
+		position = new Position(new double[]{pixelLeftX/100.0d,pixelBottomY/100.0d});
 		this.spriteList = sprites;
 		this.m = (spriteList.length-8)/2;
 		hitPoint = new HitPoint(0,500,100);

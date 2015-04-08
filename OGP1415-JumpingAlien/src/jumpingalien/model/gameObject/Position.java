@@ -48,13 +48,14 @@ public class Position {
 	}
 	
 	public int[] getPixelPosition(){
-		return new int[]{(int)position[0], (int)position[1] };
+		return new int[]{(int)(position[0]*100), (int)(position[1]*100) };
 	}
 	
 	public boolean isValidCoordinate(double[] coordinate){
 		if(coordinate.length == 2){
 			if(coordinate[0] < 0 || coordinate[0]>= world.getWidth()/100.0d ||
 					(coordinate[1]<0 || coordinate[1] >= world.getHeight()/100.0d)){
+				System.out.println("width: "+world.getWidth()+"height: "+world.getHeight());
 				return false;
 			}else
 				return true;
