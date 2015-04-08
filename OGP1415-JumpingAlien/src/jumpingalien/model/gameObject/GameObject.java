@@ -42,6 +42,10 @@ public abstract class GameObject {
 		return false;
 	}
 	
+	public boolean isDead(){
+		return hitPoint.isDead();
+	}
+	
 	@Basic
 	public int getNbHitPoints(){
 		return hitPoint.getCurrent();

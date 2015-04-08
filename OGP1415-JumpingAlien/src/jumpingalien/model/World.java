@@ -25,6 +25,7 @@ public class World {
 	private ArrayList<Shark> sharks = new ArrayList<Shark>();
 	private ArrayList<Plant> plants = new ArrayList<Plant>();
 	private ArrayList<School> schools= new ArrayList<School>();
+	private ArrayList<Slime> slimes = new ArrayList<Slime>();
 	private boolean terminated = false;
 	private Mazub mazub;
 	
@@ -40,8 +41,10 @@ public class World {
 			Arrays.fill(row, GeologicalFeature.air);
 		}
 		this.tileSize = tileSize;
-		targetTile = new Position(this, new double[]{targetTileX*tileSize/100.0d,targetTileY*tileSize/100.0d});
+		//targetTile = new Position(this, new double[]{targetTileX*tileSize/100.0d,targetTileY*tileSize/100.0d}); TODO change this line back when more functions are implemented
+		targetTile = new Position(this, new double[]{700/100.0d,300/100.0d});
 		cameraLocation = new Position(this, new double[]{0,0});
+		System.out.println(java.util.Arrays.toString(targetTile.getPositions()));
 	}
 	
 	@Basic
@@ -150,12 +153,16 @@ public class World {
 		return new ArrayList<School>(schools);
 	}
 	
-	public ArrayList<Slime> getSlimes(){
+	public ArrayList<Slime> getSlimes2(){
 		ArrayList<Slime> slimes= new ArrayList<Slime>();
 		for(School school : schools){
 			slimes.addAll(school.getSlimes());
 		}
 		return slimes;
+	}
+	
+	public ArrayList<Slime> getSlimes(){
+		return new ArrayList<Slime>(slimes);
 	}
 	
 	public int getTileLenght(){
@@ -179,6 +186,29 @@ public class World {
 	}
 	
 	public void addSlime(Slime slime){
-		//TODO implement... (begint afgezaagd te worden die implements
+		if(schools.contains(slime.getSchool())){
+			slimes.add(slime);
+		}
+	}
+	
+	public boolean didPlayerWin(){
+		if(Arrays.equals(getTileOfPosition(targetTile), getTileOfPosition(mazub.getPosition()))){
+			return true;
+		}
+		return false;
+	}
+	
+	public int[] getTileOfPosition(Position position){
+		return getTileOfPosition(position.getPositions());
+	}
+	
+	public int[]getTileOfPosition(double[] position){
+		return new int[]{(int)(position[0]*100)/tileSize, (int)(position[1]*100)/tileSize};
+	}
+	
+	public boolean isGameOver(){
+		if(didPlayerWin() || mazub.isDead())
+			return true;
+		return false;
 	}
 }

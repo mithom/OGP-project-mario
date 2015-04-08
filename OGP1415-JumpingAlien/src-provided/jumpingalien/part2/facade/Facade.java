@@ -159,13 +159,13 @@ public class Facade extends jumpingalien.part1.facade.Facade implements IFacadeP
 	@Override
 	public boolean isGameOver(World world){
 		//TODO implement this function
-		return false;
+		return world.isGameOver();
 	};
 
 	@Override
 	public boolean didPlayerWin(World world){
-		//TODO implement this function
-		return false;
+		//TODO implement
+		return world.didPlayerWin();
 	};
 	
 	@Override
