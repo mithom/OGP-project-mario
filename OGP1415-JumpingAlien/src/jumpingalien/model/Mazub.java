@@ -539,4 +539,13 @@ public class Mazub extends GameObject{
 			world.addMazub(this);
 		}
 	}
+	
+	public void moveWindow(){
+		//left,bottom,right,top
+		int[] visibleWindow = world.getVisibleWindow(); //in pixels
+		double[] perimeters = getPerimeters();
+		if(visibleWindow[0]+2>perimeters[0]){
+			//beweeg scherm naar links
+		}
+	}
 }
