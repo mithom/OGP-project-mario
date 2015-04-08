@@ -1,5 +1,7 @@
 package jumpingalien.model;
 
+import java.util.Arrays;
+
 import be.kuleuven.cs.som.annotate.*; 
 import jumpingalien.exception.IllegalMazubStateException;
 import jumpingalien.exception.IllegalMovementException;
@@ -205,7 +207,11 @@ public class Mazub extends GameObject{
 		//update position and speed (still need to compensate for velocity over max first time)
 		int stateSign =this.groundState.getSign(); 
 		double newSpeed = this.getVerticalVelocity() + this.getVerticalAcceleration()*dt*stateSign;
-		try{setPositionY(getPositionY() + travelledVerticalDistance(dt,stateSign));}
+		
+		try{
+			setPositionY(getPositionY() + travelledVerticalDistance(dt,stateSign));
+			doSomething(dt, stateSign);
+		}
 		catch(PositionOutOfBoundsException e){
 			//correct position if out of window && notice grounded
 			if(e.getLocation()[1] < 0){
@@ -224,6 +230,17 @@ public class Mazub extends GameObject{
 		}
 		this.setVerticalVelocity(newSpeed);
 		return;
+	}
+	
+	public void doSomething(double dt, int stateSign)throws PositionOutOfBoundsException{
+		double[] location = position.getPositions();
+		location[0]*=100;location[1]*=100;
+		//System.out.println(Arrays.toString(location) + ","+world.getGeologicalFeature(location));
+		if(world.getGeologicalFeature(location) == 1 && getVerticalVelocity()<=0){
+			setPositionY(((int)(getPositionY()*100)/world.getTileLenght()+1)*world.getTileLenght()/100.0d-0.01d);
+			this.groundState = GroundState.GROUNDED;
+			setVerticalVelocity(0d);
+		}
 	}
 	
 	/**
