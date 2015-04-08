@@ -64,6 +64,7 @@ public class World {
 	
 	public void setGeologicalFeature(int tileX, int tileY, int tileType)throws IndexOutOfBoundsException{
 		tileTypes[tileX][tileY] = GeologicalFeature.numberTypeToGeologicalFeature(tileType);
+		//System.out.println("set tile ["+tileX+","+tileY+"] to "+tileType);
 		//nominaal/defensief/totaal?????
 	}
 	
@@ -71,6 +72,10 @@ public class World {
 		if(pixelX % tileSize != 0 || pixelY %tileSize !=0)
 			throw new InvalidKeyException();
 		return tileTypes[pixelX/tileSize][pixelY/tileSize].getEquivalentNumberType();
+	}
+	
+	public int getGeologicalFeature(double[] position){
+		return tileTypes[(int)position[0]/tileSize][(int)position[1]/tileSize].getEquivalentNumberType();
 	}
 	
 	public int[] getBottomLeftPixelOfTile(int tileX, int tileY){
