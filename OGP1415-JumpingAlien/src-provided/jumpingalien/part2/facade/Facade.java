@@ -1,8 +1,10 @@
 package jumpingalien.part2.facade;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
+import jumpingalien.exception.IllegalMazubStateException;
+import jumpingalien.exception.IllegalMovementException;
+import jumpingalien.exception.IllegalTimeException;
 import jumpingalien.exception.PositionOutOfBoundsException;
 import jumpingalien.model.Plant;
 import jumpingalien.model.School;
@@ -19,97 +21,106 @@ public class Facade extends jumpingalien.part1.facade.Facade implements IFacadeP
 	/*//al het volgende zit in de extends part1.facade.Facade
 	@Override
 	public Mazub createMazub(int pixelLeftX, int pixelBottomY, Sprite[] sprites) {
-		// TODO Auto-generated method stub
+		// TODO check old version
 		return null;
 	}
 
 	@Override
 	public int[] getLocation(Mazub alien) {
-		// TODO Auto-generated method stub
+		// TODO check old version
 		return null;
 	}
 
 	@Override
 	public double[] getVelocity(Mazub alien) {
-		// TODO Auto-generated method stub
+		// TODO check old version
 		return null;
 	}
 
 	@Override
 	public double[] getAcceleration(Mazub alien) {
-		// TODO Auto-generated method stub
+		// TODO check old version
 		return null;
 	}
 
 	@Override
 	public int[] getSize(GameObject alien) {
-		// TODO Auto-generated method stub
+		// TODO check old version
 		return null;
 	}
 
 	@Override
 	public Sprite getCurrentSprite(GameObject alien) {
-		// TODO Auto-generated method stub
+		// TODO check old version
 		return null;
 	}
 
 	@Override
 	public void startJump(Mazub alien) {
-		// TODO Auto-generated method stub
+		// TODO check old version
 
 	}
 
 	@Override
 	public void endJump(Mazub alien) {
-		// TODO Auto-generated method stub
+		// TODO check old version
 
 	}
 
 	@Override
 	public void startMoveLeft(Mazub alien) {
-		// TODO Auto-generated method stub
+		// TODO check old version
 
 	}
 
 	@Override
 	public void endMoveLeft(Mazub alien) {
-		// TODO Auto-generated method stub
+		// TODO check old version
 
 	}
 
 	@Override
 	public void startMoveRight(Mazub alien) {
-		// TODO Auto-generated method stub
+		// TODO check old version
 	}
 
 	@Override
 	public void endMoveRight(Mazub alien) {
-		// TODO Auto-generated method stub
+		// TODO check old version
 
 	}
 
 	@Override
 	public void startDuck(Mazub alien) {
-		// TODO Auto-generated method stub
+		// TODO check old version
 
 	}
 
 	@Override
 	public void endDuck(Mazub alien) {
-		// TODO Auto-generated method stub
+		// TODO check old version
 
 	}*/
 
 	@Override
-	public void advanceTime(World world, double dt) {
-		// TODO Auto-generated method stub
+	public void advanceTime(World world, double dt)throws ModelException {
+		try{
+			world.advanceTime(dt);
+		}catch(IllegalMovementException e){
+			throw new ModelException("illegalMovementException");
+		}catch(IllegalMazubStateException ex){
+			throw new ModelException("illegalMazubState");
+		}catch(IllegalTimeException exc){
+			throw new ModelException("illegalTime");
+		}catch(PositionOutOfBoundsException exce){
+			throw new ModelException("positionOutOfBounds" + exce.getLocation()[0] + " ," + exce.getLocation()[1]);
+		}
 
 	}
 
 	@Override
 	public int getNbHitPoints(GameObject alien) {
-		// TODO Auto-generated method stub
-		return 0;
+		return alien.getNbHitPoints();
 	}
 
 	@Override
@@ -132,14 +143,12 @@ public class Facade extends jumpingalien.part1.facade.Facade implements IFacadeP
 	
 	@Override
 	public int[] getWorldSizeInPixels(World world){
-		//TODO implement this function
-		return new int[]{};
+		return world.getWorldSizeInPixels();
 	};
 	
 	@Override
 	public int getTileLength(World world){
-		//TODO implement this function
-		return 0;
+		return world.getTileLenght();
 	};
 	
 	@Override
@@ -149,20 +158,17 @@ public class Facade extends jumpingalien.part1.facade.Facade implements IFacadeP
 	
 	@Override
 	public boolean isGameOver(World world){
-		//TODO implement this function
-		return true;
+		return world.isGameOver();
 	};
 
 	@Override
 	public boolean didPlayerWin(World world){
-		//TODO implement this function
-		return false;
+		return world.didPlayerWin();
 	};
 	
 	@Override
 	public int[] getVisibleWindow(World world){
-		//TODO implement this function
-		return new int[]{};
+		return world.getVisibleWindow();
 	};
 	
 	@Override
@@ -173,15 +179,15 @@ public class Facade extends jumpingalien.part1.facade.Facade implements IFacadeP
 	@Override
 	public 	int[][] getTilePositionsIn(World world, int pixelLeft, int pixelBottom,
 			int pixelRight, int pixelTop){
-		//TODO implement this function
-		return new int[][]{};
+		return world.getTilePositionsIn(pixelLeft, pixelBottom, pixelRight, pixelTop);
 	};
 	
 	@Override
-	public int getGeologicalFeature(World world, int pixelX, int pixelY)
-			throws ModelException{
-		//TODO implement this function
-		return 0;
+	public int getGeologicalFeature(World world, int pixelX, int pixelY)throws ModelException{
+		try{return world.getGeologicalFeature(pixelX, pixelY);}
+		catch(Exception e){
+			throw new ModelException("invalid key exception");
+		}
 	};
 	
 	@Override
@@ -195,12 +201,11 @@ public class Facade extends jumpingalien.part1.facade.Facade implements IFacadeP
 	
 	@Override
 	public void setMazub(World world, GameObject alien){
-		//TODO implement this function
+		alien.addToWorld(world);
 	};
 	
 	@Override
 	public Plant createPlant(int x, int y, Sprite[] sprites){
-		//TODO implement this function
 		try{return new Plant(x,y,sprites);}
 		catch(PositionOutOfBoundsException e){
 			throw new ModelException("invalid position");
@@ -209,31 +214,26 @@ public class Facade extends jumpingalien.part1.facade.Facade implements IFacadeP
 	
 	@Override
 	public void addPlant(World world, Plant plant){
-		//TODO implement this function
+		world.addPlant(plant);
 	};
 	
 	@Override
 	public Collection<Plant> getPlants(World world){
-		//TODO implement this function
-		//can be of other collection then ArrayList
-		return new ArrayList<Plant>(); 
+		return world.getPlants(); 
 	};
 	
 	@Override
 	public int[] getLocation(Plant plant){
-		//TODO implement this function
-		return new int[]{};
+		return plant.getPosition().getPixelPosition();
 	};
 	
 	@Override
 	public Sprite getCurrentSprite(Plant plant){
-		//TODO implement this function
-		return new Sprite("hallo", 0, 0);
+		return plant.getCurrentSprite();
 	};
 	
 	@Override
 	public Shark createShark(int x, int y, Sprite[] sprites){
-		//TODO implement this function
 		try{return new Shark(x,y,sprites);}
 		catch(PositionOutOfBoundsException e){
 			throw new ModelException("invalid position");
@@ -242,36 +242,31 @@ public class Facade extends jumpingalien.part1.facade.Facade implements IFacadeP
 	
 	@Override
 	public void addShark(World world, Shark shark){
-		//TODO implement this function
+		world.addShark(shark);
 	};
 	
 	@Override
 	public Collection<Shark> getSharks(World world){
-		//TODO implement this fucntion
-		return new ArrayList<Shark>();
+		return world.getSharks();
 	};
 	
 	@Override
 	public int[] getLocation(Shark shark){
-		//TODO implement this function
-		return new int[]{};
+		return shark.getPosition().getPixelPosition();
 	};
 	
 	@Override
 	public Sprite getCurrentSprite(Shark shark){
-		//TODO implment this function
-		return new Sprite("hallo", 0, 0);
+		return shark.getCurrentSprite();
 	};
 	
 	@Override
 	public School createSchool(){
-		//TODO implement this function
 		return new School();
 	};
 	
 	@Override
 	public Slime createSlime(int x, int y, Sprite[] sprites, School school){
-		//TODO implement this function
 		try{return new Slime(x,y,sprites,school);}
 		catch(PositionOutOfBoundsException e){
 			throw new ModelException("invalid position");
@@ -280,30 +275,26 @@ public class Facade extends jumpingalien.part1.facade.Facade implements IFacadeP
 	
 	@Override
 	public void addSlime(World world, Slime slime){
-		//TODO implement this function
+		slime.addToWorld(world);//TODO maybe add school to world if slime has school that isn't in world yet.
 	};
 	
 	@Override
 	public Collection<Slime> getSlimes(World world){
-		//TODO implement this function
-		return new ArrayList<Slime>();
+		return world.getSlimes();
 	};
 	
 	@Override
 	public int[] getLocation(Slime slime){
-		//TODO implement this function
-		return new int[]{};
+		return slime.getPosition().getPixelPosition();
 	};
 	
 	@Override
 	public Sprite getCurrentSprite(Slime slime){
-		//TODO implement this function
-		return new Sprite("hallo", 0, 0);
+		return slime.getCurrentSprite();
 	};
 	
 	@Override
 	public School getSchool(Slime slime){
-		//TODO implement this function
-		return new School();
+		return slime.getSchool();
 	};
 }

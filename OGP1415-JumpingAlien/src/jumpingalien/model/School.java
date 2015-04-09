@@ -4,9 +4,16 @@ import java.util.ArrayList;
 
 public class School {
 	private ArrayList<Slime> slimes = new ArrayList<Slime>();
+	private World world;
 	
 	public School(){
 		
+	}
+	
+	public void addWorld(World world){
+		if(world.getSchools().contains(this)){
+			this.world = world;
+		}
 	}
 	
 	public ArrayList<Slime> getSlimes(){
@@ -30,5 +37,9 @@ public class School {
 			return true;
 		}
 		return false;
+	}
+	
+	public World getWorld(){
+		return world;
 	}
 }
