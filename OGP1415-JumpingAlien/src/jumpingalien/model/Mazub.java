@@ -165,6 +165,7 @@ public class Mazub extends GameObject{
 		moveHorizontal(dt);
 		moveVertical(dt);
 		animate(dt);
+		moveWindow();
 		return;
 	}
 	
