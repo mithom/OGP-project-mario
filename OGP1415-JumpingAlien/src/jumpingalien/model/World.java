@@ -16,8 +16,8 @@ import jumpingalien.model.gameObject.GeologicalFeature;
 public class World {
 	private final int height;//in pixels
 	private final int width;//in pixels
-	private final int viewHeight;//in pixels
-	private final int viewWidth;//in pixels
+	final int viewHeight;//in pixels
+	final int viewWidth;//in pixels
 	private Position cameraLocation;//position is in m
 	private final Position targetTile;//position is in m
 	private GeologicalFeature[][] tileTypes;
@@ -41,8 +41,7 @@ public class World {
 			Arrays.fill(row, GeologicalFeature.air);
 		}
 		this.tileSize = tileSize;
-		//targetTile = new Position(this, new double[]{targetTileX*tileSize/100.0d,targetTileY*tileSize/100.0d}); TODO change this line back when more functions are implemented
-		targetTile = new Position(this, new double[]{700/100.0d,300/100.0d});
+		targetTile = new Position(this, new double[]{targetTileX*tileSize/100.0d,targetTileY*tileSize/100.0d});
 		cameraLocation = new Position(this, new double[]{0,0});
 		System.out.println(java.util.Arrays.toString(targetTile.getPositions()));
 	}
@@ -215,5 +214,8 @@ public class World {
 		if(didPlayerWin() || mazub.isDead())
 			return true;
 		return false;
+	}
+	public void moveWindowTo(double Left, double Bottom)throws PositionOutOfBoundsException{
+		cameraLocation = new Position(this, new double[]{Left,Bottom});
 	}
 }

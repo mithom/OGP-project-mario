@@ -4,7 +4,7 @@ import jumpingalien.exception.PositionOutOfBoundsException;
 import be.kuleuven.cs.som.annotate.*;
 import jumpingalien.model.World;
 
-public class Position {
+public class Position {//TODO GET RID OF THE STUPID DISTINCTION OF METER AND PIXEL-> everything in pixel except for some inspectors in facade
 	private final double[] position;//in meters!, pixel is 0.01m = 1cm
 	private World world; 
 	/*
@@ -32,6 +32,8 @@ public class Position {
 	public Position(World world,double[] coordinate) throws PositionOutOfBoundsException{
 		this.world = world;
 		if(world != null){
+			coordinate[0] = Math.min(Math.max(0, coordinate[0]),world.getWidth()/100.0d);
+			coordinate[1] = Math.min(Math.max(0, coordinate[1]),world.getHeight()/100.0d);
 			if(isValidCoordinate(coordinate)){
 				position = coordinate;
 			}else{
