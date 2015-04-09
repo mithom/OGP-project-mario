@@ -21,7 +21,7 @@ public abstract class GameObject {
 	
 	@Raw
 	protected GameObject(int pixelLeftX, int pixelBottomY, Sprite[] sprites) throws PositionOutOfBoundsException{
-		position = new Position(new double[]{pixelLeftX,pixelBottomY});
+		position = new Position(new double[]{pixelLeftX/100.0d,pixelBottomY/100.0d});
 		this.spriteList = sprites;
 		this.m = (spriteList.length-8)/2;
 		hitPoint = new HitPoint(0,500,100);
@@ -42,16 +42,21 @@ public abstract class GameObject {
 		return false;
 	}
 	
+	public boolean isDead(){
+		return hitPoint.isDead();
+	}
+	
+	@Basic
+	public int getNbHitPoints(){
+		return hitPoint.getCurrent();
+	}
+	
 	@Basic
 	public World getWorld(){
 		return this.world;
 	}
 	
-	public void addToWorld(World world){
-		if(this.world == null && canHaveAsWorld(world)){
-			this.world = world;
-		}
-	}
+	public abstract void addToWorld(World world);
 	
 	protected boolean canHaveAsWorld(World world){
 		if(!world.isTerminated() && !this.isTerminated() && this.world==null)
@@ -61,6 +66,16 @@ public abstract class GameObject {
 	
 	public boolean isTerminated(){
 		return terminated;
+	}
+	
+	public double[] getPerimeters(){
+		//order: left,bottom,right,top
+		double[] perimeters = new double[4];
+		perimeters[0] = position.getPositions()[0];
+		perimeters[1]=position.getPositions()[1];
+		perimeters[2] = position.getPositions()[0]+ getCurrentSprite().getWidth()/100.0d;
+		perimeters[3] = position.getPositions()[1]+ getCurrentSprite().getHeight()/100.0d;
+		return perimeters;
 	}
 	
 	@Basic

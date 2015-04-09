@@ -46,4 +46,19 @@ public class Slime extends GameObject{
 		//TODO implement this function
 	}
 	
+	@Override
+	public void addToWorld(World world){
+		if(this.world == null && canHaveAsWorld(world)){
+			this.world = world;
+			world.addSlime(this);
+		}
+	}
+	
+	@Override
+	protected boolean canHaveAsWorld(World world){
+		if(!world.isTerminated() && !this.isTerminated() && this.world==null
+				&& world.getSchools().contains(school))
+			return true;
+		return false;
+	}
 }

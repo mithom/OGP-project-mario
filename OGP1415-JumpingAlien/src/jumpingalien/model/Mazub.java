@@ -10,7 +10,7 @@ import jumpingalien.state.Direction;
 import jumpingalien.state.DuckState;
 import jumpingalien.state.GroundState;
 import jumpingalien.util.Sprite;
-/**
+/**test
  * Mazub is a class representing a character off the game. 
  * @author Meerten Wouter & Michiels Thomas
  * @version 1.0
@@ -75,8 +75,6 @@ public class Mazub extends GameObject{
 		}
 		direction= Direction.STALLED;
 	}
-	
-	//GEWOON EFFE TEST dit is 2de keer
 	
 	/**
 	 * 
@@ -149,6 +147,7 @@ public class Mazub extends GameObject{
 		moveHorizontal(dt);
 		moveVertical(dt);
 		animate(dt);
+		moveWindow();
 		return;
 	}
 	
@@ -180,8 +179,8 @@ public class Mazub extends GameObject{
 		if(getPositionX() <0){
 			setPositionX(0);
 		}
-		if(getPositionX()>(gameWidth-1)/100d)
-			setPositionX((gameWidth-1)/100d);
+		if(getPositionX()>(world.getWidth()-1)/100d)
+			setPositionX((world.getHeight()-1)/100d);
 		return;
 	}
 	
@@ -208,20 +207,39 @@ public class Mazub extends GameObject{
 		int stateSign =this.groundState.getSign(); 
 		double newSpeed = this.getVerticalVelocity() + this.getVerticalAcceleration()*dt*stateSign;
 		
-		setPositionY(getPositionY() + travelledVerticalDistance(dt,stateSign));
-		this.setVerticalVelocity(newSpeed);
-
-		//correct position if out of window && notice grounded
-		if(getPositionY() <= 0){
-			setPositionY(0);
-			if(getVerticalVelocity()<=0){
-				this.groundState = GroundState.GROUNDED;
-				setVerticalVelocity(0d);
+		try{
+			setPositionY(getPositionY() + travelledVerticalDistance(dt,stateSign));
+			doSomething(dt, stateSign);
+		}
+		catch(PositionOutOfBoundsException e){
+			//correct position if out of window && notice grounded
+			if(e.getLocation()[1] < 0){
+				setPositionY(0);
+				if(getVerticalVelocity()<=0){
+					this.groundState = GroundState.GROUNDED;
+					setVerticalVelocity(0d);
+				}
+			}else{
+				if(getPositionY()>gameHeight/100d){
+					setPositionY(gameHeight/100d);
+				}else{
+					throw new PositionOutOfBoundsException(getPositionX(), getPositionY());
+				}
 			}
 		}
-		if(getPositionY()>gameHeight/100d)
-			setPositionY(gameHeight/100d);
+		this.setVerticalVelocity(newSpeed);
 		return;
+	}
+	
+	public void doSomething(double dt, int stateSign)throws PositionOutOfBoundsException{
+		double[] location = position.getPositions();
+		location[0]*=100;location[1]*=100;
+		//System.out.println(Arrays.toString(location) + ","+world.getGeologicalFeature(location));
+		if(world.getGeologicalFeature(location) == 1 && getVerticalVelocity()<=0){
+			setPositionY(((int)(getPositionY()*100)/world.getTileLenght()+1)*world.getTileLenght()/100.0d-0.01d);
+			this.groundState = GroundState.GROUNDED;
+			setVerticalVelocity(0d);
+		}
 	}
 	
 	/**
@@ -233,7 +251,7 @@ public class Mazub extends GameObject{
 			timeSinceLastMovement += dt;
 		}else{
 			timeSinceLastMovement = 0;
-			System.out.println(timeSinceLastMovement);
+			//System.out.println(timeSinceLastMovement);
 		}
 		if(getOriëntation() == Direction.STALLED){
 			if(timeSinceLastMovement>=1){
@@ -269,7 +287,7 @@ public class Mazub extends GameObject{
 				}
 			}
 		}
-		System.out.println(currentSpriteNumber);
+		//System.out.println(currentSpriteNumber);
 		return;
 	}
 	/**
@@ -465,8 +483,8 @@ public class Mazub extends GameObject{
 	 */
 	@Basic //basic inspectors moeten basic zijn, nooit exception.
 	public int getPixel_x()throws PositionOutOfBoundsException{
-		if(!hasValidPosition()) throw new PositionOutOfBoundsException(getPositionX(),getPositionY());
-		return (int)(this.getPositionX()*100);//
+		//if(!hasValidPosition()) throw new PositionOutOfBoundsException(getPositionX(),getPositionY()); //no need anymore for this function
+		return (int)(this.getPositionX()*100);
 	}
 	
 	public boolean hasValidPosition(){// bij setter->class invar
@@ -481,7 +499,7 @@ public class Mazub extends GameObject{
 	 */
 	@Basic
 	public int getPixel_y() throws PositionOutOfBoundsException{
-		if(! hasValidPosition()) throw new PositionOutOfBoundsException(getPositionX(),getPositionY());
+		//if(! hasValidPosition()) throw new PositionOutOfBoundsException(getPositionX(),getPositionY());
 		return (int)(getPositionY()*100);
 	}
 	
@@ -511,5 +529,28 @@ public class Mazub extends GameObject{
 	
 	public static int getGameWidth(){
 		return gameWidth;
+	}
+	
+	@Override
+	public void addToWorld(World world){
+		if(this.world == null && canHaveAsWorld(world)){
+			this.world = world;
+			world.addMazub(this);
+		}
+	}
+	
+	public void moveWindow()throws PositionOutOfBoundsException{
+		//left,bottom,right,top
+		; //in pixels
+		double[] perimeters = getPerimeters(); // in meters
+		if(world.getVisibleWindow()[0]/100.0d+2>perimeters[0]){
+			world.moveWindowTo(perimeters[0]-2.0d, world.getVisibleWindow()[1]/100.0d);
+		}if(world.getVisibleWindow()[1]/100.0d+2>perimeters[1]){
+			world.moveWindowTo(world.getVisibleWindow()[0]/100.0d,(perimeters[1]-2.0d));
+		}if(world.getVisibleWindow()[2]/100.0d-2<perimeters[2]){
+			world.moveWindowTo((perimeters[2]+2.0d)-world.viewWidth/100.0d, world.getVisibleWindow()[1]/100.0d);
+		}if(world.getVisibleWindow()[3]/100.0d-2<perimeters[3]){
+			world.moveWindowTo(world.getVisibleWindow()[0]/100.0d,(perimeters[3]+2.0d)-world.viewHeight/100.0d);
+		}
 	}
 }
