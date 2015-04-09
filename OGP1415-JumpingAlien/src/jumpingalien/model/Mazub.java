@@ -141,16 +141,29 @@ public class Mazub extends GameObject{
 	
 	
 	public void advanceTime2(double dt)throws PositionOutOfBoundsException{
+		//maak nieuwe positie aan, maar niet als die van mazub
+		//dan controleren we die positie
+		//indien niets, zet als positie mazub
+		//indien bezet, laat botsen (snelheden aanpassen, en verplaatsing niet laten doorgaan en eventueel inverteren)
 		while(dt>0){
 			double correctDt=this.calculateCorrectDt(dt);
 			dt -= correctDt;
-			this.moveHorizontal(correctDt);// return new Position(x,y) ipv void
-			this.moveVertical(correctDt);
-			//maak nieuwe positie aan, maar niet als die van mazub
-			//dan controleren we die positie
-			//indien niets, zet als positie mazub
-			//indien bezet, laat botsen (snelheden aanpassen, en verplaatsing niet laten doorgaan en eventueel inverteren)
+			double new_position_x = this.moveHorizontal(correctDt);// return new Position(x,y) ipv void
+			double new_position_y = this.moveVertical(correctDt);
+			if (this.overlapsWithWall() == [false,false,false,false] && this.overlapsWithGameObject() == false){
+				this.setPositionX(new_position_x);
+				this.setPositionY(new_position_y);
+			}
+			else {
+				// check if character overlaps with a wall above or beneath it 
+				// ook vraag hierover in verband met DOSOMETHING methode
+				if (this.overlapsWithWall()[0]==true || this.overlapsWithWall()[3]==true)
+					this.setVerticalVelocity(0.0d);
+				else
+					this.setHorizontalVelocity(0.0d);
+			}
 			this.animate(correctDt);
+			this.moveWindow();
 		}
 	}
 	
@@ -202,7 +215,61 @@ public class Mazub extends GameObject{
 	/**
 	 * changes the position,acceleration and velocity of the mazub according to the horizontal axis for a given time dt.
 	 */
-	private void moveHorizontal(double dt) throws IllegalMovementException,PositionOutOfBoundsException{
+	
+	private double moveHorizontal(double dt) throws IllegalMovementException,PositionOutOfBoundsException{
+		int dirSign =this.direction.getSign(); 
+		double newSpeed = this.getHorizontalVelocity()+this.getHorizontalAcceleration()*dt;
+		double s;
+		//dirsign is used in here to compensate for the current direction of the mazub.
+		if(newSpeed*dirSign > this.getMaxHorizontalVelocity()){//overgangsverschijnsel (1keer bij berijken max speed)
+			if(getHorizontalAcceleration()==0)throw new IllegalMovementException("impossible to divide by zero");
+			double accDt = (this.getMaxHorizontalVelocity()- this.getHorizontalVelocity()*dirSign)/(getHorizontalAcceleration()*dirSign);
+			s= travelledHorizontalDistance(accDt, dirSign)+travelledHorizontalDistance(dt-accDt, 0);
+			this.setHorizontalVelocity(this.getMaxHorizontalVelocity()*dirSign);
+		}
+		else{
+			s= travelledHorizontalDistance(dt,dirSign);
+			this.setHorizontalVelocity(newSpeed);
+		}
+		if(((getPositionX() <=0d || s<0)&& dirSign>0 )|| (s>0 && dirSign<0)){
+			throw new IllegalMovementException("positionX overflowed");
+		}
+		//correct position if out of window
+		if(getPositionX() <0){
+			setPositionX(0);
+		}
+		if(getPositionX()>(gameWidth-1)/100d)
+			setPositionX((gameWidth-1)/100d);
+		return (getPositionX()+s);
+	} 
+	
+	private double moveVertical(double dt)throws PositionOutOfBoundsException{
+		//update position and speed (still need to compensate for velocity over max first time)
+		int stateSign =this.groundState.getSign(); 
+		double newSpeed = this.getVerticalVelocity() + this.getVerticalAcceleration()*dt*stateSign;
+		
+		double new_positiony = getPositionY() + travelledVerticalDistance(dt,stateSign);
+		doSomething(dt, stateSign);
+		if(getPositionY() < 0){
+			setPositionY(0);
+			if(getVerticalVelocity()<=0){
+					this.groundState = GroundState.GROUNDED;
+					setVerticalVelocity(0d);
+				}
+			}else{
+				if(getPositionY()>gameHeight/100d){
+					setPositionY(gameHeight/100d);
+				}else{
+					throw new PositionOutOfBoundsException(getPositionX(), getPositionY());
+				}
+		}
+		this.setVerticalVelocity(newSpeed);
+		return new_positiony;
+	}
+
+	
+	/**
+	private void moveHorizontal2(double dt) throws IllegalMovementException,PositionOutOfBoundsException{
 		//update position and speed (still need to compensate for velocity over max first time)
 		int dirSign =this.direction.getSign(); 
 		double newSpeed = this.getHorizontalVelocity()+this.getHorizontalAcceleration()*dt;
@@ -230,7 +297,8 @@ public class Mazub extends GameObject{
 		if(getPositionX()>(gameWidth-1)/100d)
 			setPositionX((gameWidth-1)/100d);
 		return;
-	}
+	} 
+	*/
 	
 	/**
 	 * calculates the movement over a given period of time according to the horizontal axis.
@@ -250,6 +318,8 @@ public class Mazub extends GameObject{
 	/**
 	 * changes the position,acceleration and velocity of the mazub according to the horizontal axis for a given time dt.
 	 */
+	
+	/**
 	private void moveVertical(double dt)throws PositionOutOfBoundsException{
 		//update position and speed (still need to compensate for velocity over max first time)
 		int stateSign =this.groundState.getSign(); 
@@ -278,7 +348,7 @@ public class Mazub extends GameObject{
 		this.setVerticalVelocity(newSpeed);
 		return;
 	}
-	
+	*/
 	public void doSomething(double dt, int stateSign)throws PositionOutOfBoundsException{
 		double[] location = position.getPositions();
 		location[0]*=100;location[1]*=100;

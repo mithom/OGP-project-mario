@@ -73,8 +73,8 @@ public abstract class GameObject {
 		double[] perimeters = new double[4];
 		perimeters[0] = position.getPositions()[0];
 		perimeters[1]=  position.getPositions()[1];
-		perimeters[2] = position.getPositions()[0]+ getCurrentSprite().getWidth()/100.0d;
-		perimeters[3] = position.getPositions()[1]+ getCurrentSprite().getHeight()/100.0d;
+		perimeters[2] = position.getPositions()[0]+ getCurrentSprite().getWidth()/100;
+		perimeters[3] = position.getPositions()[1]+ getCurrentSprite().getHeight()/100;
 		return perimeters;
 	}
 	
@@ -139,13 +139,35 @@ public abstract class GameObject {
 	public abstract void advanceTime(double dt) throws IllegalMovementException,IllegalMazubStateException,IllegalTimeException,PositionOutOfBoundsException;
 
 	public boolean[] overlapsWithWall() {
+		boolean overlap[4]{false};
 		double [] perimeters = this.getPerimeters();
+		int [][] occupied_tiles = world.getTilePositionsIn((int) perimeters[0],(int)perimeters[1],(int)perimeters[2],(int)perimeters[3]);
+		for (int i=0 ; i = occupied_tiles.length[0] ; i++){
+			if (occupied_tiles[i][i].getGeologicalFeature==1)
+				//check if tile is beneath character
+				if (occupied_tiles[i][i].getBottomLeftPixelOfTile(occupied_tiles[i][0],occupied_tiles[i][1]) < perimeters[1])
+					overlap[0]=true;
+				//check if tile is left of character
+				if (occupied_tiles[i][i].getBottomLeftPixelOfTile(occupied_tiles[0][i],occupied_tiles[1][i]) < perimeters[0])
+					overlap[1]=true;
+				//check if tile is right of character
+				if (occupied_tiles[i][i].getTopRightPixelOfTile(occupied_tiles[i][0],occupied_tiles[i][1]) < perimeters[2])
+					overlap[2]=true;
+				//check if tile is above character
+				if (occupied_tiles[i][i].getTopRightPixelOfTile(occupied_tiles[0][i],occupied_tiles[1][i]) < perimeters[3])
+					overlap[3]=true;
+		}
 		//bot,left,top,right
-		return new boolean[]{false};
+		return overlap;
 	}
 
 	public boolean[] overlapsWithGameObject() {
 		double [] perimeters = this.getPerimeters();
+		int [] game_objects = getAllGameObjects();
+		for (int i=0 ; i = game_objects.length ; i++){
+			double [] perimeters_game_object = game_objects[i].getPerimeters();
+			
+		}
 		//bot,left,top,right
 		return new boolean[]{false};
 	}
