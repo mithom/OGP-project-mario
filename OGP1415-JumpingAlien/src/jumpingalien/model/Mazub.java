@@ -472,8 +472,18 @@ public class Mazub extends GameObject{
 	 * 			|new.getDuckState() == DuckState.STRAIGHT
 	 */
 	public void endDuck(){
-		this.duckState = DuckState.STRAIGHT;
-		return;
+		duckState = DuckState.TRY_STRAIGHT;
+	}
+	
+	public void executeEndDuck(){//TODO get the implemented version of overlpsWithWall
+		//TODO set this function, when working, in advanceTime
+		if(duckState == DuckState.TRY_STRAIGHT){
+			currentSpriteNumber -= 4;
+			double[] perimeters = getPerimeters();
+			if(overlapsWithWall(perimeters[0],perimeters[1],perimeters[2],perimeters[4])[2]==false)
+				duckState = DuckState.STRAIGHT;
+			currentSpriteNumber+=4;
+		}
 	}
 	
 	/**

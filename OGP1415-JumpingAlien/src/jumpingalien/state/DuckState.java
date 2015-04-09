@@ -2,5 +2,6 @@ package jumpingalien.state;
 
 public enum DuckState {
 	DUCKED,
-	STRAIGHT;
+	STRAIGHT,
+	TRY_STRAIGHT;
 }
