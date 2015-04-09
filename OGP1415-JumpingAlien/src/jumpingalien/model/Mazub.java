@@ -138,13 +138,13 @@ public class Mazub extends GameObject{
 	 * 			|animate()
 	 */
 	//moveHor publiek maken of @effect vervangen door doc.
-	@Override
 	
-	public void advanceTime(double dt)throws PositionOutOfBoundsException{
+	
+	public void advanceTime2(double dt)throws PositionOutOfBoundsException{
 		while(dt>0){
 			double correctDt=this.calculateCorrectDt(dt);
 			dt -= correctDt;
-			Position new_pos = this.moveHorizontal(correctDt);// return new Position(x,y) ipv void
+			this.moveHorizontal(correctDt);// return new Position(x,y) ipv void
 			this.moveVertical(correctDt);
 			//maak nieuwe positie aan, maar niet als die van mazub
 			//dan controleren we die positie
@@ -155,7 +155,7 @@ public class Mazub extends GameObject{
 	}
 	
 	
-	public void advanceTime2(double dt) throws IllegalMovementException,IllegalMazubStateException,IllegalTimeException,PositionOutOfBoundsException {
+	public void advanceTime(double dt) throws IllegalMovementException,IllegalMazubStateException,IllegalTimeException,PositionOutOfBoundsException {
 		if(dt <0 || dt > 0.2 || dt == Double.NaN){
 			throw new IllegalTimeException(dt);
 		}
