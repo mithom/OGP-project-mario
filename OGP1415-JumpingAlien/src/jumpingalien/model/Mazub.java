@@ -405,7 +405,7 @@ public class Mazub extends GameObject{
 	 * 			|			new.getOrientation == Direction.STALLED
 	 */
 	public void endMove(Direction dir){
-		//recht,links,links los->zou rehcts moeten wandelen, doet nu niet
+		//recht,links,links los->zou rechts moeten wandelen, doet nu niet
 		assert dir != null && dir != Direction.STALLED;
 		if(dir.getSign()== Math.signum(getHorizontalVelocity())){
 			if(movingOtherSideAfterRelease){
@@ -417,9 +417,10 @@ public class Mazub extends GameObject{
 				}
 				this.setHorizontalVelocity(this.initialHorizontalVelocity*dir2.getSign());
 				this.direction = dir2;
+			}else{
+				this.setHorizontalVelocity(0.0d);
+				this.direction = Direction.STALLED;
 			}
-			this.setHorizontalVelocity(0.0d);
-			this.direction = Direction.STALLED;
 		}else{
 			movingOtherSideAfterRelease = false;
 		}
