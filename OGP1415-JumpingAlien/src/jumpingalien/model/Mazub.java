@@ -150,7 +150,7 @@ public class Mazub extends GameObject{
 			dt -= correctDt;
 			double new_position_x = this.moveHorizontal(correctDt);// return new Position(x,y) ipv void
 			double new_position_y = this.moveVertical(correctDt);
-			if (this.overlapsWithWall() == [false,false,false,false] && this.overlapsWithGameObject() == false){
+			if (this.overlapsWithWall() == new boolean[]{false,false,false,false} && this.overlapsWithGameObject() ==  new boolean[]{false,false,false,false}){
 				this.setPositionX(new_position_x);
 				this.setPositionY(new_position_y);
 			}
@@ -351,9 +351,10 @@ public class Mazub extends GameObject{
 	*/
 	public void doSomething(double dt, int stateSign)throws PositionOutOfBoundsException{
 		double[] location = position.getPositions();
-		location[0]*=100;location[1]*=100;
+		int[] location2 = new int[2];
+		location2[0]=(int)(location[0]*100);location2[1]=(int)(location[1]*100);
 		//System.out.println(Arrays.toString(location) + ","+world.getGeologicalFeature(location));
-		if(world.getGeologicalFeature(location) == 1 && getVerticalVelocity()<=0){
+		if(world.getGeologicalFeature(location2) == 1 && getVerticalVelocity()<=0){
 			setPositionY(((int)(getPositionY()*100)/world.getTileLenght()+1)*world.getTileLenght()/100.0d-0.01d);
 			this.groundState = GroundState.GROUNDED;
 			setVerticalVelocity(0d);
