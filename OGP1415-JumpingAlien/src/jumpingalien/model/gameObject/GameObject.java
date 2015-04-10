@@ -1,5 +1,7 @@
 package jumpingalien.model.gameObject;
 
+import java.util.ArrayList;
+
 import be.kuleuven.cs.som.annotate.*;
 import jumpingalien.exception.IllegalMazubStateException;
 import jumpingalien.exception.IllegalMovementException;
@@ -163,10 +165,10 @@ public abstract class GameObject {
 
 	public boolean[] overlapsWithGameObject() {
 		double [] perimeters = this.getPerimeters();
-		int [] game_objects = getAllGameObjects();
-		for (int i=0 ; i = game_objects.length ; i++){
-			double [] perimeters_game_object = game_objects[i].getPerimeters();
-			
+		ArrayList<GameObject> gameObjects = world.getAllGameObjects();
+		for (int i=0 ; i < gameObjects.size() ; i++){
+			double [] perimetersGameObject = gameObjects.get(i).getPerimeters();
+			//TODO check voor overlap!
 		}
 		//bot,left,top,right
 		return new boolean[]{false};

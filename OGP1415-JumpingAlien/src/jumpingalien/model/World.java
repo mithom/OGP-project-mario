@@ -222,4 +222,13 @@ public class World {
 	public void moveWindowTo(double Left, double Bottom)throws PositionOutOfBoundsException{
 		cameraLocation = new Position(this, new double[]{Left,Bottom});
 	}
+	
+	public ArrayList<GameObject> getAllGameObjects(){
+		ArrayList<GameObject> gameObjects = new ArrayList<GameObject>();
+		gameObjects.addAll(getPlants());
+		gameObjects.addAll(getSharks());
+		gameObjects.addAll(getSlimes());
+		gameObjects.add(mazub);
+		return gameObjects;
+	}
 }
