@@ -73,8 +73,8 @@ public class World {
 		return tileTypes[pixelX/tileSize][pixelY/tileSize].getEquivalentNumberType();
 	}
 	
-	public int getGeologicalFeature(double[] position){
-		return tileTypes[(int)position[0]/tileSize][(int)position[1]/tileSize].getEquivalentNumberType();
+	public int getGeologicalFeature(int[] position){
+		return tileTypes[position[0]/tileSize][position[1]/tileSize].getEquivalentNumberType();
 	}
 	
 	public int[] getBottomLeftPixelOfTile(int tileX, int tileY){
