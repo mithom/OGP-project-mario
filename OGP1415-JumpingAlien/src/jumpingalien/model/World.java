@@ -73,6 +73,9 @@ public class World {
 		return tileTypes[pixelX/tileSize][pixelY/tileSize].getEquivalentNumberType();
 	}
 	
+	/*
+	 * @param position the pixel position
+	 */
 	public int getGeologicalFeature(int[] position){
 		return tileTypes[position[0]/tileSize][position[1]/tileSize].getEquivalentNumberType();
 	}
