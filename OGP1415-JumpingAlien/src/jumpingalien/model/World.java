@@ -16,8 +16,8 @@ import jumpingalien.model.gameObject.GeologicalFeature;
 public class World {
 	private final int height;//in pixels
 	private final int width;//in pixels
-	private final int viewHeight;//in pixels
-	private final int viewWidth;//in pixels
+	final int viewHeight;//in pixels
+	final int viewWidth;//in pixels
 	private Position cameraLocation;//position is in m
 	private final Position targetTile;//position is in m
 	private GeologicalFeature[][] tileTypes;
@@ -41,8 +41,7 @@ public class World {
 			Arrays.fill(row, GeologicalFeature.air);
 		}
 		this.tileSize = tileSize;
-		//targetTile = new Position(this, new double[]{targetTileX*tileSize/100.0d,targetTileY*tileSize/100.0d}); TODO change this line back when more functions are implemented
-		targetTile = new Position(this, new double[]{700/100.0d,300/100.0d});
+		targetTile = new Position(this, new double[]{targetTileX*tileSize/100.0d,targetTileY*tileSize/100.0d});
 		cameraLocation = new Position(this, new double[]{0,0});
 		System.out.println(java.util.Arrays.toString(targetTile.getPositions()));
 	}
@@ -74,12 +73,19 @@ public class World {
 		return tileTypes[pixelX/tileSize][pixelY/tileSize].getEquivalentNumberType();
 	}
 	
-	public int getGeologicalFeature(double[] position){
-		return tileTypes[(int)position[0]/tileSize][(int)position[1]/tileSize].getEquivalentNumberType();
+	/*
+	 * @param position the pixel position
+	 */
+	public int getGeologicalFeature(int[] position){
+		return tileTypes[position[0]/tileSize][position[1]/tileSize].getEquivalentNumberType();
 	}
 	
 	public int[] getBottomLeftPixelOfTile(int tileX, int tileY){
 		return new int[]{tileX*tileSize,tileY*tileSize};
+	}
+	
+	public int[] getTopRightPixelOfTile(int tileX, int tileY){
+		return new int[]{(tileX+1)*tileSize,(tileY+1)*tileSize};
 	}
 	
 	public int[][] getTilePositionsIn(int pixelLeft, int pixelBottom,
@@ -158,13 +164,13 @@ public class World {
 		return new ArrayList<School>(schools);
 	}
 	
-	/*public ArrayList<Slime> getSlimes2(){
+	public ArrayList<Slime> getSlimes2(){
 		ArrayList<Slime> slimes= new ArrayList<Slime>();
 		for(School school : schools){
 			slimes.addAll(school.getSlimes());
 		}
 		return slimes;
-	}*/
+	}
 	
 	public ArrayList<Slime> getSlimes(){
 		return new ArrayList<Slime>(slimes);
@@ -215,6 +221,9 @@ public class World {
 		if(didPlayerWin() || mazub.isDead())
 			return true;
 		return false;
+	}
+	public void moveWindowTo(double Left, double Bottom)throws PositionOutOfBoundsException{
+		cameraLocation = new Position(this, new double[]{Left,Bottom});
 	}
 	
 	public ArrayList<GameObject> getAllGameObjects(){

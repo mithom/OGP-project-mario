@@ -1,5 +1,8 @@
 package jumpingalien.model.gameObject;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import be.kuleuven.cs.som.annotate.*;
 import jumpingalien.exception.IllegalMazubStateException;
 import jumpingalien.exception.IllegalMovementException;
@@ -73,8 +76,8 @@ public abstract class GameObject {
 		double[] perimeters = new double[4];
 		perimeters[0] = position.getPositions()[0];
 		perimeters[1]=  position.getPositions()[1];
-		perimeters[2] = position.getPositions()[0]+ getCurrentSprite().getWidth()/100.0d;
-		perimeters[3] = position.getPositions()[1]+ getCurrentSprite().getHeight()/100.0d;
+		perimeters[2] = position.getPositions()[0]+ (getCurrentSprite().getWidth()-1)/100.0d;
+		perimeters[3] = position.getPositions()[1]+ (getCurrentSprite().getHeight()-1)/100.0d;
 		return perimeters;
 	}
 	
@@ -139,14 +142,40 @@ public abstract class GameObject {
 	public abstract void advanceTime(double dt) throws IllegalMovementException,IllegalMazubStateException,IllegalTimeException,PositionOutOfBoundsException;
 
 	public boolean[] overlapsWithWall() {
-		double [] perimeters = this.getPerimeters();
+		boolean[] overlap = new boolean[]{false,false,false,false};
+		double [] perimeters = this.getPerimeters();//order: left,bottom,right,top
+		for(int i=0;i<perimeters.length;i++)perimeters[i]*=100;
+		int [][] occupied_tiles = world.getTilePositionsIn((int) (perimeters[0]),(int)(perimeters[1]),(int)(perimeters[2]),(int)(perimeters[3]));
+		for (int i=0 ; i < occupied_tiles.length ; i++){
+			if (world.getGeologicalFeature(new int[]{occupied_tiles[i][0]*world.getTileLenght(),occupied_tiles[i][1]*world.getTileLenght()})==1){//TODO intern if-else{if-else{...}}, not if if if
+				//check if tile is beneath character
+				if (world.getBottomLeftPixelOfTile(occupied_tiles[i][0],occupied_tiles[i][1])[1] < perimeters[1])
+					overlap[0]=true;
+				//check if tile is left of character
+				if (world.getBottomLeftPixelOfTile(occupied_tiles[i][0],occupied_tiles[i][1])[0] < perimeters[0])
+					overlap[1]=true;
+				//check if tile is right of character
+				if (world.getTopRightPixelOfTile(occupied_tiles[i][0],occupied_tiles[i][1])[0] > perimeters[2]){
+					overlap[3]=true;
+					System.out.println(world.getTopRightPixelOfTile(occupied_tiles[i][0],occupied_tiles[i][1])[0]+","+perimeters[2]);}
+				//check if tile is above character
+				if (world.getTopRightPixelOfTile(occupied_tiles[i][0],occupied_tiles[i][1])[1] > perimeters[3]){
+					System.out.println(Arrays.toString(occupied_tiles[i])+","+perimeters[3]+","+Arrays.toString(world.getTopRightPixelOfTile(occupied_tiles[i][0],occupied_tiles[i][1])));
+					overlap[2]=true;}
+			}
+		}
 		//bot,left,top,right
-		return new boolean[]{false};
+		return overlap;
 	}
 
 	public boolean[] overlapsWithGameObject() {
 		double [] perimeters = this.getPerimeters();
+		ArrayList<GameObject> gameObjects = world.getAllGameObjects();
+		for (int i=0 ; i < gameObjects.size() ; i++){
+			double [] perimetersGameObject = gameObjects.get(i).getPerimeters();
+			//TODO check voor overlap!
+		}
 		//bot,left,top,right
-		return new boolean[]{false};
+		return new boolean[]{false,false,false,false};
 	}
 }

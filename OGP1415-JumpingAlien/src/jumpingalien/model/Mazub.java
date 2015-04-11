@@ -8,6 +8,7 @@ import jumpingalien.exception.IllegalMovementException;
 import jumpingalien.exception.IllegalTimeException;
 import jumpingalien.exception.PositionOutOfBoundsException;
 import jumpingalien.model.gameObject.GameObject;
+import jumpingalien.model.gameObject.Position;
 import jumpingalien.state.Direction;
 import jumpingalien.state.DuckState;
 import jumpingalien.state.GroundState;
@@ -36,8 +37,6 @@ public class Mazub extends GameObject{
 	private final static double verticalAcceleration = -10d;
 	private double verticalVelocity;
 	private double maxHorizontalVelocity;
-	private final static int gameWidth = 1024;
-	private final static int gameHeight = 768;
 	private final double initialHorizontalVelocity;
 	private final double initialVerticalVelocity =8d;
 	private Direction direction ;
@@ -76,6 +75,9 @@ public class Mazub extends GameObject{
 			groundState = GroundState.AIR;
 		}
 		direction= Direction.STALLED;
+		horizontalVelocity=0.0d;
+		verticalVelocity = 0.0d;
+		
 	}
 	
 	/**
@@ -112,6 +114,8 @@ public class Mazub extends GameObject{
 			groundState = GroundState.AIR;
 		}
 		direction= Direction.STALLED;
+		horizontalVelocity=0.0d;
+		verticalVelocity = 0.0d;
 	}
 	
 	/**
@@ -138,22 +142,50 @@ public class Mazub extends GameObject{
 	 * 			|animate()
 	 */
 	//moveHor publiek maken of @effect vervangen door doc.
-	public void advanceTime2(double dt)throws PositionOutOfBoundsException{
+	public void advanceTime(double dt)throws PositionOutOfBoundsException{
+		//maak nieuwe positie aan, maar niet als die van mazub
+		//dan controleren we die positie
+		//indien niets, zet als positie mazub
+		//indien bezet, laat botsen (snelheden aanpassen, en verplaatsing niet laten doorgaan en eventueel inverteren)
 		while(dt>0){
 			double correctDt=this.calculateCorrectDt(dt);
 			dt -= correctDt;
-			this.moveHorizontal(correctDt);// return new Position(x,y) ipv void
-			this.moveVertical(correctDt);
-			//maak nieuwe positie aan, maar niet als die van mazub
-			//dan controleren we die positie
-			//indien niets, zet als positie mazub
-			//indien bezet, laat botsen (snelheden aanpassen, en verplaatsing niet laten doorgaan en eventueel inverteren)
+			double new_position_x = this.moveHorizontal(correctDt);// return new Position(x,y) ipv void
+			double new_position_y = this.moveVertical(correctDt);
+			Position oldPosition = getPosition();
+			System.out.println(groundState);
+			System.out.println(Arrays.toString(overlapsWithWall()));
+			this.setPositionX(new_position_x);
+			this.setPositionY(new_position_y);
+
+			// check if character overlaps with a wall above or beneath it 
+			if (this.overlapsWithWall()[0]==true && getVerticalVelocity()<0.0d){
+				this.setVerticalVelocity(0.0d);
+				groundState = GroundState.GROUNDED;
+				System.out.println("back to grounded");
+				setPositionY(oldPosition.getPositions()[1]);
+			}
+			if(overlapsWithWall()[2]== true && getVerticalVelocity()>0.0d){
+				System.out.println("against roof");
+				setVerticalVelocity(0.0d);
+				setPositionY(oldPosition.getPositions()[1]);
+			}
+			if(this.overlapsWithWall()[1]==true && getHorizontalVelocity()<0){
+				this.setHorizontalVelocity(0.0d);
+				setPositionX(oldPosition.getPositions()[0]);
+			}
+			if( overlapsWithWall()[3]==true && getHorizontalVelocity()>0){
+				this.setHorizontalVelocity(0.0d);
+				setPositionX(oldPosition.getPositions()[0]);
+			}
+			executeEndDuck();
 			this.animate(correctDt);
+			this.moveWindow();
 		}
 	}
 	
 	
-	public void advanceTime(double dt) throws IllegalMovementException,IllegalMazubStateException,IllegalTimeException,PositionOutOfBoundsException {
+	public void advanceTime2(double dt) throws IllegalMovementException,IllegalMazubStateException,IllegalTimeException,PositionOutOfBoundsException {
 		if(dt <0 || dt > 0.2 || dt == Double.NaN){
 			throw new IllegalTimeException(dt);
 		}
@@ -174,24 +206,31 @@ public class Mazub extends GameObject{
 				&& getVerticalAcceleration()==0 && getHorizontalAcceleration()==0)
 			return dt;
 		else{
-			if(getHorizontalVelocity()!=0) //mogelijkheid 1
+			if(getHorizontalVelocity()!=0.0d)//mogelijkheid 1
 				//min1 = Math.min(1.0d/Math.abs(this.getHorizontalVelocity()/100.0d),1.0d/Math.abs(this.getVerticalVelocity()/100.0d));
-				min1 = 1.0d/Math.abs(getHorizontalVelocity()/100.0d);
+				//min1 = 1.0d/Math.abs(getHorizontalVelocity()/100.0d); //dit is wat er voorgescherven is
+				min1 = 0.01d/Math.abs(getHorizontalVelocity());
 			else
 				min1 = Float.POSITIVE_INFINITY;
-			if (getVerticalVelocity()!=0)
-				min2=1.0d/Math.abs(this.getVerticalVelocity()/100.0d);
+			
+			if (getVerticalVelocity()!=0.0d)
+				//min2=1.0d/Math.abs(this.getVerticalVelocity()/100.0d);
+				min2 = 0.01d/Math.abs(getVerticalVelocity());
 			else 
 				min2=Float.POSITIVE_INFINITY;
-			if (this.getHorizontalAcceleration()!=0)//mogelijkheid 3
-				min3=Math.sqrt(2*Math.abs(this.getHorizontalAcceleration()/100.0d)+Math.pow(this.getHorizontalVelocity(),2.0d)/100.0d)-Math.abs(this.getHorizontalVelocity()/100.0d)/Math.abs(this.getHorizontalAcceleration()/100.0d);
-			else
+			
+			if (this.getHorizontalAcceleration()!=0.0d){//mogelijkheid 3
+				//min3=Math.sqrt(2*Math.abs(this.getHorizontalAcceleration()/100.0d)+Math.pow(this.getHorizontalVelocity(),2.0d)/100.0d)-Math.abs(this.getHorizontalVelocity()/100.0d)/Math.abs(this.getHorizontalAcceleration()/100.0d);
+				min3 = Math.abs((-getHorizontalVelocity() + Math.sqrt(Math.pow(getHorizontalVelocity(), 2)-2*getHorizontalAcceleration()/100))/getHorizontalAcceleration());
+			}else
 				min3=Float.POSITIVE_INFINITY;
-			if (this.getVerticalAcceleration()!=0)
-				min4=Math.sqrt(2*Math.abs(this.getHorizontalAcceleration()/100.0d)+Math.pow(this.getHorizontalVelocity(),2.0d)/100.0d)-Math.abs(this.getHorizontalVelocity()/100.0d)/Math.abs(this.getHorizontalAcceleration()/100.0d);
+			
+			if (this.getVerticalAcceleration()!=0.0d)
+				//min4=Math.sqrt(2*Math.abs(this.getVerticalAcceleration()/100.0d)+Math.pow(this.getVerticalAcceleration(),2.0d)/100.0d)-Math.abs(this.getVerticalAcceleration()/100.0d)/Math.abs(this.getVerticalAcceleration()/100.0d);
+				min4 = Math.abs((-getVerticalVelocity() + Math.sqrt(Math.pow(getVerticalVelocity(), 2)-2*getVerticalAcceleration()/100))/getVerticalAcceleration());
 			else 
 				min4=Float.POSITIVE_INFINITY;
-			return Math.min(Math.min(Math.min(Math.min(min1,min2), min3),min4),dt);
+			return Math.min(Math.min(Math.min(Math.min(min1,min2), min3),min4),dt); // mag geen NaN bevatten
 		}
 	}
 	
@@ -200,7 +239,8 @@ public class Mazub extends GameObject{
 	/**
 	 * changes the position,acceleration and velocity of the mazub according to the horizontal axis for a given time dt.
 	 */
-	private void moveHorizontal(double dt) throws IllegalMovementException,PositionOutOfBoundsException{
+	/**
+	private void moveHorizontal2(double dt) throws IllegalMovementException,PositionOutOfBoundsException{
 		//update position and speed (still need to compensate for velocity over max first time)
 		int dirSign =this.direction.getSign(); 
 		double newSpeed = this.getHorizontalVelocity()+this.getHorizontalAcceleration()*dt;
@@ -228,6 +268,61 @@ public class Mazub extends GameObject{
 		if(getPositionX()>(gameWidth-1)/100d)
 			setPositionX((gameWidth-1)/100d);
 		return;
+	} 
+	*/
+	private double moveHorizontal(double dt) throws IllegalMovementException,PositionOutOfBoundsException{
+		int dirSign =this.direction.getSign(); 
+		double newSpeed = this.getHorizontalVelocity()+this.getHorizontalAcceleration()*dt;
+		double s;
+		//dirsign is used in here to compensate for the current direction of the mazub.
+		if(newSpeed*dirSign > this.getMaxHorizontalVelocity()){//overgangsverschijnsel (1keer bij berijken max speed)
+			if(getHorizontalAcceleration()==0)throw new IllegalMovementException("impossible to divide by zero");
+			double accDt = (this.getMaxHorizontalVelocity()- this.getHorizontalVelocity()*dirSign)/(getHorizontalAcceleration()*dirSign);
+			s= travelledHorizontalDistance(accDt, dirSign)+travelledHorizontalDistance(dt-accDt, 0);
+			this.setHorizontalVelocity(this.getMaxHorizontalVelocity()*dirSign);
+		}
+		else{
+			s= travelledHorizontalDistance(dt,dirSign);
+			this.setHorizontalVelocity(newSpeed);
+		}
+		if(((getPositionX()+s <=0d || s<0)&& dirSign>0 )|| (s>0 && dirSign<0)){
+			throw new IllegalMovementException("positionX overflowed");
+		}
+		//correct position if out of window
+		if(getPositionX() <0){
+			return 0.0d;
+			//setPositionX(0); //ELKE SITUATIE VERANDEREN HE
+		}
+		if(getPositionX()>(world.getWidth()-1)/100d)
+			return (world.getWidth()-1)/100.0d;
+		return getPositionX()+s;
+	} 
+	
+	private double moveVertical(double dt)throws PositionOutOfBoundsException{
+		//update position and speed (still need to compensate for velocity over max first time)
+		int stateSign =this.groundState.getSign(); 
+		double newSpeed = this.getVerticalVelocity() + this.getVerticalAcceleration()*dt*stateSign;
+		
+		double newPositiony = getPositionY() + travelledVerticalDistance(dt,stateSign);
+		//doSomething(dt, stateSign);
+		if(newPositiony < 0){
+			if(getVerticalVelocity()<=0.0d){
+					this.groundState = GroundState.GROUNDED;
+					setVerticalVelocity(0.0d);
+				}
+			return 0.0d;
+		}else{
+			if(newPositiony>(world.getHeight()-1)/100.0d){
+				System.out.println("bovenkant wereld");
+				this.setVerticalVelocity(newSpeed);
+				return ((world.getHeight()-1)/100.0d);
+			}//else{
+				//throw new PositionOutOfBoundsException(getPositionX(), getPositionY());
+			//}
+		}
+		System.out.println("newspeed set: "+getVerticalVelocity());
+		this.setVerticalVelocity(newSpeed);
+		return newPositiony;
 	}
 	
 	/**
@@ -248,6 +343,8 @@ public class Mazub extends GameObject{
 	/**
 	 * changes the position,acceleration and velocity of the mazub according to the horizontal axis for a given time dt.
 	 */
+	
+	/**
 	private void moveVertical(double dt)throws PositionOutOfBoundsException{
 		//update position and speed (still need to compensate for velocity over max first time)
 		int stateSign =this.groundState.getSign(); 
@@ -276,15 +373,16 @@ public class Mazub extends GameObject{
 		this.setVerticalVelocity(newSpeed);
 		return;
 	}
-	
+	*/
 	public void doSomething(double dt, int stateSign)throws PositionOutOfBoundsException{
 		double[] location = position.getPositions();
-		location[0]*=100;location[1]*=100;
+		int[] location2 = new int[2];
+		location2[0]=(int)(location[0]*100);location2[1]=(int)(location[1]*100);
 		//System.out.println(Arrays.toString(location) + ","+world.getGeologicalFeature(location));
-		if(world.getGeologicalFeature(location) == 1 && getVerticalVelocity()<=0){
+		if(world.getGeologicalFeature(location2) == 1 && getVerticalVelocity()<=0){
 			setPositionY(((int)(getPositionY()*100)/world.getTileLenght()+1)*world.getTileLenght()/100.0d-0.01d);
 			this.groundState = GroundState.GROUNDED;
-			setVerticalVelocity(0d);
+			setVerticalVelocity(0.0d);
 		}
 	}
 	
@@ -317,7 +415,7 @@ public class Mazub extends GameObject{
 			if(groundState == GroundState.AIR && duckState == DuckState.STRAIGHT){
 				currentSpriteNumber = 4- (getOriëntation().getSign()-1)/2;
 			}else{
-				if(duckState == DuckState.DUCKED){
+				if(duckState == DuckState.DUCKED || duckState == DuckState.TRY_STRAIGHT){
 					currentSpriteNumber = 6- (getOriëntation().getSign()-1)/2;
 				}else{
 					if((currentSpriteNumber<8) || (getOriëntation() == Direction.LEFT && currentSpriteNumber <8+m) || (getOriëntation()==Direction.RIGHT && currentSpriteNumber >= 8+m)){
@@ -377,7 +475,7 @@ public class Mazub extends GameObject{
 	 */
 	@Basic
 	public double getHorizontalAcceleration(){
-		if(getHorizontalVelocity()*getOriëntation().getSign()==getMaxHorizontalVelocity())
+		if(getHorizontalVelocity()*getOriëntation().getSign()==getMaxHorizontalVelocity() || getHorizontalVelocity()==0.0d)
 			return 0;
 		return Mazub.horizontalAcceleration*getOriëntation().getSign();
 	}
@@ -452,7 +550,7 @@ public class Mazub extends GameObject{
 	public void endMove(Direction dir){
 		//recht,links,links los->zou rechts moeten wandelen, doet nu niet
 		assert dir != null && dir != Direction.STALLED;
-		if(dir.getSign()== Math.signum(getHorizontalVelocity())){
+		if(dir.getSign()== Math.signum(getHorizontalVelocity()) ||getHorizontalVelocity()==0 ){
 			if(movingOtherSideAfterRelease){
 				Direction dir2;
 				if(dir==Direction.RIGHT) {
@@ -499,7 +597,7 @@ public class Mazub extends GameObject{
 	 */
 	public void endJump(){
 		if(this.getVerticalVelocity()>0){
-			this.setVerticalVelocity(0d);
+			this.setVerticalVelocity(0.0d);
 		}
 		return;
 	}
@@ -524,11 +622,11 @@ public class Mazub extends GameObject{
 	public void executeEndDuck(){//TODO get the implemented version of overlpsWithWall
 		//TODO set this function, when working, in advanceTime
 		if(duckState == DuckState.TRY_STRAIGHT){
-			currentSpriteNumber -= 4;
-			double[] perimeters = getPerimeters();
-			if(overlapsWithWall(perimeters[0],perimeters[1],perimeters[2],perimeters[4])[2]==false)
+			int oldSprite = currentSpriteNumber;
+			currentSpriteNumber = 0;
+			if(overlapsWithWall()[2]==false)
 				duckState = DuckState.STRAIGHT;
-			currentSpriteNumber+=4;
+			currentSpriteNumber=oldSprite;
 		}
 	}
 	
@@ -546,7 +644,8 @@ public class Mazub extends GameObject{
 	}
 	
 	public boolean hasValidPosition(){// bij setter->class invar
-		return ! (getPositionX()<0 || getPositionX() >= (gameWidth)/100.0d) || (getPositionY()<0 || getPositionY() >= gameHeight/100.0d);
+		return ! (getPositionX()<0 || getPositionX() >= (world.getWidth())/100.0d) ||
+				(getPositionY()<0 || getPositionY() >= world.getHeight()/100.0d);
 	}
 	/**
 	 * returns the index of the lowest pixel used by mazub. Each pixel represents 0.01m
@@ -579,14 +678,6 @@ public class Mazub extends GameObject{
 	 */
 	public DuckState getDuckState(){
 		return this.duckState;
-	}
-	
-	public static int getGameHeight(){
-		return gameHeight;
-	}
-	
-	public static int getGameWidth(){
-		return gameWidth;
 	}
 	
 	@Override
