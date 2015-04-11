@@ -688,12 +688,16 @@ public class Mazub extends GameObject{
 		}
 	}
 	
-	public void moveWindow(){
-		//left,bottom,right,top
-		int[] visibleWindow = world.getVisibleWindow(); //in pixels
-		double[] perimeters = getPerimeters();
-		if(visibleWindow[0]+2>perimeters[0]){
-			//beweeg scherm naar links
+	public void moveWindow() throws PositionOutOfBoundsException{
+		double[] perimeters = getPerimeters(); // in meters
+		if(world.getVisibleWindow()[0]/100.0d+2>perimeters[0]){
+			world.moveWindowTo(perimeters[0]-2.0d, world.getVisibleWindow()[1]/100.0d);
+		}if(world.getVisibleWindow()[1]/100.0d+2>perimeters[1]){
+			world.moveWindowTo(world.getVisibleWindow()[0]/100.0d,(perimeters[1]-2.0d));
+		}if(world.getVisibleWindow()[2]/100.0d-2<perimeters[2]){
+			world.moveWindowTo((perimeters[2]+2.0d)-world.viewWidth/100.0d, world.getVisibleWindow()[1]/100.0d);
+		}if(world.getVisibleWindow()[3]/100.0d-2<perimeters[3]){
+		world.moveWindowTo(world.getVisibleWindow()[0]/100.0d,(perimeters[3]+2.0d)-world.viewHeight/100.0d);
 		}
 	}
 }

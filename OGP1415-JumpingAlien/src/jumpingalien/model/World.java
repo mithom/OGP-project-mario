@@ -223,7 +223,7 @@ public class World {
 		return false;
 	}
 	public void moveWindowTo(double Left, double Bottom)throws PositionOutOfBoundsException{
-		cameraLocation = new Position(this, new double[]{Left,Bottom});
+		cameraLocation = new Position(this, new double[]{Math.min(Math.max(0,Left),(getWidth()-viewWidth-1)/100.0d),Math.min(Math.max(0,Bottom),(getHeight()-viewHeight-1)/100.0d)});
 	}
 	
 	public ArrayList<GameObject> getAllGameObjects(){
