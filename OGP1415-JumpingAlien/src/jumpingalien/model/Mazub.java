@@ -214,14 +214,14 @@ public class Mazub extends GameObject{
 				min1 = Float.POSITIVE_INFINITY;
 			
 			if (getVerticalVelocity()!=0.0d)
-				//min2=1.0d/Math.abs(this.getVerticalVelocity()/100.0d);
 				min2 = 0.01d/Math.abs(getVerticalVelocity());
+				//min2=1.0d/Math.abs(this.getVerticalVelocity()/100.0d);
 			else 
 				min2=Float.POSITIVE_INFINITY;
 			
 			if (this.getHorizontalAcceleration()!=0.0d){//mogelijkheid 3
-				//min3=Math.sqrt(2*Math.abs(this.getHorizontalAcceleration()/100.0d)+Math.pow(this.getHorizontalVelocity(),2.0d)/100.0d)-Math.abs(this.getHorizontalVelocity()/100.0d)/Math.abs(this.getHorizontalAcceleration()/100.0d);
 				min3 = Math.abs((-getHorizontalVelocity() + Math.sqrt(Math.pow(getHorizontalVelocity(), 2)-2*getHorizontalAcceleration()/100))/getHorizontalAcceleration());
+				//min3=Math.sqrt(2*Math.abs(this.getHorizontalAcceleration()/100.0d)+Math.pow(this.getHorizontalVelocity(),2.0d)/100.0d)-Math.abs(this.getHorizontalVelocity()/100.0d)/Math.abs(this.getHorizontalAcceleration()/100.0d);
 			}else
 				min3=Float.POSITIVE_INFINITY;
 			
