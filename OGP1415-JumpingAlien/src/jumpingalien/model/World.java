@@ -203,9 +203,7 @@ public class World {
 	public void addSlime(Slime slime){
 		if(schools.contains(slime.getSchool())){
 			slimes.add(slime);
-			System.out.println("slime toegevoegd");
-		}else
-			System.out.println("school van slime nog niet in world");
+		}
 	}
 	
 	public boolean didPlayerWin(){

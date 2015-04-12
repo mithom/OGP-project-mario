@@ -1,7 +1,6 @@
 package jumpingalien.model.gameObject;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import be.kuleuven.cs.som.annotate.*;
 import jumpingalien.exception.IllegalMazubStateException;
@@ -10,7 +9,6 @@ import jumpingalien.exception.IllegalSizeException;
 import jumpingalien.exception.IllegalTimeException;
 import jumpingalien.exception.PositionOutOfBoundsException;
 import jumpingalien.model.World;
-import jumpingalien.part2.internal.GameOverPainter;
 import jumpingalien.util.ModelException;
 import jumpingalien.util.Sprite;
 

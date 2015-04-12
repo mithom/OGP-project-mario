@@ -9,7 +9,7 @@ import jumpingalien.model.World;
 
 public class Plant extends GameObject{
 	private Direction direction;
-	private final double horizontalSpeed=0.5d;
+	private final double horizontalVelocity=0.5d;
 	private double actionTimer;
 	
 	public Plant(int x, int y, Sprite[] sprites) throws PositionOutOfBoundsException{
@@ -21,26 +21,41 @@ public class Plant extends GameObject{
 	
 	@Override
 	public void advanceTime(double dt)throws PositionOutOfBoundsException{
-		moveHorizontal(dt);
-		for(GameObject gameObject:overlapsWithGameObject()){
-			if(gameObject instanceof Mazub){
-				consume((Mazub)gameObject);
+		while(dt>0 && !isTerminated()){
+			double smallDt = Math.min(0.01d/Math.abs(horizontalVelocity),dt);
+			dt-= smallDt;
+			moveHorizontal(smallDt);
+			for(GameObject gameObject:overlapsWithGameObject()){
+				if(gameObject instanceof Mazub){
+					consume((Mazub)gameObject);
+				}
 			}
 		}
-		//TODO implement this function
-		//plants hover trough passable terrain 0.5m/s for 0.5s
 	}
 	
 	private void moveHorizontal(double dt) throws PositionOutOfBoundsException{
 		if(actionTimer+dt < 0.5d){
-			actionTimer+= dt;
-			setPositionX(getPositionX()+dt*direction.getSign()*horizontalSpeed);
-		}else{
-			actionTimer = 0.0d;
-			if(direction == Direction.RIGHT)
+			actionTimer += dt;
+			double oldPositionX = getPositionX();
+			setPositionX(oldPositionX +dt*direction.getSign()*horizontalVelocity);
+			if(this.overlapsWithWall()[1]==true && direction.getSign()<0){
+				setPositionX(oldPositionX);
+				direction = Direction.RIGHT;
+				actionTimer = 0.0d;
+			}
+			if( overlapsWithWall()[3]==true && direction.getSign()>0){
+				setPositionX(oldPositionX);
 				direction = Direction.LEFT;
-			else
-				direction=Direction.RIGHT;
+				actionTimer = 0.0d;
+			}
+		}else{
+			actionTimer = (actionTimer+dt)-0.5d;//TODO exacte omkering maken, dit is niet exact
+			if(direction == Direction.RIGHT){
+				direction = Direction.LEFT;
+			}
+			else{
+				direction = Direction.RIGHT;
+			}
 		}
 	}
 	

@@ -1,7 +1,5 @@
 package jumpingalien.model;
 
-import java.util.Arrays;
-
 import be.kuleuven.cs.som.annotate.*; 
 import jumpingalien.exception.IllegalMazubStateException;
 import jumpingalien.exception.IllegalMovementException;
@@ -238,42 +236,6 @@ public class Mazub extends GameObject{
 		}
 	}
 	
-
-	
-	/**
-	 * changes the position,acceleration and velocity of the mazub according to the horizontal axis for a given time dt.
-	 */
-	/**
-	private void moveHorizontal2(double dt) throws IllegalMovementException,PositionOutOfBoundsException{
-		//update position and speed (still need to compensate for velocity over max first time)
-		int dirSign =this.direction.getSign(); 
-		double newSpeed = this.getHorizontalVelocity()+this.getHorizontalAcceleration()*dt;
-		double s;
-		//dirsign is used in here to compensate for the current direction of the mazub.
-		if(newSpeed*dirSign > this.getMaxHorizontalVelocity()){//overgangsverschijnsel (1keer bij berijken max speed)
-			if(getHorizontalAcceleration()==0)throw new IllegalMovementException("impossible to divide by zero");
-			double accDt = (this.getMaxHorizontalVelocity()- this.getHorizontalVelocity()*dirSign)/(getHorizontalAcceleration()*dirSign);
-			s= travelledHorizontalDistance(accDt, dirSign)+travelledHorizontalDistance(dt-accDt, 0);
-			setPositionX(getPositionX() + s);
-			this.setHorizontalVelocity(this.getMaxHorizontalVelocity()*dirSign);
-		}
-		else{
-			s= travelledHorizontalDistance(dt,dirSign);
-			setPositionX(getPositionX() +s);
-			this.setHorizontalVelocity(newSpeed);
-		}
-		if(((getPositionX() <=0d || s<0)&& dirSign>0 )|| (s>0 && dirSign<0)){
-			throw new IllegalMovementException("positionX overflowed");
-		}
-		//correct position if out of window
-		if(getPositionX() <0){
-			setPositionX(0);
-		}
-		if(getPositionX()>(gameWidth-1)/100d)
-			setPositionX((gameWidth-1)/100d);
-		return;
-	} 
-	*/
 	private double moveHorizontal(double dt) throws IllegalMovementException,PositionOutOfBoundsException{
 		int dirSign =this.direction.getSign(); 
 		double newSpeed = this.getHorizontalVelocity()+this.getHorizontalAcceleration()*dt;
@@ -344,53 +306,6 @@ public class Mazub extends GameObject{
 				this.getVerticalAcceleration()*Math.pow(dt, 2)*stateSign/2;
 	}
 	
-	/*
-	 * changes the position,acceleration and velocity of the mazub according to the horizontal axis for a given time dt.
-	 */
-	
-	/*
-	private void moveVertical(double dt)throws PositionOutOfBoundsException{
-		//update position and speed (still need to compensate for velocity over max first time)
-		int stateSign =this.groundState.getSign(); 
-		double newSpeed = this.getVerticalVelocity() + this.getVerticalAcceleration()*dt*stateSign;
-		
-		try{
-			setPositionY(getPositionY() + travelledVerticalDistance(dt,stateSign));
-			doSomething(dt, stateSign);
-		}
-		catch(PositionOutOfBoundsException e){
-			//correct position if out of window && notice grounded
-			if(e.getLocation()[1] < 0){
-				setPositionY(0);
-				if(getVerticalVelocity()<=0){
-					this.groundState = GroundState.GROUNDED;
-					setVerticalVelocity(0d);
-				}
-			}else{
-				if(getPositionY()>gameHeight/100d){
-					setPositionY(gameHeight/100d);
-				}else{
-					throw new PositionOutOfBoundsException(getPositionX(), getPositionY());
-				}
-			}
-		}
-		this.setVerticalVelocity(newSpeed);
-		return;
-	}
-	*/
-	/*
-	public void doSomething(double dt, int stateSign)throws PositionOutOfBoundsException{
-		double[] location = position.getPositions();
-		int[] location2 = new int[2];
-		location2[0]=(int)(location[0]*100);location2[1]=(int)(location[1]*100);
-		//System.out.println(Arrays.toString(location) + ","+world.getGeologicalFeature(location));
-		if(world.getGeologicalFeature(location2) == 1 && getVerticalVelocity()<=0){
-			setPositionY(((int)(getPositionY()*100)/world.getTileLenght()+1)*world.getTileLenght()/100.0d-0.01d);
-			this.groundState = GroundState.GROUNDED;
-			setVerticalVelocity(0.0d);
-		}
-	}*/
-	
 	/**
 	 * checks the current state from the mazub and changes the shown sprite accordingly.
 	*/
@@ -400,7 +315,6 @@ public class Mazub extends GameObject{
 			timeSinceLastMovement += dt;
 		}else{
 			timeSinceLastMovement = 0;
-			//System.out.println(timeSinceLastMovement);
 		}
 		if(getOriëntation() == Direction.STALLED){
 			if(timeSinceLastMovement>=1){
@@ -425,7 +339,6 @@ public class Mazub extends GameObject{
 				}else{
 					if((currentSpriteNumber<8) || (getOriëntation() == Direction.LEFT && currentSpriteNumber <8+m) || (getOriëntation()==Direction.RIGHT && currentSpriteNumber >= 8+m)){
 						timeSinceLastAnimation =0;
-						//System.out.println("direction has changed");
 						currentSpriteNumber = 8 - (getOriëntation().getSign()-1)*m/2;
 					}else{
 						if(timeSinceLastAnimation >= 0.075){
@@ -436,7 +349,6 @@ public class Mazub extends GameObject{
 				}
 			}
 		}
-		//System.out.println(currentSpriteNumber);
 		return;
 	}
 	
@@ -530,7 +442,7 @@ public class Mazub extends GameObject{
 	 * 			|new.getHorizontalVelocity()== this.initialHorizontalVelocity*dir.getSign()
 	 * 			|new.getOrientation() == dir
 	 */
-	public void startMove(Direction dir){
+	public void startMove(Direction dir){//TODO bug wanneer links en rechts op zelfde moment ingedrukt
 		assert dir != null && dir != Direction.STALLED;
 		assert this.initialHorizontalVelocity>=0;
 		if((direction == Direction.RIGHT && dir == Direction.LEFT) || 
@@ -624,8 +536,7 @@ public class Mazub extends GameObject{
 		duckState = DuckState.TRY_STRAIGHT;
 	}
 	
-	public void executeEndDuck(){//TODO get the implemented version of overlpsWithWall
-		//TODO set this function, when working, in advanceTime
+	public void executeEndDuck(){
 		if(duckState == DuckState.TRY_STRAIGHT){
 			int oldSprite = currentSpriteNumber;
 			currentSpriteNumber = 0;
