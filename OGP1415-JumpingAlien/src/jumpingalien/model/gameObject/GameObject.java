@@ -10,6 +10,7 @@ import jumpingalien.exception.IllegalSizeException;
 import jumpingalien.exception.IllegalTimeException;
 import jumpingalien.exception.PositionOutOfBoundsException;
 import jumpingalien.model.World;
+import jumpingalien.part2.internal.GameOverPainter;
 import jumpingalien.util.ModelException;
 import jumpingalien.util.Sprite;
 
@@ -169,14 +170,24 @@ public abstract class GameObject {
 		return overlap;
 	}
 
-	public boolean[] overlapsWithGameObject() {
-		double [] perimeters = this.getPerimeters();
+	public ArrayList<GameObject> overlapsWithGameObject() {
 		ArrayList<GameObject> gameObjects = world.getAllGameObjects();
+		ArrayList<GameObject> overlappingObjects = new ArrayList<GameObject>();
 		for (int i=0 ; i < gameObjects.size() ; i++){
-			double [] perimetersGameObject = gameObjects.get(i).getPerimeters();
-			//TODO check voor overlap!
+			if(overlaps(gameObjects.get(i))){
+				overlappingObjects.add(gameObjects.get(i));
+			}
 		}
-		//bot,left,top,right
-		return new boolean[]{false,false,false,false};
+		return overlappingObjects;
+	}
+	
+	private boolean overlaps(GameObject object){
+		double [] perimeters = this.getPerimeters();//order: left,bottom,right,top
+		double [] perimetersGameObject = object.getPerimeters();//order: left,bottom,right,top
+		if((perimeters[0]<perimetersGameObject[2] && perimeters[2]>perimetersGameObject[0])
+				&&(perimeters[1]<perimetersGameObject[3] && perimeters[3]>perimetersGameObject[1])){
+			return true;
+		}
+		return false;
 	}
 }

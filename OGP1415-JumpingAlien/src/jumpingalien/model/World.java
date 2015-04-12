@@ -46,6 +46,10 @@ public class World {
 		System.out.println(java.util.Arrays.toString(targetTile.getPositions()));
 	}
 	
+	public void removePlant(Plant plant){
+		plants.remove(plant);
+	}
+	
 	@Basic
 	public int getHeight(){
 		return height;
@@ -154,7 +158,7 @@ public class World {
 	}
 	
 	public void addSchool(School school){
-		if(schools.size()<10){
+		if(schools.size()<10 && !schools.contains(school)){
 			schools.add(school);
 			school.addWorld(this);
 		}
@@ -199,7 +203,9 @@ public class World {
 	public void addSlime(Slime slime){
 		if(schools.contains(slime.getSchool())){
 			slimes.add(slime);
-		}
+			System.out.println("slime toegevoegd");
+		}else
+			System.out.println("school van slime nog niet in world");
 	}
 	
 	public boolean didPlayerWin(){

@@ -153,8 +153,8 @@ public class Mazub extends GameObject{
 			double new_position_x = this.moveHorizontal(correctDt);// return new Position(x,y) ipv void
 			double new_position_y = this.moveVertical(correctDt);
 			Position oldPosition = getPosition();
-			System.out.println(groundState);
-			System.out.println(Arrays.toString(overlapsWithWall()));
+			//System.out.println(groundState);
+			//System.out.println(Arrays.toString(overlapsWithWall()));
 			this.setPositionX(new_position_x);
 			this.setPositionY(new_position_y);
 
@@ -162,7 +162,7 @@ public class Mazub extends GameObject{
 			if (this.overlapsWithWall()[0]==true && getVerticalVelocity()<0.0d){
 				this.setVerticalVelocity(0.0d);
 				groundState = GroundState.GROUNDED;
-				System.out.println("back to grounded");
+				//System.out.println("back to grounded");
 				setPositionY(oldPosition.getPositions()[1]-0.01d);
 			}else{
 				if(this.overlapsWithWall()[0]==false){
@@ -170,7 +170,7 @@ public class Mazub extends GameObject{
 				}
 			}
 			if(overlapsWithWall()[2]== true && getVerticalVelocity()>0.0d){
-				System.out.println("against roof");
+				//System.out.println("against roof");
 				setVerticalVelocity(0.0d);
 				setPositionY(oldPosition.getPositions()[1]);
 			}
@@ -317,14 +317,14 @@ public class Mazub extends GameObject{
 			return 0.0d;
 		}else{
 			if(newPositiony>(world.getHeight()-1)/100.0d){
-				System.out.println("bovenkant wereld");
+				//System.out.println("bovenkant wereld");
 				this.setVerticalVelocity(newSpeed);
 				return ((world.getHeight()-1)/100.0d);
 			}//else{
 				//throw new PositionOutOfBoundsException(getPositionX(), getPositionY());
 			//}
 		}
-		System.out.println("newspeed set: "+getVerticalVelocity());
+		//System.out.println("newspeed set: "+getVerticalVelocity());
 		this.setVerticalVelocity(newSpeed);
 		return newPositiony;
 	}
@@ -344,11 +344,11 @@ public class Mazub extends GameObject{
 				this.getVerticalAcceleration()*Math.pow(dt, 2)*stateSign/2;
 	}
 	
-	/**
+	/*
 	 * changes the position,acceleration and velocity of the mazub according to the horizontal axis for a given time dt.
 	 */
 	
-	/**
+	/*
 	private void moveVertical(double dt)throws PositionOutOfBoundsException{
 		//update position and speed (still need to compensate for velocity over max first time)
 		int stateSign =this.groundState.getSign(); 
@@ -378,6 +378,7 @@ public class Mazub extends GameObject{
 		return;
 	}
 	*/
+	/*
 	public void doSomething(double dt, int stateSign)throws PositionOutOfBoundsException{
 		double[] location = position.getPositions();
 		int[] location2 = new int[2];
@@ -388,7 +389,7 @@ public class Mazub extends GameObject{
 			this.groundState = GroundState.GROUNDED;
 			setVerticalVelocity(0.0d);
 		}
-	}
+	}*/
 	
 	/**
 	 * checks the current state from the mazub and changes the shown sprite accordingly.

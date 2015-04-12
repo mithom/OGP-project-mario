@@ -48,16 +48,20 @@ public class Slime extends GameObject{
 	
 	@Override
 	public void addToWorld(World world){
-		if(this.world == null && canHaveAsWorld(world)){
+		if(canHaveAsWorld(world)){
+			System.out.println("slime added to world");
 			this.world = world;
+			world.addSchool(getSchool());
 			world.addSlime(this);
-		}
+		}else
+			System.out.println("slime not added to world");
 	}
 	
 	@Override
 	protected boolean canHaveAsWorld(World world){
 		if(!world.isTerminated() && !this.isTerminated() && this.world==null
-				&& world.getSchools().contains(school))
+				//&& world.getSchools().contains(school)
+				)
 			return true;
 		return false;
 	}

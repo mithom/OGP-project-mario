@@ -214,7 +214,7 @@ public class Facade extends jumpingalien.part1.facade.Facade implements IFacadeP
 	
 	@Override
 	public void addPlant(World world, Plant plant){
-		world.addPlant(plant);
+		plant.addToWorld(world);
 	};
 	
 	@Override
