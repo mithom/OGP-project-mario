@@ -163,7 +163,11 @@ public class Mazub extends GameObject{
 				this.setVerticalVelocity(0.0d);
 				groundState = GroundState.GROUNDED;
 				System.out.println("back to grounded");
-				setPositionY(oldPosition.getPositions()[1]);
+				setPositionY(oldPosition.getPositions()[1]-0.01d);
+			}else{
+				if(this.overlapsWithWall()[0]==false){
+					groundState = GroundState.AIR;
+				}
 			}
 			if(overlapsWithWall()[2]== true && getVerticalVelocity()>0.0d){
 				System.out.println("against roof");

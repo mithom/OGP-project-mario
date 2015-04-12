@@ -152,15 +152,16 @@ public abstract class GameObject {
 				if (world.getBottomLeftPixelOfTile(occupied_tiles[i][0],occupied_tiles[i][1])[1] < perimeters[1])
 					overlap[0]=true;
 				//check if tile is left of character
-				if (world.getBottomLeftPixelOfTile(occupied_tiles[i][0],occupied_tiles[i][1])[0] < perimeters[0])
+				if (world.getBottomLeftPixelOfTile(occupied_tiles[i][0],occupied_tiles[i][1])[0] < perimeters[0] &&
+						world.getTopRightPixelOfTile(occupied_tiles[i][0],occupied_tiles[i][1])[1] > perimeters[1]+1d){
 					overlap[1]=true;
+				}
 				//check if tile is right of character
-				if (world.getTopRightPixelOfTile(occupied_tiles[i][0],occupied_tiles[i][1])[0] > perimeters[2]){
+				if (world.getTopRightPixelOfTile(occupied_tiles[i][0],occupied_tiles[i][1])[0] > perimeters[2]&&
+						world.getTopRightPixelOfTile(occupied_tiles[i][0],occupied_tiles[i][1])[1] > perimeters[1]+1d)
 					overlap[3]=true;
-					System.out.println(world.getTopRightPixelOfTile(occupied_tiles[i][0],occupied_tiles[i][1])[0]+","+perimeters[2]);}
 				//check if tile is above character
-				if (world.getTopRightPixelOfTile(occupied_tiles[i][0],occupied_tiles[i][1])[1] > perimeters[3]){
-					System.out.println(Arrays.toString(occupied_tiles[i])+","+perimeters[3]+","+Arrays.toString(world.getTopRightPixelOfTile(occupied_tiles[i][0],occupied_tiles[i][1])));
+				if (world.getTopRightPixelOfTile(occupied_tiles[i][0],occupied_tiles[i][1])[1] > perimeters[3]){					
 					overlap[2]=true;}
 			}
 		}
