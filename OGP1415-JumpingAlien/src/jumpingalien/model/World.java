@@ -238,4 +238,10 @@ public class World {
 		gameObjects.add(mazub);
 		return gameObjects;
 	}
+	
+	public void removeSchool(School school){
+		if(schools.contains(school)){
+			schools.remove(school);
+		}
+	}
 }

@@ -29,6 +29,9 @@ public class School {
 	public void removeSlime(Slime slime){
 		if(this.hasAsSlime(slime)){
 			slimes.remove(slime);
+			if(getSize()==0){
+				world.removeSchool(this);
+			}
 		}
 	}
 	
@@ -41,5 +44,13 @@ public class School {
 	
 	public World getWorld(){
 		return world;
+	}
+	
+	public int getSize(){
+		return slimes.size();
+	}
+	
+	public String toString(){
+		return ""+getSize();
 	}
 }

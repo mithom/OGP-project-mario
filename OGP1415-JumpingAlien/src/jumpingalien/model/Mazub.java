@@ -141,8 +141,6 @@ public class Mazub extends GameObject{
 			double new_position_x = this.moveHorizontal(correctDt);// return new Position(x,y) ipv void
 			double new_position_y = this.moveVertical(correctDt);
 			Position oldPosition = getPosition();
-			//System.out.println(groundState);
-			//System.out.println(Arrays.toString(overlapsWithWall()));
 			this.setPositionX(new_position_x);
 			this.setPositionY(new_position_y);
 
@@ -234,11 +232,11 @@ public class Mazub extends GameObject{
 		if(newSpeed*dirSign > this.getMaxHorizontalVelocity()){//overgangsverschijnsel (1keer bij berijken max speed)
 			if(getHorizontalAcceleration()==0)throw new IllegalMovementException("impossible to divide by zero");
 			double accDt = (this.getMaxHorizontalVelocity()- this.getHorizontalVelocity()*dirSign)/(getHorizontalAcceleration()*dirSign);
-			s= travelledHorizontalDistance(accDt, dirSign)+travelledHorizontalDistance(dt-accDt, 0);
+			s= travelledHorizontalDistance(accDt)+getMaxHorizontalVelocity()*(dt-accDt)*dirSign;
 			this.setHorizontalVelocity(this.getMaxHorizontalVelocity()*dirSign);
 		}
 		else{
-			s= travelledHorizontalDistance(dt,dirSign);
+			s= travelledHorizontalDistance(dt);
 			this.setHorizontalVelocity(newSpeed);
 		}
 		if(((getPositionX()+s <=0d || s<0)&& dirSign>0 )|| (s>0 && dirSign<0)){
@@ -284,7 +282,7 @@ public class Mazub extends GameObject{
 	/**
 	 * calculates the movement over a given period of time according to the horizontal axis.
 	 */
-	private double travelledHorizontalDistance(double dt,int dirSign){
+	private double travelledHorizontalDistance(double dt){
 		return this.getHorizontalVelocity()*dt +
 				this.getHorizontalAcceleration()*Math.pow(dt, 2)/2;
 	}
@@ -293,7 +291,7 @@ public class Mazub extends GameObject{
 	 */
 	private double travelledVerticalDistance(double dt, int stateSign){
 		return this.getVerticalVelocity()*dt*stateSign +
-				this.getVerticalAcceleration()*Math.pow(dt, 2)*stateSign/2;
+				this.getVerticalAcceleration()*Math.pow(dt, 2)/2;
 	}
 	
 	/**
