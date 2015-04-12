@@ -67,11 +67,6 @@ public class Mazub extends GameObject{
 		this.maxHorizontalVelocity = 3d;
 		this.initialHorizontalVelocity=1d;
 		duckState  = DuckState.STRAIGHT;
-		if(this.getPositionY()==0){
-			groundState =GroundState.GROUNDED;
-		}else{
-			groundState = GroundState.AIR;
-		}
 		direction= Direction.STALLED;
 		horizontalVelocity=0.0d;
 		verticalVelocity = 0.0d;
@@ -106,11 +101,6 @@ public class Mazub extends GameObject{
 		this.maxHorizontalVelocity = maxHorVel;
 		this.initialHorizontalVelocity = initHorVel;
 		duckState  = DuckState.STRAIGHT;
-		if(this.getPositionY()==0){
-			groundState =GroundState.GROUNDED;
-		}else{
-			groundState = GroundState.AIR;
-		}
 		direction= Direction.STALLED;
 		horizontalVelocity=0.0d;
 		verticalVelocity = 0.0d;
@@ -601,6 +591,11 @@ public class Mazub extends GameObject{
 		if(this.world == null && canHaveAsWorld(world)){
 			this.world = world;
 			world.addMazub(this);
+			if(overlapsWithWall()[0]){
+				groundState =GroundState.GROUNDED;
+			}else{
+				groundState = GroundState.AIR;
+			}
 		}
 	}
 	

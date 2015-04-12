@@ -275,7 +275,7 @@ public class Facade extends jumpingalien.part1.facade.Facade implements IFacadeP
 	
 	@Override
 	public void addSlime(World world, Slime slime){
-		slime.addToWorld(world);//TODO maybe add school to world if slime has school that isn't in world yet.
+		slime.addToWorld(world);
 	};
 	
 	@Override
