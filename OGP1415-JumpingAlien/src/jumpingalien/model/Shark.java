@@ -29,6 +29,7 @@ public class Shark extends GameObject{
 	private Direction direction;
 	private int actionNb = 0 ;
 	private int lastJumpActionNb = -4 ;
+	private boolean randomMovementNeeded = false;
 	
 	public Shark(int x, int y, Sprite[] sprites)throws PositionOutOfBoundsException{
 		super(x,y,sprites); 
@@ -40,15 +41,41 @@ public class Shark extends GameObject{
 	public void advanceTime(double dt) throws PositionOutOfBoundsException{
 		while(!isTerminated() && dt >0){
 			//System.out.println("dt:" + dt+",actionTime:"+actionTime+", actionDuration:"+actionDuration);
-			decideAction();
-			actionNb += 1 ;
+			if(actionTime == actionDuration){
+				if (decideAction()==0)
+					direction = Direction.RIGHT;
+					if (inWater())
+						randomMovementNeeded = true;
+				else
+					if (decideAction()==1)
+						direction = Direction.LEFT;
+						if (inWater())
+							randomMovementNeeded = true;
+					else
+						if (decideAction()==2){
+							direction = Direction.RIGHT;
+							if (actionNb >= (lastJumpActionNb+4) && inWater()==true || this.overlapsWithWall()[0]==true)
+								startJump();
+			    				lastJumpActionNb = actionNb;
+			    				randomMovementNeeded = false;
+			    				}
+						else
+							if (decideAction()==3){
+								direction = Direction.LEFT;
+								if (actionNb >= (lastJumpActionNb+4) && inWater()==true || this.overlapsWithWall()[0]==true)
+									startJump();
+				    				lastJumpActionNb = actionNb;
+				    				randomMovementNeeded = false; 
+						}
+				actionNb += 1 ;
+			}
 			double smallDt = Math.min(calculateCorrectDt(dt),actionDuration-actionTime);
 			actionTime+=smallDt;
 			dt-= smallDt;
 			Position oldPosition = getPosition();
 			setPositionY(moveVertical(smallDt));
 			setPositionX(moveHorizontal(smallDt));
-			if (this.canJump() == true && getVerticalVelocity()<0.0d){
+			if (this.inWater() == true || this.overlapsWithWall()[0]==true && getVerticalVelocity()<0.0d){
 				this.setVerticalVelocity(0.0d);
 				setPositionY(oldPosition.getPositions()[1]-0.01d);
 			}
@@ -68,43 +95,30 @@ public class Shark extends GameObject{
 				}
 			}
 	
-	private void decideAction(){
-		if(actionTime == actionDuration){
+	private int decideAction(){
+			int action = 0;
 			setHorizontalVelocity(0.0d);
 			Random rand = new Random();
 			actionDuration = rand.nextDouble()*3.0d+1.0d;
 			actionTime = 0.0d;
 		    int randomNum = rand.nextInt(4);
-		    switch(randomNum){
-		    case 0:
-		    	direction = Direction.RIGHT;
-		    	break;
-		    case 1:
-		    	direction = Direction.LEFT;
-		    	break;
-		    case 2:
-		    	direction = Direction.RIGHT;
-		    	if (actionNb >= (lastJumpActionNb+4) && canJump()==true)
-		    		startJump();
-		    		lastJumpActionNb = actionNb;
-		    	break;		
-		    case 3:
-		    	direction = Direction.RIGHT;
-		    	if (actionNb >= (lastJumpActionNb+4) && canJump()==true)
-		    		startJump();
-		    		lastJumpActionNb = actionNb;
-		    	break;		    
+		    if  (randomNum == 0) 
+		    	action = 0;
+		    if (randomNum == 1)
+		    	action =1;
+		    if (randomNum == 2)
+		    	action =2;		
+		    if (randomNum == 3)
+		    	action =3;
+		    return action;
 		    }
-		}
-	}
 	
-	public boolean canJump(){
+	public boolean inWater() {
 		double [] perimeters = this.getPerimeters();//order: left,bottom,right,top
 		for(int i=0;i<perimeters.length;i++)perimeters[i]*=100;
 		int [][] occupied_tiles = world.getTilePositionsIn((int) (perimeters[0]),(int)(perimeters[1]),(int)(perimeters[2]),(int)(perimeters[3]));
 		for (int i=0 ; i < occupied_tiles.length ; i++){
-			if (world.getGeologicalFeature(new int[]{occupied_tiles[i][0]*world.getTileLenght(),occupied_tiles[i][1]*world.getTileLenght()})==1 ||
-					world.getGeologicalFeature(new int[]{occupied_tiles[i][0]*world.getTileLenght(),occupied_tiles[i][1]*world.getTileLenght()})==2){//TODO intern if-else{if-else{...}}, not if if if
+			if (world.getGeologicalFeature(new int[]{occupied_tiles[i][0]*world.getTileLenght(),occupied_tiles[i][1]*world.getTileLenght()})==2){//TODO intern if-else{if-else{...}}, not if if if
 				//check if tile is beneath character
 				if (world.getBottomLeftPixelOfTile(occupied_tiles[i][0],occupied_tiles[i][1])[1] <= perimeters[1])
 					 return true;
@@ -130,14 +144,12 @@ public class Shark extends GameObject{
 		//TODO implement this function
 	}
 	
-	private double moveVertical(double dt)throws PositionOutOfBoundsException{
+	private double moveVertical(double dt)throws PositionOutOfBoundsException,NullPointerException{
 		//update position and speed (still need to compensate for velocity over max first time)
-		int stateSign =this.groundState.getSign(); 
-		double newSpeed = this.getVerticalVelocity() + this.getVerticalAcceleration()*dt*stateSign;
+		double newSpeed = this.getVerticalVelocity() + this.getVerticalAcceleration()*dt;
 		double newPositiony = getPositionY() + travelledVerticalDistance(dt);
 		if(newPositiony < 0){
 			if(getVerticalVelocity()<=0.0d){
-					this.groundState = GroundState.GROUNDED;
 					setVerticalVelocity(0.0d);
 				}
 			return 0.0d;
@@ -208,7 +220,12 @@ public class Shark extends GameObject{
 	
 	@Basic
 	public double getVerticalAcceleration(){
-		return Shark.verticalFallingAcceleration* groundState.getSign();
+		if (inWater() && randomMovementNeeded == true){
+			Random rand = new Random();
+			return verticalMaxRandAcceleration*rand.nextDouble();
+		}
+		else		
+			return Shark.verticalFallingAcceleration;
 	}
 	
 	@Basic
