@@ -1,17 +1,234 @@
 package jumpingalien.model;
 
+import java.util.Random;
+
+import be.kuleuven.cs.som.annotate.Basic;
+import jumpingalien.exception.IllegalMazubStateException;
+import jumpingalien.exception.IllegalMovementException;
 import jumpingalien.exception.PositionOutOfBoundsException;
 import jumpingalien.model.gameObject.GameObject;
+import jumpingalien.model.gameObject.Position;
+import jumpingalien.state.Direction;
+import jumpingalien.state.GroundState;
 import jumpingalien.util.Sprite;
 
+
+
 public class Shark extends GameObject{
+	
+	private final double horizontalAcceleration=1.5d;
+	private final double maxHorizontalVelocity = 4.0d;
+	private double actionTime;
+	private double actionDuration;
+	private double horizontalVelocity;
+	private double verticalVelocity;
+	private double initVerticalVelocity = 2.0d;
+	private final static double verticalFallingAcceleration = -10.0d;
+	private double verticalMaxRandAcceleration = 2.0d;
+	private GroundState groundState;
+	private Direction direction;
+	private int actionNb = 0 ;
+	private int lastJumpActionNb = -4 ;
+	
 	public Shark(int x, int y, Sprite[] sprites)throws PositionOutOfBoundsException{
-		super(x,y,sprites);
+		super(x,y,sprites); 
+		actionTime = 0.0d;actionDuration = 0.0d;
+		direction = Direction.STALLED;
+		}
+
+	@Override
+	public void advanceTime(double dt) throws PositionOutOfBoundsException{
+		while(!isTerminated() && dt >0){
+			//System.out.println("dt:" + dt+",actionTime:"+actionTime+", actionDuration:"+actionDuration);
+			decideAction();
+			actionNb += 1 ;
+			double smallDt = Math.min(calculateCorrectDt(dt),actionDuration-actionTime);
+			actionTime+=smallDt;
+			dt-= smallDt;
+			Position oldPosition = getPosition();
+			setPositionY(moveVertical(smallDt));
+			setPositionX(moveHorizontal(smallDt));
+			if (this.canJump() == true && getVerticalVelocity()<0.0d){
+				this.setVerticalVelocity(0.0d);
+				setPositionY(oldPosition.getPositions()[1]-0.01d);
+			}
+			if(this.overlapsWithWall()[1]==true && getHorizontalVelocity()<0){
+				this.setHorizontalVelocity(0.0d);
+				setPositionX(oldPosition.getPositions()[0]);
+			}
+			if( overlapsWithWall()[3]==true && getHorizontalVelocity()>0){
+				this.setHorizontalVelocity(0.0d);
+				setPositionX(oldPosition.getPositions()[0]);
+			}
+			if( overlapsWithWall()[2]==true && getVerticalVelocity()>0){
+				this.endJump();
+				setPositionY(oldPosition.getPositions()[1]-0.01d);
+			}
+			animate(smallDt);
+				}
+			}
+	
+	private void decideAction(){
+		if(actionTime == actionDuration){
+			setHorizontalVelocity(0.0d);
+			Random rand = new Random();
+			actionDuration = rand.nextDouble()*3.0d+1.0d;
+			actionTime = 0.0d;
+		    int randomNum = rand.nextInt(4);
+		    switch(randomNum){
+		    case 0:
+		    	direction = Direction.RIGHT;
+		    	break;
+		    case 1:
+		    	direction = Direction.LEFT;
+		    	break;
+		    case 2:
+		    	direction = Direction.RIGHT;
+		    	if (actionNb >= (lastJumpActionNb+4) && canJump()==true)
+		    		startJump();
+		    		lastJumpActionNb = actionNb;
+		    	break;		
+		    case 3:
+		    	direction = Direction.RIGHT;
+		    	if (actionNb >= (lastJumpActionNb+4) && canJump()==true)
+		    		startJump();
+		    		lastJumpActionNb = actionNb;
+		    	break;		    
+		    }
+		}
 	}
 	
-	@Override
-	public void advanceTime(double dt){
+	public boolean canJump(){
+		double [] perimeters = this.getPerimeters();//order: left,bottom,right,top
+		for(int i=0;i<perimeters.length;i++)perimeters[i]*=100;
+		int [][] occupied_tiles = world.getTilePositionsIn((int) (perimeters[0]),(int)(perimeters[1]),(int)(perimeters[2]),(int)(perimeters[3]));
+		for (int i=0 ; i < occupied_tiles.length ; i++){
+			if (world.getGeologicalFeature(new int[]{occupied_tiles[i][0]*world.getTileLenght(),occupied_tiles[i][1]*world.getTileLenght()})==1 ||
+					world.getGeologicalFeature(new int[]{occupied_tiles[i][0]*world.getTileLenght(),occupied_tiles[i][1]*world.getTileLenght()})==2){//TODO intern if-else{if-else{...}}, not if if if
+				//check if tile is beneath character
+				if (world.getBottomLeftPixelOfTile(occupied_tiles[i][0],occupied_tiles[i][1])[1] <= perimeters[1])
+					 return true;
+			}
+		}
+		return false;
+	}
+	
+	public void startJump(){
+		this.setVerticalVelocity(this.initVerticalVelocity);
+		return;
+	}
+	
+	public void endJump(){
+		if(this.getVerticalVelocity()>0){
+			this.setVerticalVelocity(0.0d);
+		}
+		return;
+	}
+	
+	
+	private void animate(double dt){
 		//TODO implement this function
+	}
+	
+	private double moveVertical(double dt)throws PositionOutOfBoundsException{
+		//update position and speed (still need to compensate for velocity over max first time)
+		int stateSign =this.groundState.getSign(); 
+		double newSpeed = this.getVerticalVelocity() + this.getVerticalAcceleration()*dt*stateSign;
+		double newPositiony = getPositionY() + travelledVerticalDistance(dt);
+		if(newPositiony < 0){
+			if(getVerticalVelocity()<=0.0d){
+					this.groundState = GroundState.GROUNDED;
+					setVerticalVelocity(0.0d);
+				}
+			return 0.0d;
+		}else{
+			if(newPositiony>(world.getHeight()-1)/100.0d){
+				this.setVerticalVelocity(newSpeed);
+				return ((world.getHeight()-1)/100.0d);
+			}
+		}
+		this.setVerticalVelocity(newSpeed);
+		return newPositiony;
+	}
+	
+	private double moveHorizontal(double dt) throws IllegalMovementException,PositionOutOfBoundsException{
+		int dirSign =this.direction.getSign(); 
+		double newSpeed = this.getHorizontalVelocity()+this.getHorizontalAcceleration()*dt;
+		double s;
+		//dirsign is used in here to compensate for the current direction of the mazub.
+		if(newSpeed*dirSign > this.getMaxHorizontalVelocity()){//overgangsverschijnsel (1keer bij berijken max speed)
+			if(getHorizontalAcceleration()==0)throw new IllegalMovementException("impossible to divide by zero");
+			double accDt = (this.getMaxHorizontalVelocity()- this.getHorizontalVelocity()*dirSign)/(getHorizontalAcceleration()*dirSign);
+			s= travelledHorizontalDistance(accDt)+getMaxHorizontalVelocity()*(dt-accDt)*dirSign;
+			this.setHorizontalVelocity(this.getMaxHorizontalVelocity()*dirSign);
+		}
+		else{
+			s= travelledHorizontalDistance(dt);
+			this.setHorizontalVelocity(newSpeed);
+		}
+		if(((getPositionX()+s <=0d || s<0)&& dirSign>0 )|| (s>0 && dirSign<0)){
+			throw new IllegalMovementException("positionX overflowed");
+		}
+		//correct position if out of window
+		if(getPositionX() <0){
+			return 0.0d;
+		}
+		if(getPositionX()>(world.getWidth()-1)/100d)
+			return (world.getWidth()-1)/100.0d;
+		return getPositionX()+s;
+	}
+	
+	private double travelledVerticalDistance(double dt){
+		return this.getVerticalVelocity()*dt +
+				this.getVerticalAcceleration()*Math.pow(dt, 2)/2;
+	}
+	
+	public double calculateCorrectDt(double dt){
+		return Math.min(0.1d, dt);
+		//TODO implement this function
+	}
+	
+	private double travelledHorizontalDistance(double dt){
+		return this.getHorizontalVelocity()*dt +
+				this.getHorizontalAcceleration()*Math.pow(dt, 2)/2;
+	}
+	
+	private void setVerticalVelocity(double velocity){
+		this.verticalVelocity = velocity;
+	}
+	
+	private void setHorizontalVelocity(double velocity){
+		this.horizontalVelocity = velocity;
+	}
+	
+	@Basic
+	public double getVerticalVelocity(){
+		return this.verticalVelocity;
+	}
+	
+	@Basic
+	public double getVerticalAcceleration(){
+		return Shark.verticalFallingAcceleration* groundState.getSign();
+	}
+	
+	@Basic
+	public double getHorizontalVelocity(){
+		if(Math.abs(horizontalVelocity)>getMaxHorizontalVelocity()){
+			return getMaxHorizontalVelocity()*Math.signum(horizontalVelocity);
+		}
+		return horizontalVelocity;
+	}
+	
+	@Basic
+	public double getMaxHorizontalVelocity(){
+		return maxHorizontalVelocity;
+	}
+	
+	@Basic
+	public double getHorizontalAcceleration(){
+		if(getHorizontalVelocity()*direction.getSign()==getMaxHorizontalVelocity() || direction == Direction.STALLED)
+			return 0;
+		return horizontalAcceleration*direction.getSign();
 	}
 	
 	@Override
