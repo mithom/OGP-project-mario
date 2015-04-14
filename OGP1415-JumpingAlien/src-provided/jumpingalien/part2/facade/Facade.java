@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import jumpingalien.exception.IllegalMazubStateException;
 import jumpingalien.exception.IllegalMovementException;
+import jumpingalien.exception.IllegalSizeException;
 import jumpingalien.exception.IllegalTimeException;
 import jumpingalien.exception.PositionOutOfBoundsException;
 import jumpingalien.model.Plant;
@@ -114,6 +115,8 @@ public class Facade extends jumpingalien.part1.facade.Facade implements IFacadeP
 			throw new ModelException("illegalTime");
 		}catch(PositionOutOfBoundsException exce){
 			throw new ModelException("positionOutOfBounds" + exce.getLocation()[0] + " ," + exce.getLocation()[1]);
+		}catch(IllegalSizeException exce){
+			throw new ModelException("illegalSizeException (in collision between objects)");
 		}
 
 	}

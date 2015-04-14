@@ -28,7 +28,6 @@ public class Shark extends GameObject{
 	private Direction direction;
 	private int actionNb = 0 ;
 	private int lastJumpActionNb = -4 ;
-	//private boolean randomMovementNeeded = false;
 	private double randomAcceleration;
 	private final static double verticalAcceleration = -10.0d;
 	
@@ -121,17 +120,13 @@ public class Shark extends GameObject{
 		}
 		setHorizontalVelocity(0.0d);
 		Random rand = new Random();
-		int randomNum;
 		actionDuration = rand.nextDouble()*3.0d+1.0d;
 		actionTime = 0.0d;
 		if (actionNb >= (lastJumpActionNb+4) && inWater()==true || this.overlapsWithWall()[0]==true){
-			 randomNum = rand.nextInt(4);
+			 return rand.nextInt(4);
 		}
-		else{
-			 randomNum = rand.nextInt(2);
-		}
-	    return randomNum;
-	    }
+		return rand.nextInt(2);
+	}
 	
 	public boolean inWater() {
 		double [] perimeters = this.getPerimeters();//order: left,bottom,right,top
