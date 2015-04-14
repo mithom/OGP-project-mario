@@ -5,6 +5,7 @@ import java.util.Random;
 
 import be.kuleuven.cs.som.annotate.Basic;
 import jumpingalien.exception.IllegalMovementException;
+import jumpingalien.exception.IllegalSizeException;
 import jumpingalien.exception.PositionOutOfBoundsException;
 import jumpingalien.model.gameObject.GameObject;
 import jumpingalien.model.gameObject.Position;
@@ -39,7 +40,7 @@ public class Shark extends GameObject{
 		}
 
 	@Override //TODO ook grounded maken indien in water
-	public void advanceTime(double dt) throws PositionOutOfBoundsException{
+	public void advanceTime(double dt) throws PositionOutOfBoundsException, NullPointerException, IllegalSizeException{
 		while(!isTerminated() && dt >0){
 			if(actionTime == actionDuration){
 				switch(decideAction()){
@@ -90,7 +91,8 @@ public class Shark extends GameObject{
 			Position oldPosition = getPosition();
 			setPositionY(moveVertical(smallDt));
 			setPositionX(moveHorizontal(smallDt));
-			if (this.overlapsWithWall()[0]==true && getVerticalVelocity()<0.0d){
+			//check if collides with wall or gameobject beneath character
+			if (this.overlapsWithWall()[0]==true || this.placeOverlapsWithGameObject()[1]==true && getVerticalVelocity()<0.0d){
 				this.setVerticalVelocity(0.0d);
 				setPositionY(oldPosition.getPositions()[1]-0.01d);
 				groundState = GroundState.GROUNDED;
@@ -99,16 +101,18 @@ public class Shark extends GameObject{
 					groundState = GroundState.AIR;
 				}
 			}
-			
-			if(this.overlapsWithWall()[1]==true && getHorizontalVelocity()<0){
+			//left
+			if(this.overlapsWithWall()[1]==true || this.placeOverlapsWithGameObject()[0]==true && getHorizontalVelocity()<0){
 				this.setHorizontalVelocity(0.0d);
 				setPositionX(oldPosition.getPositions()[0]);
 			}
-			if( overlapsWithWall()[3]==true && getHorizontalVelocity()>0){
+			//right
+			if( overlapsWithWall()[3]==true || this.placeOverlapsWithGameObject()[2]==true && getHorizontalVelocity()>0){
 				this.setHorizontalVelocity(0.0d);
 				setPositionX(oldPosition.getPositions()[0]);
 			}
-			if( overlapsWithWall()[2]==true && getVerticalVelocity()>0){
+			//top
+			if( overlapsWithWall()[2]==true || this.placeOverlapsWithGameObject()[3]==true && getVerticalVelocity()>0){
 				this.setVerticalVelocity(0.0d);
 				setPositionY(oldPosition.getPositions()[1]);
 			}
