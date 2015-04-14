@@ -7,6 +7,7 @@ import java.util.Arrays;
 import be.kuleuven.cs.som.annotate.*;
 import jumpingalien.exception.IllegalMazubStateException;
 import jumpingalien.exception.IllegalMovementException;
+import jumpingalien.exception.IllegalSizeException;
 import jumpingalien.exception.IllegalTimeException;
 import jumpingalien.exception.PositionOutOfBoundsException;
 import jumpingalien.model.gameObject.GameObject;
@@ -178,7 +179,7 @@ public class World {
 		return this.tileSize;
 	}
 	
-	public void advanceTime(double dt)throws IllegalMovementException,IllegalMazubStateException,IllegalTimeException,PositionOutOfBoundsException{
+	public void advanceTime(double dt)throws IllegalMovementException,IllegalMazubStateException,IllegalTimeException,PositionOutOfBoundsException, NullPointerException, IllegalSizeException{
 		ArrayList<GameObject> worldObjects = new ArrayList<GameObject>();
 		worldObjects.add(mazub);
 		worldObjects.addAll(plants);

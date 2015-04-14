@@ -60,21 +60,17 @@ public class Shark extends GameObject{
 					}else
 						randomAcceleration = 0.0d;
 					break;
-				case 2://TODO case 2 en 3 enkel laten voorkomen indien toegestaan. dan moet dit hier niet gecontroleerd worden
+				case 2:
 					direction = Direction.RIGHT;
-					if ((actionNb >= (lastJumpActionNb+4) && inWater()==true) || this.overlapsWithWall()[0]==true){
-						startJump();
-			    		lastJumpActionNb = actionNb;
-			    		randomAcceleration = 0.0d;
-						}
+					startJump();
+			    	lastJumpActionNb = actionNb;
+			    	randomAcceleration = 0.0d;
 					break;
 				case 3:
 					direction = Direction.LEFT;
-					if (actionNb >= (lastJumpActionNb+4) && inWater()==true || this.overlapsWithWall()[0]==true){
-						startJump();
-	    				lastJumpActionNb = actionNb;
-	    				randomAcceleration = 0.0d;
-					}
+					startJump();
+	    			lastJumpActionNb = actionNb;
+	    			randomAcceleration = 0.0d;
 					break;
 				default:
 					System.err.println("unsupported action");
@@ -126,10 +122,15 @@ public class Shark extends GameObject{
 		}
 		setHorizontalVelocity(0.0d);
 		Random rand = new Random();
+		int randomNum;
 		actionDuration = rand.nextDouble()*3.0d+1.0d;
 		actionTime = 0.0d;
-	    int randomNum = rand.nextInt(4);
-	    System.out.println("next action: " + randomNum);
+		if (actionNb >= (lastJumpActionNb+4) && inWater()==true || this.overlapsWithWall()[0]==true){
+			 randomNum = rand.nextInt(4);
+		}
+		else{
+			 randomNum = rand.nextInt(2);
+		}
 	    return randomNum;
 	    }
 	
