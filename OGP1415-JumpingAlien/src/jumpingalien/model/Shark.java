@@ -39,7 +39,6 @@ public class Shark extends GameObject{
 		}
 
 	@Override //TODO ook grounded maken indien in water
-	//TODO endjump toevoegen indien tijd om!
 	public void advanceTime(double dt) throws PositionOutOfBoundsException{
 		while(!isTerminated() && dt >0){
 			if(actionTime == actionDuration){
@@ -118,8 +117,8 @@ public class Shark extends GameObject{
 	}
 	
 	private int decideAction(){
-		if(randomAcceleration==0 && getVerticalVelocity()>0){
-			setVerticalVelocity(0.0d);
+		if(randomAcceleration==0){
+			endJump();
 		}
 		setHorizontalVelocity(0.0d);
 		Random rand = new Random();
@@ -242,13 +241,7 @@ public class Shark extends GameObject{
 	}
 	
 	@Basic
-	public double getVerticalAcceleration(){//TODO de randomMovement niet hier zetten!!!!!!!!!!
-		/*if (inWater() && randomMovementNeeded == true){
-			Random rand = new Random();
-			return verticalMaxRandAcceleration*rand.nextDouble();
-		}
-		else		
-			return Shark.verticalFallingAcceleration;*/
+	public double getVerticalAcceleration(){
 		if(inWater()){
 			return 0;
 		}
