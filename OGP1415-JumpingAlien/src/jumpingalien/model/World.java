@@ -143,20 +143,14 @@ public class World {
 	}
 	
 	public void addShark(Shark shark){
-		if(!hasAsShark(shark) && canHaveAsShark(shark))
+		if(!hasAsShark(shark))
 			sharks.add(shark);
 	}
 	
 	public boolean hasAsShark(Shark shark){
 		return sharks.contains(shark);
 	}
-	
-	public boolean canHaveAsShark(Shark shark){
-		if(!isTerminated() && !shark.isTerminated() && shark.getWorld()==null)
-			return true;
-		return false;
-	}
-	
+
 	public void addSchool(School school){
 		if(schools.size()<10 && !schools.contains(school)){
 			schools.add(school);

@@ -1,9 +1,9 @@
 package jumpingalien.model;
 
+import java.util.Arrays;
 import java.util.Random;
 
 import be.kuleuven.cs.som.annotate.Basic;
-import jumpingalien.exception.IllegalMazubStateException;
 import jumpingalien.exception.IllegalMovementException;
 import jumpingalien.exception.PositionOutOfBoundsException;
 import jumpingalien.model.gameObject.GameObject;
@@ -39,34 +39,38 @@ public class Shark extends GameObject{
 
 	@Override
 	public void advanceTime(double dt) throws PositionOutOfBoundsException{
+		System.out.println("shark location:"+ Arrays.toString(getPosition().getPositions()));
 		while(!isTerminated() && dt >0){
 			//System.out.println("dt:" + dt+",actionTime:"+actionTime+", actionDuration:"+actionDuration);
 			if(actionTime == actionDuration){
-				if (decideAction()==0)
+				switch(decideAction()){
+				case 0:
 					direction = Direction.RIGHT;
 					if (inWater())
 						randomMovementNeeded = true;
-				else
-					if (decideAction()==1)
-						direction = Direction.LEFT;
-						if (inWater())
-							randomMovementNeeded = true;
-					else
-						if (decideAction()==2){
-							direction = Direction.RIGHT;
-							if (actionNb >= (lastJumpActionNb+4) && inWater()==true || this.overlapsWithWall()[0]==true)
-								startJump();
-			    				lastJumpActionNb = actionNb;
-			    				randomMovementNeeded = false;
-			    				}
-						else
-							if (decideAction()==3){
-								direction = Direction.LEFT;
-								if (actionNb >= (lastJumpActionNb+4) && inWater()==true || this.overlapsWithWall()[0]==true)
-									startJump();
-				    				lastJumpActionNb = actionNb;
-				    				randomMovementNeeded = false; 
+					break;
+				case 1:
+					direction = Direction.LEFT;
+					if (inWater())
+						randomMovementNeeded = true;
+					break;
+				case 2://TODO case 2 en 3 enkel laten voorkomen indien toegestaan. dan moet dit hier niet gecontroleerd worden
+					direction = Direction.RIGHT;
+					if (actionNb >= (lastJumpActionNb+4) && inWater()==true || this.overlapsWithWall()[0]==true){
+						startJump();
+			    		lastJumpActionNb = actionNb;
+			    		randomMovementNeeded = false;
 						}
+					break;
+				case 3:
+					direction = Direction.LEFT;
+					if (actionNb >= (lastJumpActionNb+4) && inWater()==true || this.overlapsWithWall()[0]==true){
+						startJump();
+	    				lastJumpActionNb = actionNb;
+	    				randomMovementNeeded = false;
+					}
+					break;
+				}
 				actionNb += 1 ;
 			}
 			double smallDt = Math.min(calculateCorrectDt(dt),actionDuration-actionTime);
@@ -96,21 +100,12 @@ public class Shark extends GameObject{
 			}
 	
 	private int decideAction(){
-			int action = 0;
 			setHorizontalVelocity(0.0d);
 			Random rand = new Random();
 			actionDuration = rand.nextDouble()*3.0d+1.0d;
 			actionTime = 0.0d;
 		    int randomNum = rand.nextInt(4);
-		    if  (randomNum == 0) 
-		    	action = 0;
-		    if (randomNum == 1)
-		    	action =1;
-		    if (randomNum == 2)
-		    	action =2;		
-		    if (randomNum == 3)
-		    	action =3;
-		    return action;
+		    return randomNum;
 		    }
 	
 	public boolean inWater() {
@@ -250,7 +245,7 @@ public class Shark extends GameObject{
 	
 	@Override
 	public void addToWorld(World world){
-		if(this.world == null && canHaveAsWorld(world)){
+		if(canHaveAsWorld(world)){
 			this.world = world;
 			world.addShark(this);
 		}

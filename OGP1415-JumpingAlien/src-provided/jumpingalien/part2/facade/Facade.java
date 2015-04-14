@@ -242,7 +242,7 @@ public class Facade extends jumpingalien.part1.facade.Facade implements IFacadeP
 	
 	@Override
 	public void addShark(World world, Shark shark){
-		world.addShark(shark);
+		shark.addToWorld(world);
 	};
 	
 	@Override

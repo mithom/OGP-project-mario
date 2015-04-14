@@ -51,6 +51,6 @@ public class School {
 	}
 	
 	public String toString(){
-		return ""+getSize();
+		return "school nr:"+ world.getSchools().indexOf(this)+"of size "+getSize();
 	}
 }

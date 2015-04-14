@@ -252,6 +252,6 @@ public class Slime extends GameObject{
 	}
 	
 	public String toString(){
-		return "slime of school: " + getSchool() + "with hp: " + hitPoint.getCurrent();
+		return "slime of( " + getSchool() + ") with hp: " + hitPoint.getCurrent();
 	}
 }
