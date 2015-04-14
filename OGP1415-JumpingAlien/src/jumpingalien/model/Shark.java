@@ -71,10 +71,10 @@ public class Shark extends GameObject{
 	    			randomAcceleration = 0.0d;
 					break;
 				default:
-					System.err.println("unsupported action");
+					//System.err.println("unsupported action");
 					break;
 				}
-				System.out.println("randomAcc: "+ randomAcceleration);
+				//System.out.println("randomAcc: "+ randomAcceleration);
 				actionNb += 1 ;
 			}
 			
@@ -86,7 +86,7 @@ public class Shark extends GameObject{
 			setPositionY(moveVertical(smallDt));
 			setPositionX(moveHorizontal(smallDt));
 			//check if collides with wall or gameobject beneath character
-			if (this.overlapsWithWall()[0]==true || this.placeOverlapsWithGameObject()[1]==true && getVerticalVelocity()<0.0d){
+			if ((this.overlapsWithWall()[0]==true || this.placeOverlapsWithGameObject()[1]==true) && getVerticalVelocity()<0.0d){
 				this.setVerticalVelocity(0.0d);
 				setPositionY(oldPosition.getPositions()[1]-0.01d);
 				groundState = GroundState.GROUNDED;
@@ -96,17 +96,17 @@ public class Shark extends GameObject{
 				}
 			}
 			//left
-			if(this.overlapsWithWall()[1]==true || this.placeOverlapsWithGameObject()[0]==true && getHorizontalVelocity()<0){
+			if((this.overlapsWithWall()[1]==true || this.placeOverlapsWithGameObject()[0]==true) && getHorizontalVelocity()<0){
 				this.setHorizontalVelocity(0.0d);
 				setPositionX(oldPosition.getPositions()[0]);
 			}
 			//right
-			if( overlapsWithWall()[3]==true || this.placeOverlapsWithGameObject()[2]==true && getHorizontalVelocity()>0){
+			if( (overlapsWithWall()[3]==true || this.placeOverlapsWithGameObject()[2]==true) && getHorizontalVelocity()>0){
 				this.setHorizontalVelocity(0.0d);
 				setPositionX(oldPosition.getPositions()[0]);
 			}
 			//top
-			if( overlapsWithWall()[2]==true || this.placeOverlapsWithGameObject()[3]==true && getVerticalVelocity()>0){
+			if( (overlapsWithWall()[2]==true || this.placeOverlapsWithGameObject()[3]==true) && getVerticalVelocity()>0){
 				this.setVerticalVelocity(0.0d);
 				setPositionY(oldPosition.getPositions()[1]);
 			}
@@ -125,7 +125,8 @@ public class Shark extends GameObject{
 		if (actionNb >= (lastJumpActionNb+4) && inWater()==true || this.overlapsWithWall()[0]==true){
 			 return rand.nextInt(4);
 		}
-		return rand.nextInt(2);
+		else
+			return rand.nextInt(2);
 	}
 	
 	public boolean inWater() {
