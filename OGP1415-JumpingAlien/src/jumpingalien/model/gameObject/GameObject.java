@@ -138,7 +138,7 @@ public abstract class GameObject {
 		return currentSpriteNb >= 0 && currentSpriteNb < spriteList.length;
 	}
 	
-	public abstract void advanceTime(double dt) throws IllegalMovementException,IllegalMazubStateException,IllegalTimeException,PositionOutOfBoundsException;
+	public abstract void advanceTime(double dt) throws NullPointerException,IllegalMovementException,IllegalMazubStateException,IllegalTimeException,PositionOutOfBoundsException, IllegalSizeException;
 
 	public boolean[] overlapsWithWall() {
 		boolean[] overlap = new boolean[]{false,false,false,false};
@@ -187,5 +187,26 @@ public abstract class GameObject {
 			return true;
 		}
 		return false;
+	}
+
+
+	public boolean[] placeOverlapsWithGameObject() throws NullPointerException, IllegalSizeException{
+		boolean[] overlap = new boolean[]{false,false,false,false};//left,bot,right,top
+		ArrayList<GameObject> overlappingObjects = overlapsWithGameObject();
+		for (int  i=0 ; i < overlappingObjects.size() ; i++){
+			if (overlappingObjects.get(i).getPositionX() > this.getPositionX()+this.getSize()[0]){
+				overlap[0]=true;
+			}
+			if (overlappingObjects.get(i).getPositionY() > this.getPositionY()+this.getSize()[1]){
+				overlap[1]=true;
+			}
+			if (overlappingObjects.get(i).getPositionX()+overlappingObjects.get(i).getSize()[0] > this.getPositionX()){
+				overlap[2]=true;
+			}
+			if (overlappingObjects.get(i).getPositionY()+overlappingObjects.get(i).getSize()[1] > this.getPositionY()){
+				overlap[3]=true;
+			}
+		}
+		return overlap;
 	}
 }
