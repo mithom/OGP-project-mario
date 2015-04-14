@@ -23,13 +23,14 @@ public class Shark extends GameObject{
 	private double horizontalVelocity;
 	private double verticalVelocity;
 	private double initVerticalVelocity = 2.0d;
-	private final static double verticalFallingAcceleration = -10.0d;
 	private double verticalMaxRandAcceleration = 2.0d;
 	private GroundState groundState;
 	private Direction direction;
 	private int actionNb = 0 ;
 	private int lastJumpActionNb = -4 ;
-	private boolean randomMovementNeeded = false;
+	//private boolean randomMovementNeeded = false;
+	private double randomAcceleration;
+	private final static double verticalAcceleration = -10.0d;
 	
 	public Shark(int x, int y, Sprite[] sprites)throws PositionOutOfBoundsException{
 		super(x,y,sprites); 
@@ -37,29 +38,34 @@ public class Shark extends GameObject{
 		direction = Direction.STALLED;
 		}
 
-	@Override
+	@Override //TODO ook grounded maken indien in water
+	//TODO endjump toevoegen indien tijd om!
 	public void advanceTime(double dt) throws PositionOutOfBoundsException{
-		System.out.println("shark location:"+ Arrays.toString(getPosition().getPositions()));
 		while(!isTerminated() && dt >0){
-			//System.out.println("dt:" + dt+",actionTime:"+actionTime+", actionDuration:"+actionDuration);
 			if(actionTime == actionDuration){
 				switch(decideAction()){
 				case 0:
 					direction = Direction.RIGHT;
-					if (inWater())
-						randomMovementNeeded = true;
+					if (inWater()){
+						Random rand = new Random();
+						randomAcceleration =  2*verticalMaxRandAcceleration*rand.nextDouble()-verticalMaxRandAcceleration;
+					}else
+						randomAcceleration = 0.0d;
 					break;
 				case 1:
 					direction = Direction.LEFT;
-					if (inWater())
-						randomMovementNeeded = true;
+					if (inWater()){
+						Random rand = new Random();
+						randomAcceleration =  2*verticalMaxRandAcceleration*rand.nextDouble()-verticalMaxRandAcceleration;
+					}else
+						randomAcceleration = 0.0d;
 					break;
 				case 2://TODO case 2 en 3 enkel laten voorkomen indien toegestaan. dan moet dit hier niet gecontroleerd worden
 					direction = Direction.RIGHT;
-					if (actionNb >= (lastJumpActionNb+4) && inWater()==true || this.overlapsWithWall()[0]==true){
+					if ((actionNb >= (lastJumpActionNb+4) && inWater()==true) || this.overlapsWithWall()[0]==true){
 						startJump();
 			    		lastJumpActionNb = actionNb;
-			    		randomMovementNeeded = false;
+			    		randomAcceleration = 0.0d;
 						}
 					break;
 				case 3:
@@ -67,22 +73,34 @@ public class Shark extends GameObject{
 					if (actionNb >= (lastJumpActionNb+4) && inWater()==true || this.overlapsWithWall()[0]==true){
 						startJump();
 	    				lastJumpActionNb = actionNb;
-	    				randomMovementNeeded = false;
+	    				randomAcceleration = 0.0d;
 					}
 					break;
+				default:
+					System.err.println("unsupported action");
+					break;
 				}
+				System.out.println("randomAcc: "+ randomAcceleration);
 				actionNb += 1 ;
 			}
+			
 			double smallDt = Math.min(calculateCorrectDt(dt),actionDuration-actionTime);
 			actionTime+=smallDt;
 			dt-= smallDt;
+			
 			Position oldPosition = getPosition();
 			setPositionY(moveVertical(smallDt));
 			setPositionX(moveHorizontal(smallDt));
-			if (this.inWater() == true || this.overlapsWithWall()[0]==true && getVerticalVelocity()<0.0d){
+			if (this.overlapsWithWall()[0]==true && getVerticalVelocity()<0.0d){
 				this.setVerticalVelocity(0.0d);
 				setPositionY(oldPosition.getPositions()[1]-0.01d);
+				groundState = GroundState.GROUNDED;
+			}else{
+				if(this.overlapsWithWall()[0]==false){
+					groundState = GroundState.AIR;
+				}
 			}
+			
 			if(this.overlapsWithWall()[1]==true && getHorizontalVelocity()<0){
 				this.setHorizontalVelocity(0.0d);
 				setPositionX(oldPosition.getPositions()[0]);
@@ -92,21 +110,25 @@ public class Shark extends GameObject{
 				setPositionX(oldPosition.getPositions()[0]);
 			}
 			if( overlapsWithWall()[2]==true && getVerticalVelocity()>0){
-				this.endJump();
-				setPositionY(oldPosition.getPositions()[1]-0.01d);
+				this.setVerticalVelocity(0.0d);
+				setPositionY(oldPosition.getPositions()[1]);
 			}
 			animate(smallDt);
-				}
-			}
+		}
+	}
 	
 	private int decideAction(){
-			setHorizontalVelocity(0.0d);
-			Random rand = new Random();
-			actionDuration = rand.nextDouble()*3.0d+1.0d;
-			actionTime = 0.0d;
-		    int randomNum = rand.nextInt(4);
-		    return randomNum;
-		    }
+		if(randomAcceleration==0 && getVerticalVelocity()>0){
+			setVerticalVelocity(0.0d);
+		}
+		setHorizontalVelocity(0.0d);
+		Random rand = new Random();
+		actionDuration = rand.nextDouble()*3.0d+1.0d;
+		actionTime = 0.0d;
+	    int randomNum = rand.nextInt(4);
+	    System.out.println("next action: " + randomNum);
+	    return randomNum;
+	    }
 	
 	public boolean inWater() {
 		double [] perimeters = this.getPerimeters();//order: left,bottom,right,top
@@ -141,12 +163,18 @@ public class Shark extends GameObject{
 	
 	private double moveVertical(double dt)throws PositionOutOfBoundsException,NullPointerException{
 		//update position and speed (still need to compensate for velocity over max first time)
-		double newSpeed = this.getVerticalVelocity() + this.getVerticalAcceleration()*dt;
+		//int stateSign =this.groundState.getSign();
+		double newSpeed;
+		if(overlapsWithWall()[0]==true)
+			newSpeed = this.getVerticalVelocity() + (this.getVerticalAcceleration()+Math.max(0, randomAcceleration))*dt;
+		else
+			newSpeed = this.getVerticalVelocity() + (this.getVerticalAcceleration()+ randomAcceleration)*dt;
 		double newPositiony = getPositionY() + travelledVerticalDistance(dt);
 		if(newPositiony < 0){
 			if(getVerticalVelocity()<=0.0d){
-					setVerticalVelocity(0.0d);
-				}
+				this.groundState = GroundState.GROUNDED;
+				setVerticalVelocity(0.0d);
+			}
 			return 0.0d;
 		}else{
 			if(newPositiony>(world.getHeight()-1)/100.0d){
@@ -214,13 +242,17 @@ public class Shark extends GameObject{
 	}
 	
 	@Basic
-	public double getVerticalAcceleration(){
-		if (inWater() && randomMovementNeeded == true){
+	public double getVerticalAcceleration(){//TODO de randomMovement niet hier zetten!!!!!!!!!!
+		/*if (inWater() && randomMovementNeeded == true){
 			Random rand = new Random();
 			return verticalMaxRandAcceleration*rand.nextDouble();
 		}
 		else		
-			return Shark.verticalFallingAcceleration;
+			return Shark.verticalFallingAcceleration;*/
+		if(inWater()){
+			return 0;
+		}
+		return verticalAcceleration* groundState.getSign();
 	}
 	
 	@Basic
@@ -248,6 +280,11 @@ public class Shark extends GameObject{
 		if(canHaveAsWorld(world)){
 			this.world = world;
 			world.addShark(this);
+			if(overlapsWithWall()[0]){
+				groundState = GroundState.GROUNDED;
+			}else{
+				groundState = GroundState.AIR;
+			}
 		}
 	}
 }

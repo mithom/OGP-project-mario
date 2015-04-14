@@ -106,9 +106,9 @@ public class Slime extends GameObject{
 		double newPositiony = getPositionY() + travelledVerticalDistance(dt);
 		if(newPositiony < 0){
 			if(getVerticalVelocity()<=0.0d){
-					this.groundState = GroundState.GROUNDED;
-					setVerticalVelocity(0.0d);
-				}
+				this.groundState = GroundState.GROUNDED;
+				setVerticalVelocity(0.0d);
+			}
 			return 0.0d;
 		}else{
 			if(newPositiony>(world.getHeight()-1)/100.0d){
