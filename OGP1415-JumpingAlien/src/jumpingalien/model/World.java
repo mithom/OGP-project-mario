@@ -47,6 +47,17 @@ public class World {
 		System.out.println(java.util.Arrays.toString(targetTile.getPositions()));
 	}
 	
+	public void removeGameObject(GameObject gameObject){
+		if(gameObject instanceof Plant)
+			plants.remove(gameObject);
+		if(gameObject instanceof Slime){
+			slimes.remove(gameObject);
+			((Slime)gameObject).getSchool().removeSlime((Slime)gameObject);
+			((Slime)gameObject).setSchool(null);
+		}
+		//TODO extend for other gameObjects
+	}
+	
 	public void removePlant(Plant plant){
 		plants.remove(plant);
 	}

@@ -128,8 +128,7 @@ public class Facade extends jumpingalien.part1.facade.Facade implements IFacadeP
 
 	@Override
 	public boolean isImmune(GameObject alien) {
-		// TODO Auto-generated method stub
-		return false;
+		return alien.isImmune();
 	}
 	
 	@Override
