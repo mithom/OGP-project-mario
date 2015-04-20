@@ -62,10 +62,7 @@ public class Plant extends GameObject{
 	private void consume(Mazub alien){
 		if(alien.hasMaxHp()==false && terminated == false){
 			alien.addHp(50);
-			//loseHp(1);
-			world.removeGameObject(this);
-			world = null;
-			terminated = true;
+			loseHp(1);
 		}
 	}
 	

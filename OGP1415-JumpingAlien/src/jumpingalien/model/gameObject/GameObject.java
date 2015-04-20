@@ -201,16 +201,16 @@ public abstract class GameObject {
 		boolean[] overlap = new boolean[]{false,false,false,false};//left,bot,right,top
 		ArrayList<GameObject> overlappingObjects = getOverlappingGameObjects();
 		for (int  i=0 ; i < overlappingObjects.size() ; i++){
-			if (overlappingObjects.get(i).getPositionX() > this.getPositionX()+this.getSize()[0]){
+			if (overlappingObjects.get(i).getPositionX() < this.getPositionX()){
 				overlap[0]=true;
 			}
-			if (overlappingObjects.get(i).getPositionY() > this.getPositionY()+this.getSize()[1]){
+			if (overlappingObjects.get(i).getPositionY() < this.getPositionY()){
 				overlap[1]=true;
 			}
-			if (overlappingObjects.get(i).getPositionX()+overlappingObjects.get(i).getSize()[0] > this.getPositionX()){
+			if (overlappingObjects.get(i).getPositionX()+overlappingObjects.get(i).getSize()[0] < this.getPositionX()+this.getSize()[0]){
 				overlap[2]=true;
 			}
-			if (overlappingObjects.get(i).getPositionY()+overlappingObjects.get(i).getSize()[1] > this.getPositionY()){
+			if (overlappingObjects.get(i).getPositionY()+overlappingObjects.get(i).getSize()[1] < this.getPositionY()+this.getSize()[1]){
 				overlap[3]=true;
 			}
 		}

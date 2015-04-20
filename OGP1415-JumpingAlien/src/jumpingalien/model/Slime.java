@@ -33,7 +33,6 @@ public class Slime extends GameObject{
 	@Override
 	public void advanceTime(double dt)throws PositionOutOfBoundsException{
 		while(!isTerminated() && dt >0){
-			//System.out.println("dt:" + dt+",actionTime:"+actionTime+", actionDuration:"+actionDuration);
 			decideAction();
 			double smallDt = Math.min(calculateCorrectDt(dt),actionDuration-actionTime);
 			actionTime+=smallDt;
