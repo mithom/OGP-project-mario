@@ -44,7 +44,7 @@ public class Shark extends GameObject{
 				switch(decideAction()){
 				case 0:
 					direction = Direction.RIGHT;
-					if (inWater()){
+					if (isBottomInWater()){
 						Random rand = new Random();
 						randomAcceleration =  2*verticalMaxRandAcceleration*rand.nextDouble()-verticalMaxRandAcceleration;
 					}else
@@ -52,7 +52,7 @@ public class Shark extends GameObject{
 					break;
 				case 1:
 					direction = Direction.LEFT;
-					if (inWater()){
+					if (isBottomInWater()){
 						Random rand = new Random();
 						randomAcceleration =  2*verticalMaxRandAcceleration*rand.nextDouble()-verticalMaxRandAcceleration;
 					}else
@@ -111,6 +111,25 @@ public class Shark extends GameObject{
 				setPositionX(oldPosition.getPositions()[0]);
 			}
 			animate(smallDt);
+			if(isInLava()){
+				if(lastLavaHit < 0){
+					loseHp(50);
+					lastLavaHit = 0.2d;
+				}else{
+					lastLavaHit -= smallDt;
+				}
+			}else
+				lastLavaHit=0.0d;
+			if(isInAir()){
+				if(lastWaterHit < 0){
+					loseHp(2);
+					lastWaterHit = 0.2d;
+				}else{
+					lastWaterHit -= smallDt;
+				}
+			}else{
+				lastWaterHit =0.2d;
+			}
 		}
 	}
 	
@@ -122,13 +141,13 @@ public class Shark extends GameObject{
 		Random rand = new Random();
 		actionDuration = rand.nextDouble()*3.0d+1.0d;
 		actionTime = 0.0d;
-		if (actionNb >= (lastJumpActionNb+4) && (inWater()==true || this.overlapsWithWall()[0]==true)){
+		if (actionNb >= (lastJumpActionNb+4) && (isBottomInWater()==true || this.overlapsWithWall()[0]==true)){
 			 return rand.nextInt(4);
 		}
 		return rand.nextInt(2);
 	}
 	
-	public boolean inWater() {
+	public boolean isBottomInWater() {
 		double [] perimeters = this.getPerimeters();//order: left,bottom,right,top
 		for(int i=0;i<perimeters.length;i++)perimeters[i]*=100;
 		int [][] occupied_tiles = world.getTilePositionsIn((int) (perimeters[0]),(int)(perimeters[1]),(int)(perimeters[2]),(int)(perimeters[3]));
@@ -242,7 +261,7 @@ public class Shark extends GameObject{
 	
 	@Basic
 	public double getVerticalAcceleration(){
-		if(inWater()){
+		if(isBottomInWater()){
 			return 0;
 		}
 		return verticalAcceleration* groundState.getSign();
@@ -279,5 +298,10 @@ public class Shark extends GameObject{
 				groundState = GroundState.AIR;
 			}
 		}
+	}
+	
+	@Override
+	public String toString(){
+		return "hp: " + getNbHitPoints(); 
 	}
 }

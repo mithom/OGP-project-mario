@@ -70,7 +70,6 @@ public class Mazub extends GameObject{
 		direction= Direction.STALLED;
 		horizontalVelocity=0.0d;
 		verticalVelocity = 0.0d;
-		
 	}
 	
 	/**
@@ -102,8 +101,6 @@ public class Mazub extends GameObject{
 		this.initialHorizontalVelocity = initHorVel;
 		duckState  = DuckState.STRAIGHT;
 		direction= Direction.STALLED;
-		horizontalVelocity=0.0d;
-		verticalVelocity = 0.0d;
 	}
 	
 	/**
@@ -135,7 +132,7 @@ public class Mazub extends GameObject{
 		//dan controleren we die positie
 		//indien niets, zet als positie mazub
 		//indien bezet, laat botsen (snelheden aanpassen, en verplaatsing niet laten doorgaan en eventueel inverteren)
-		while(dt>0){
+		while(dt>0 && !isTerminated()){
 			double correctDt=this.calculateCorrectDt(dt);
 			dt -= correctDt;
 			double new_position_x = this.moveHorizontal(correctDt);// return new Position(x,y) ipv void
@@ -173,6 +170,25 @@ public class Mazub extends GameObject{
 			executeEndDuck();
 			this.animate(correctDt);
 			this.moveWindow();
+			if(isInLava()){
+				if(lastLavaHit < 0){
+					loseHp(50);
+					lastLavaHit = 0.2d;
+				}else{
+					lastLavaHit -= correctDt;
+				}
+			}else
+				lastLavaHit=0.0d;
+			if(isInWater()){
+				if(lastWaterHit < 0){
+					loseHp(2);
+					lastWaterHit = 0.2d;
+				}else{
+					lastWaterHit -= correctDt;
+				}
+			}else{
+				lastWaterHit =0.2d;
+			}
 		}
 	}
 	
