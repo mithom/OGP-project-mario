@@ -37,7 +37,8 @@ public class Shark extends GameObject{
 		direction = Direction.STALLED;
 		}
 
-	@Override //TODO ook grounded maken indien in water
+	@Override //TODO movement wanneer op de grond in orde brengen
+	//TODO stoppen met vallen wanneer terug in water!
 	public void advanceTime(double dt) throws PositionOutOfBoundsException, NullPointerException, IllegalSizeException{
 		while(!isTerminated() && dt >0){
 			if(actionTime == actionDuration){
@@ -175,7 +176,10 @@ public class Shark extends GameObject{
 	
 	
 	private void animate(double dt){
-		//TODO implement this function
+		if(direction == Direction.RIGHT)
+			currentSpriteNumber=1;
+		else
+			currentSpriteNumber = 0;
 	}
 	
 	private double moveVertical(double dt)throws PositionOutOfBoundsException,NullPointerException{

@@ -123,7 +123,10 @@ public class Slime extends GameObject{
 	}
 	
 	private void animate(double dt){
-		//TODO implement this function
+		if(direction == Direction.RIGHT)
+			currentSpriteNumber=1;
+		else
+			currentSpriteNumber=0;
 	}
 	
 	private double moveVertical(double dt)throws PositionOutOfBoundsException{
