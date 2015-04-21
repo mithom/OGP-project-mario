@@ -74,7 +74,7 @@ public class Shark extends GameObject{
 					System.err.println("unsupported action");
 					break;
 				}
-				System.out.println("randomAcc: "+ randomAcceleration);
+				//System.out.println("randomAcc: "+ randomAcceleration);
 				actionNb += 1 ;
 			}
 			
@@ -85,7 +85,7 @@ public class Shark extends GameObject{
 			Position oldPosition = getPosition();
 			setPositionY(moveVertical(smallDt));
 			setPositionX(moveHorizontal(smallDt));
-			//check if collides with wall or gameobject beneath character
+			//bot
 			if ((this.overlapsWithWall()[0]==true || this.placeOverlapsWithGameObject()[1]==true) && getVerticalVelocity()<0.0d){
 				this.setVerticalVelocity(0.0d);
 				setPositionY(oldPosition.getPositions()[1]-0.01d);
