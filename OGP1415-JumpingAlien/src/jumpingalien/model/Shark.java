@@ -84,7 +84,6 @@ public class Shark extends GameObject{
 			
 			Position oldPosition = getPosition();
 			setPositionY(moveVertical(smallDt));
-			setPositionX(moveHorizontal(smallDt));
 			//bot
 			if ((this.overlapsWithWall()[0]==true || this.placeOverlapsWithGameObject()[1]==true) && getVerticalVelocity()<0.0d){
 				this.setVerticalVelocity(0.0d);
@@ -95,6 +94,12 @@ public class Shark extends GameObject{
 					groundState = GroundState.AIR;
 				}
 			}
+			//top
+			if( (overlapsWithWall()[2]==true || this.placeOverlapsWithGameObject()[3]==true) && getVerticalVelocity()>0){
+				this.setVerticalVelocity(0.0d);
+				setPositionY(oldPosition.getPositions()[1]);
+			}
+			setPositionX(moveHorizontal(smallDt));
 			//left
 			if((this.overlapsWithWall()[1]==true || this.placeOverlapsWithGameObject()[0]==true) && getHorizontalVelocity()<0){
 				this.setHorizontalVelocity(0.0d);
@@ -104,11 +109,6 @@ public class Shark extends GameObject{
 			if( (overlapsWithWall()[3]==true || this.placeOverlapsWithGameObject()[2]==true) && getHorizontalVelocity()>0){
 				this.setHorizontalVelocity(0.0d);
 				setPositionX(oldPosition.getPositions()[0]);
-			}
-			//top
-			if( (overlapsWithWall()[2]==true || this.placeOverlapsWithGameObject()[3]==true) && getVerticalVelocity()>0){
-				this.setVerticalVelocity(0.0d);
-				setPositionY(oldPosition.getPositions()[1]);
 			}
 			animate(smallDt);
 		}

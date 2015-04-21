@@ -220,4 +220,16 @@ public abstract class GameObject {
 	public boolean isImmune(){
 		return imunityTime>0;
 	}
+	
+	public boolean[] isInWater(){
+		return new boolean[4];
+	}
+	
+	public boolean[] isInLava(){
+		return new boolean[4];
+	}
+	
+	public boolean[] isInAir(){
+		return new boolean[4];
+	}
 }

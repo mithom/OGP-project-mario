@@ -141,9 +141,9 @@ public class Mazub extends GameObject{
 			double new_position_x = this.moveHorizontal(correctDt);// return new Position(x,y) ipv void
 			double new_position_y = this.moveVertical(correctDt);
 			Position oldPosition = getPosition();
-			this.setPositionX(new_position_x);
 			this.setPositionY(new_position_y);
-
+			
+			//TODO fix movement by: 1) check sides, 2) check grounded 3) if still grounded, move back to side and check sideoverlapping, or move vertical, check grounded, move horizontal, check sides 
 			// check if character overlaps with a wall above or beneath it 
 			if (this.overlapsWithWall()[0]==true && getVerticalVelocity()<0.0d){
 				this.setVerticalVelocity(0.0d);
@@ -160,6 +160,8 @@ public class Mazub extends GameObject{
 				setVerticalVelocity(0.0d);
 				setPositionY(oldPosition.getPositions()[1]);
 			}
+			
+			this.setPositionX(new_position_x);
 			if(this.overlapsWithWall()[1]==true && getHorizontalVelocity()<0){
 				this.setHorizontalVelocity(0.0d);
 				setPositionX(oldPosition.getPositions()[0]);
