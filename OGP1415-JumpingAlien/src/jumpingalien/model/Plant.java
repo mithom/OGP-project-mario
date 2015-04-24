@@ -17,7 +17,6 @@ public class Plant extends GameObject{
 		hitPoint = new HitPoint(0, 1, 1);
 		actionTimer=0.0d;
 		direction = Direction.RIGHT;
-		//TODO difference between 2 sprites?
 	}
 	
 	@Override

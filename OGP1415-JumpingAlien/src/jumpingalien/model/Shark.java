@@ -240,9 +240,33 @@ public class Shark extends GameObject{
 				this.getVerticalAcceleration()*Math.pow(dt, 2)/2;
 	}
 	
-	public double calculateCorrectDt(double dt){
-		return Math.min(0.1d, dt);
-		//TODO implement this function
+	public double calculateCorrectDt(double dt) {
+		double min1;double min2;double min3;double min4; // de 4 mogelijke situaties
+		if (getVerticalVelocity()==0 && getHorizontalVelocity()==0
+				&& getVerticalAcceleration()==0 && getHorizontalAcceleration()==0)
+			return dt;
+		else{
+			if(getHorizontalVelocity()!=0.0d)//mogelijkheid 1
+				min1 = 0.01d/Math.abs(getHorizontalVelocity());
+			else
+				min1 = Float.POSITIVE_INFINITY;
+			
+			if (getVerticalVelocity()!=0.0d)
+				min2 = 0.01d/Math.abs(getVerticalVelocity());
+			else 
+				min2=Float.POSITIVE_INFINITY;
+			
+			if (this.getHorizontalAcceleration()!=0.0d){//mogelijkheid 3
+				min3 = Math.abs((-getHorizontalVelocity() + Math.sqrt(Math.pow(getHorizontalVelocity(), 2)-2*getHorizontalAcceleration()/100))/getHorizontalAcceleration());
+			}else
+				min3=Float.POSITIVE_INFINITY;
+			
+			if (this.getVerticalAcceleration()!=0.0d)
+				min4 = Math.abs((-getVerticalVelocity() + Math.sqrt(Math.pow(getVerticalVelocity(), 2)-2*getVerticalAcceleration()/100))/getVerticalAcceleration());
+			else 
+				min4=Float.POSITIVE_INFINITY;
+			return Math.min(Math.min(Math.min(Math.min(min1,min2), min3),min4),dt); // mag geen NaN bevatten
+		}
 	}
 	
 	private double travelledHorizontalDistance(double dt){
