@@ -71,10 +71,10 @@ public class Shark extends GameObject{
 	    			randomAcceleration = 0.0d;
 					break;
 				default:
-					//System.err.println("unsupported action");
+					System.err.println("unsupported action");
 					break;
 				}
-				//System.out.println("randomAcc: "+ randomAcceleration);
+				System.out.println("randomAcc: "+ randomAcceleration);
 				actionNb += 1 ;
 			}
 			
@@ -122,7 +122,7 @@ public class Shark extends GameObject{
 		Random rand = new Random();
 		actionDuration = rand.nextDouble()*3.0d+1.0d;
 		actionTime = 0.0d;
-		if (actionNb >= (lastJumpActionNb+4) && inWater()==true || this.overlapsWithWall()[0]==true){
+		if (actionNb >= (lastJumpActionNb+4) && (inWater()==true || this.overlapsWithWall()[0]==true)){
 			 return rand.nextInt(4);
 		}
 		else
@@ -164,10 +164,15 @@ public class Shark extends GameObject{
 		//update position and speed (still need to compensate for velocity over max first time)
 		//int stateSign =this.groundState.getSign();
 		double newSpeed;
-		if(overlapsWithWall()[0]==true)
+		//dit stond er, moet het dit zijn?
+		if(inWater()==true)
+			newSpeed = this.getVerticalVelocity() + randomAcceleration*dt;
+		else
+			newSpeed = this.getVerticalVelocity()+this.getVerticalAcceleration()*dt;
+		/**if(overlapsWithWall()[0]==true)
 			newSpeed = this.getVerticalVelocity() + (this.getVerticalAcceleration()+Math.max(0, randomAcceleration))*dt;
 		else
-			newSpeed = this.getVerticalVelocity() + (this.getVerticalAcceleration()+ randomAcceleration)*dt;
+			newSpeed = this.getVerticalVelocity() + (this.getVerticalAcceleration()+ randomAcceleration)*dt;*/
 		double newPositiony = getPositionY() + travelledVerticalDistance(dt);
 		if(newPositiony < 0){
 			if(getVerticalVelocity()<=0.0d){
