@@ -1,5 +1,6 @@
 package jumpingalien.model.gameObject;
 
+import java.security.InvalidKeyException;
 import java.util.ArrayList;
 
 import be.kuleuven.cs.som.annotate.*;
@@ -21,6 +22,8 @@ public abstract class GameObject {
 	protected HitPoint hitPoint;
 	protected int m;
 	protected double imunityTime;
+	protected double lastWaterHit;
+	protected double lastLavaHit;
 	
 	@Raw
 	protected GameObject(int pixelLeftX, int pixelBottomY, Sprite[] sprites) throws PositionOutOfBoundsException{
@@ -29,13 +32,14 @@ public abstract class GameObject {
 		this.m = (spriteList.length-8)/2;
 		hitPoint = new HitPoint(0,500,100);
 		imunityTime=0.0d;
+		lastWaterHit =0.2d;
+		lastLavaHit=0.0d;
 	};
 	
 	public void loseHp(int amount){
 		hitPoint.loseHP(amount);
 		if(isDead()){
 			world.removeGameObject(this);
-			world = null;
 			terminated = true;
 		}
 	}
@@ -208,10 +212,10 @@ public abstract class GameObject {
 			if (overlappingObjects.get(i).getPositionY() < this.getPositionY()){
 				overlap[1]=true;
 			}
-			if (overlappingObjects.get(i).getPositionX()+overlappingObjects.get(i).getSize()[0] < this.getPositionX()+this.getSize()[0]){
+			if (overlappingObjects.get(i).getPositionX()+overlappingObjects.get(i).getSize()[0] > this.getPositionX()+this.getSize()[0]){
 				overlap[2]=true;
 			}
-			if (overlappingObjects.get(i).getPositionY()+overlappingObjects.get(i).getSize()[1] < this.getPositionY()+this.getSize()[1]){
+			if (overlappingObjects.get(i).getPositionY()+overlappingObjects.get(i).getSize()[1] > this.getPositionY()+this.getSize()[1]){
 				overlap[3]=true;
 			}
 		}
@@ -220,5 +224,50 @@ public abstract class GameObject {
 	
 	public boolean isImmune(){
 		return imunityTime>0;
+	}
+	
+	public boolean isInWater(){
+		double[] perimeters = getPerimeters();
+		int [][] occupied_tiles = world.getTilePositionsIn((int)(perimeters[0]*100), (int)(perimeters[1]*100), (int)(perimeters[2]*100),(int)(perimeters[3]*100));
+		for(int[] tile:occupied_tiles){
+			try{
+				if(world.getGeologicalFeature(tile[0]*world.getTileLenght(), tile[1]*world.getTileLenght())==2)
+					return true;
+			}catch(InvalidKeyException e){
+				System.out.println(tile[0] +","+ tile[1]);
+				System.out.println("something went wrong, should never have happened!, error in isInWater");
+			}
+		}
+		return false;//TODO check if isBottomInWater isn't good enough
+	}
+	
+	public boolean isInLava(){
+		double[] perimeters = getPerimeters();
+		int [][] occupied_tiles = world.getTilePositionsIn((int)(perimeters[0]*100), (int)(perimeters[1]*100), (int)(perimeters[2]*100),(int)(perimeters[3]*100));
+		for(int[] tile:occupied_tiles){
+			try{
+				if(world.getGeologicalFeature(tile[0]*world.getTileLenght(), tile[1]*world.getTileLenght())==3)
+					return true;
+			}catch(InvalidKeyException e){
+				System.out.println(tile[0] +","+ tile[1]);
+				System.out.println("something went wrong, should never have happened!, error in isInLava");
+			}
+		}
+		return false;
+	}
+	
+	public boolean isInAir(){
+		double[] perimeters = getPerimeters();
+		int [][] occupied_tiles = world.getTilePositionsIn((int)(perimeters[0]*100), (int)(perimeters[1]*100), (int)(perimeters[2]*100),(int)(perimeters[3]*100));
+		for(int[] tile:occupied_tiles){
+			try{
+				if(world.getGeologicalFeature(tile[0]*world.getTileLenght(), tile[1]*world.getTileLenght())==0)
+					return true;
+			}catch(InvalidKeyException e){
+				System.out.println(tile[0] +","+ tile[1]);
+				System.out.println("something went wrong, should never have happened!, error in isInLava");
+			}
+		}
+		return false;
 	}
 }

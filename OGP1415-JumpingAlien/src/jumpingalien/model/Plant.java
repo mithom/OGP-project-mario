@@ -30,7 +30,15 @@ public class Plant extends GameObject{
 					consume((Mazub)gameObject);
 				}
 			}
+			animate();
 		}
+	}
+	
+	private void animate(){
+		if(direction == Direction.RIGHT)
+			currentSpriteNumber=1;
+		else
+			currentSpriteNumber=0;
 	}
 	
 	private void moveHorizontal(double dt) throws PositionOutOfBoundsException{

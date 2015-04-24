@@ -55,6 +55,10 @@ public class World {
 			((Slime)gameObject).getSchool().removeSlime((Slime)gameObject);
 			((Slime)gameObject).setSchool(null);
 		}
+		if(gameObject instanceof Mazub)
+			mazub = null;
+		if(gameObject instanceof Shark)
+			sharks.remove(gameObject);
 		//TODO extend for other gameObjects
 	}
 	
@@ -213,6 +217,8 @@ public class World {
 	}
 	
 	public boolean didPlayerWin(){
+		if(mazub == null)
+			return false;
 		if(Arrays.equals(getTileOfPosition(targetTile), getTileOfPosition(mazub.getPosition()))){
 			return true;
 		}
@@ -228,7 +234,7 @@ public class World {
 	}
 	
 	public boolean isGameOver(){
-		if(didPlayerWin() || mazub.isDead())
+		if(mazub == null || didPlayerWin())
 			return true;
 		return false;
 	}
@@ -241,7 +247,8 @@ public class World {
 		gameObjects.addAll(getPlants());
 		gameObjects.addAll(getSharks());
 		gameObjects.addAll(getSlimes());
-		gameObjects.add(mazub);
+		if(mazub != null)
+			gameObjects.add(mazub);
 		return gameObjects;
 	}
 	

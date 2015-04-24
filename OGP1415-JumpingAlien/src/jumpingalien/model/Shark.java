@@ -37,14 +37,15 @@ public class Shark extends GameObject{
 		direction = Direction.STALLED;
 		}
 
-	@Override //TODO ook grounded maken indien in water
+	@Override //TODO movement wanneer op de grond in orde brengen
+	//TODO stoppen met vallen wanneer terug in water!
 	public void advanceTime(double dt) throws PositionOutOfBoundsException, NullPointerException, IllegalSizeException{
 		while(!isTerminated() && dt >0){
 			if(actionTime == actionDuration){
 				switch(decideAction()){
 				case 0:
 					direction = Direction.RIGHT;
-					if (inWater()){
+					if (isBottomInWater()){
 						Random rand = new Random();
 						randomAcceleration =  2*verticalMaxRandAcceleration*rand.nextDouble()-verticalMaxRandAcceleration;
 					}else
@@ -52,7 +53,7 @@ public class Shark extends GameObject{
 					break;
 				case 1:
 					direction = Direction.LEFT;
-					if (inWater()){
+					if (isBottomInWater()){
 						Random rand = new Random();
 						randomAcceleration =  2*verticalMaxRandAcceleration*rand.nextDouble()-verticalMaxRandAcceleration;
 					}else
@@ -74,7 +75,7 @@ public class Shark extends GameObject{
 					System.err.println("unsupported action");
 					break;
 				}
-				System.out.println("randomAcc: "+ randomAcceleration);
+				//System.out.println("randomAcc: "+ randomAcceleration);
 				actionNb += 1 ;
 			}
 			
@@ -84,8 +85,7 @@ public class Shark extends GameObject{
 			
 			Position oldPosition = getPosition();
 			setPositionY(moveVertical(smallDt));
-			setPositionX(moveHorizontal(smallDt));
-			//check if collides with wall or gameobject beneath character
+			//bot
 			if ((this.overlapsWithWall()[0]==true || this.placeOverlapsWithGameObject()[1]==true) && getVerticalVelocity()<0.0d){
 				this.setVerticalVelocity(0.0d);
 				setPositionY(oldPosition.getPositions()[1]-0.01d);
@@ -95,6 +95,12 @@ public class Shark extends GameObject{
 					groundState = GroundState.AIR;
 				}
 			}
+			//top
+			if( (overlapsWithWall()[2]==true || this.placeOverlapsWithGameObject()[3]==true) && getVerticalVelocity()>0){
+				this.setVerticalVelocity(0.0d);
+				setPositionY(oldPosition.getPositions()[1]);
+			}
+			setPositionX(moveHorizontal(smallDt));
 			//left
 			if((this.overlapsWithWall()[1]==true || this.placeOverlapsWithGameObject()[0]==true) && getHorizontalVelocity()<0){
 				this.setHorizontalVelocity(0.0d);
@@ -105,12 +111,26 @@ public class Shark extends GameObject{
 				this.setHorizontalVelocity(0.0d);
 				setPositionX(oldPosition.getPositions()[0]);
 			}
-			//top
-			if( (overlapsWithWall()[2]==true || this.placeOverlapsWithGameObject()[3]==true) && getVerticalVelocity()>0){
-				this.setVerticalVelocity(0.0d);
-				setPositionY(oldPosition.getPositions()[1]);
-			}
 			animate(smallDt);
+			if(isInLava()){
+				if(lastLavaHit < 0){
+					loseHp(50);
+					lastLavaHit = 0.2d;
+				}else{
+					lastLavaHit -= smallDt;
+				}
+			}else
+				lastLavaHit=0.0d;
+			if(isInAir()){
+				if(lastWaterHit < 0){
+					loseHp(2);
+					lastWaterHit = 0.2d;
+				}else{
+					lastWaterHit -= smallDt;
+				}
+			}else{
+				lastWaterHit =0.2d;
+			}
 		}
 	}
 	
@@ -122,14 +142,14 @@ public class Shark extends GameObject{
 		Random rand = new Random();
 		actionDuration = rand.nextDouble()*3.0d+1.0d;
 		actionTime = 0.0d;
-		if (actionNb >= (lastJumpActionNb+4) && (inWater()==true || this.overlapsWithWall()[0]==true)){
+		if (actionNb >= (lastJumpActionNb+4) && (isBottomInWater()==true || this.overlapsWithWall()[0]==true)){
 			 return rand.nextInt(4);
 		}
 		else
 			return rand.nextInt(2);
 	}
 	
-	public boolean inWater() {
+	public boolean isBottomInWater() {
 		double [] perimeters = this.getPerimeters();//order: left,bottom,right,top
 		for(int i=0;i<perimeters.length;i++)perimeters[i]*=100;
 		int [][] occupied_tiles = world.getTilePositionsIn((int) (perimeters[0]),(int)(perimeters[1]),(int)(perimeters[2]),(int)(perimeters[3]));
@@ -157,7 +177,10 @@ public class Shark extends GameObject{
 	
 	
 	private void animate(double dt){
-		//TODO implement this function
+		if(direction == Direction.RIGHT)
+			currentSpriteNumber=1;
+		else
+			currentSpriteNumber = 0;
 	}
 	
 	private double moveVertical(double dt)throws PositionOutOfBoundsException,NullPointerException{
@@ -218,9 +241,33 @@ public class Shark extends GameObject{
 				this.getVerticalAcceleration()*Math.pow(dt, 2)/2;
 	}
 	
-	public double calculateCorrectDt(double dt){
-		return Math.min(0.1d, dt);
-		//TODO implement this function
+	public double calculateCorrectDt(double dt) {
+		double min1;double min2;double min3;double min4; // de 4 mogelijke situaties
+		if (getVerticalVelocity()==0 && getHorizontalVelocity()==0
+				&& getVerticalAcceleration()==0 && getHorizontalAcceleration()==0)
+			return dt;
+		else{
+			if(getHorizontalVelocity()!=0.0d)//mogelijkheid 1
+				min1 = 0.01d/Math.abs(getHorizontalVelocity());
+			else
+				min1 = Float.POSITIVE_INFINITY;
+			
+			if (getVerticalVelocity()!=0.0d)
+				min2 = 0.01d/Math.abs(getVerticalVelocity());
+			else 
+				min2=Float.POSITIVE_INFINITY;
+			
+			if (this.getHorizontalAcceleration()!=0.0d){//mogelijkheid 3
+				min3 = Math.abs((-getHorizontalVelocity() + Math.sqrt(Math.pow(getHorizontalVelocity(), 2)-2*getHorizontalAcceleration()/100))/getHorizontalAcceleration());
+			}else
+				min3=Float.POSITIVE_INFINITY;
+			
+			if (this.getVerticalAcceleration()!=0.0d)
+				min4 = Math.abs((-getVerticalVelocity() + Math.sqrt(Math.pow(getVerticalVelocity(), 2)-2*getVerticalAcceleration()/100))/getVerticalAcceleration());
+			else 
+				min4=Float.POSITIVE_INFINITY;
+			return Math.min(Math.min(Math.min(Math.min(min1,min2), min3),min4),dt); // mag geen NaN bevatten
+		}
 	}
 	
 	private double travelledHorizontalDistance(double dt){
@@ -243,7 +290,7 @@ public class Shark extends GameObject{
 	
 	@Basic
 	public double getVerticalAcceleration(){
-		if(inWater()){
+		if(isBottomInWater()){
 			return 0;
 		}
 		return verticalAcceleration* groundState.getSign();
@@ -280,5 +327,10 @@ public class Shark extends GameObject{
 				groundState = GroundState.AIR;
 			}
 		}
+	}
+	
+	@Override
+	public String toString(){
+		return "hp: " + getNbHitPoints(); 
 	}
 }

@@ -70,7 +70,6 @@ public class Mazub extends GameObject{
 		direction= Direction.STALLED;
 		horizontalVelocity=0.0d;
 		verticalVelocity = 0.0d;
-		
 	}
 	
 	/**
@@ -102,8 +101,6 @@ public class Mazub extends GameObject{
 		this.initialHorizontalVelocity = initHorVel;
 		duckState  = DuckState.STRAIGHT;
 		direction= Direction.STALLED;
-		horizontalVelocity=0.0d;
-		verticalVelocity = 0.0d;
 	}
 	
 	/**
@@ -135,15 +132,15 @@ public class Mazub extends GameObject{
 		//dan controleren we die positie
 		//indien niets, zet als positie mazub
 		//indien bezet, laat botsen (snelheden aanpassen, en verplaatsing niet laten doorgaan en eventueel inverteren)
-		while(dt>0){
+		while(dt>0 && !isTerminated()){
 			double correctDt=this.calculateCorrectDt(dt);
 			dt -= correctDt;
 			double new_position_x = this.moveHorizontal(correctDt);// return new Position(x,y) ipv void
 			double new_position_y = this.moveVertical(correctDt);
 			Position oldPosition = getPosition();
-			this.setPositionX(new_position_x);
 			this.setPositionY(new_position_y);
-
+			
+			//TODO fix movement by: 1) check sides, 2) check grounded 3) if still grounded, move back to side and check sideoverlapping, or move vertical, check grounded, move horizontal, check sides 
 			// check if character overlaps with a wall above or beneath it 
 			if (this.overlapsWithWall()[0]==true && getVerticalVelocity()<0.0d){
 				this.setVerticalVelocity(0.0d);
@@ -160,6 +157,8 @@ public class Mazub extends GameObject{
 				setVerticalVelocity(0.0d);
 				setPositionY(oldPosition.getPositions()[1]);
 			}
+			
+			this.setPositionX(new_position_x);
 			if(this.overlapsWithWall()[1]==true && getHorizontalVelocity()<0){
 				this.setHorizontalVelocity(0.0d);
 				setPositionX(oldPosition.getPositions()[0]);
@@ -171,6 +170,25 @@ public class Mazub extends GameObject{
 			executeEndDuck();
 			this.animate(correctDt);
 			this.moveWindow();
+			if(isInLava()){
+				if(lastLavaHit < 0){
+					loseHp(50);
+					lastLavaHit = 0.2d;
+				}else{
+					lastLavaHit -= correctDt;
+				}
+			}else
+				lastLavaHit=0.0d;
+			if(isInWater()){
+				if(lastWaterHit < 0){
+					loseHp(2);
+					lastWaterHit = 0.2d;
+				}else{
+					lastWaterHit -= correctDt;
+				}
+			}else{
+				lastWaterHit =0.2d;
+			}
 		}
 	}
 	
@@ -197,26 +215,21 @@ public class Mazub extends GameObject{
 			return dt;
 		else{
 			if(getHorizontalVelocity()!=0.0d)//mogelijkheid 1
-				//min1 = Math.min(1.0d/Math.abs(this.getHorizontalVelocity()/100.0d),1.0d/Math.abs(this.getVerticalVelocity()/100.0d));
-				//min1 = 1.0d/Math.abs(getHorizontalVelocity()/100.0d); //dit is wat er voorgescherven is
 				min1 = 0.01d/Math.abs(getHorizontalVelocity());
 			else
 				min1 = Float.POSITIVE_INFINITY;
 			
 			if (getVerticalVelocity()!=0.0d)
 				min2 = 0.01d/Math.abs(getVerticalVelocity());
-				//min2=1.0d/Math.abs(this.getVerticalVelocity()/100.0d);
 			else 
 				min2=Float.POSITIVE_INFINITY;
 			
 			if (this.getHorizontalAcceleration()!=0.0d){//mogelijkheid 3
 				min3 = Math.abs((-getHorizontalVelocity() + Math.sqrt(Math.pow(getHorizontalVelocity(), 2)-2*getHorizontalAcceleration()/100))/getHorizontalAcceleration());
-				//min3=Math.sqrt(2*Math.abs(this.getHorizontalAcceleration()/100.0d)+Math.pow(this.getHorizontalVelocity(),2.0d)/100.0d)-Math.abs(this.getHorizontalVelocity()/100.0d)/Math.abs(this.getHorizontalAcceleration()/100.0d);
 			}else
 				min3=Float.POSITIVE_INFINITY;
 			
 			if (this.getVerticalAcceleration()!=0.0d)
-				//min4=Math.sqrt(2*Math.abs(this.getVerticalAcceleration()/100.0d)+Math.pow(this.getVerticalAcceleration(),2.0d)/100.0d)-Math.abs(this.getVerticalAcceleration()/100.0d)/Math.abs(this.getVerticalAcceleration()/100.0d);
 				min4 = Math.abs((-getVerticalVelocity() + Math.sqrt(Math.pow(getVerticalVelocity(), 2)-2*getVerticalAcceleration()/100))/getVerticalAcceleration());
 			else 
 				min4=Float.POSITIVE_INFINITY;

@@ -82,6 +82,25 @@ public class Slime extends GameObject{
 				setPositionX(oldPosition.getPositions()[0]);
 				setPositionY(oldPosition.getPositions()[1]);
 			}
+			if(isInLava()){
+				if(lastLavaHit < 0){
+					loseHp(50);
+					lastLavaHit = 0.2d;
+				}else{
+					lastLavaHit -= smallDt;
+				}
+			}else
+				lastLavaHit=0.0d;
+			if(isInWater()){
+				if(lastWaterHit < 0){
+					loseHp(2);
+					lastWaterHit = 0.2d;
+				}else{
+					lastWaterHit -= smallDt;
+				}
+			}else{
+				lastWaterHit =0.2d;
+			}
 		}
 	}
 	
@@ -104,7 +123,10 @@ public class Slime extends GameObject{
 	}
 	
 	private void animate(double dt){
-		//TODO implement this function
+		if(direction == Direction.RIGHT)
+			currentSpriteNumber=1;
+		else
+			currentSpriteNumber=0;
 	}
 	
 	private double moveVertical(double dt)throws PositionOutOfBoundsException{
