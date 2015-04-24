@@ -25,7 +25,7 @@ public class Plant extends GameObject{
 			double smallDt = Math.min(0.01d/Math.abs(horizontalVelocity),dt);
 			dt-= smallDt;
 			moveHorizontal(smallDt);
-			for(GameObject gameObject:overlapsWithGameObject()){
+			for(GameObject gameObject:getOverlappingGameObjects()){
 				if(gameObject instanceof Mazub){
 					consume((Mazub)gameObject);
 				}
@@ -63,9 +63,6 @@ public class Plant extends GameObject{
 		if(alien.hasMaxHp()==false && terminated == false){
 			alien.addHp(50);
 			loseHp(1);
-			world.removePlant(this);
-			world = null;
-			terminated = true;
 		}
 	}
 	

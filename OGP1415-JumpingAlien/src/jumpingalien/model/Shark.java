@@ -164,16 +164,12 @@ public class Shark extends GameObject{
 		//update position and speed (still need to compensate for velocity over max first time)
 		//int stateSign =this.groundState.getSign();
 		double newSpeed;
-		//dit stond er, moet het dit zijn?
-		if(inWater()==true)
-			newSpeed = this.getVerticalVelocity() + randomAcceleration*dt;
-		else
-			newSpeed = this.getVerticalVelocity()+this.getVerticalAcceleration()*dt;
-		/**if(overlapsWithWall()[0]==true)
+		if(overlapsWithWall()[1]==true)
 			newSpeed = this.getVerticalVelocity() + (this.getVerticalAcceleration()+Math.max(0, randomAcceleration))*dt;
 		else
-			newSpeed = this.getVerticalVelocity() + (this.getVerticalAcceleration()+ randomAcceleration)*dt;*/
+			newSpeed = this.getVerticalVelocity() + (this.getVerticalAcceleration()+ randomAcceleration)*dt;
 		double newPositiony = getPositionY() + travelledVerticalDistance(dt);
+		
 		if(newPositiony < 0){
 			if(getVerticalVelocity()<=0.0d){
 				this.groundState = GroundState.GROUNDED;

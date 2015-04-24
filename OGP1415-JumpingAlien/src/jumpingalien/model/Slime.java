@@ -32,14 +32,12 @@ public class Slime extends GameObject{
 	
 	@Override
 	public void advanceTime(double dt)throws PositionOutOfBoundsException{
-		//TODO lose 50hp on contact with mazub or shark
-		//TODO bounce against other things then slimes/plants 
 		while(!isTerminated() && dt >0){
-			//System.out.println("dt:" + dt+",actionTime:"+actionTime+", actionDuration:"+actionDuration);
 			decideAction();
 			double smallDt = Math.min(calculateCorrectDt(dt),actionDuration-actionTime);
 			actionTime+=smallDt;
 			dt-= smallDt;
+			imunityTime= Math.max(0,imunityTime-smallDt);
 			Position oldPosition = getPosition();
 			setPositionY(moveVertical(smallDt));
 			setPositionX(moveHorizontal(smallDt));
@@ -61,7 +59,7 @@ public class Slime extends GameObject{
 				setPositionX(oldPosition.getPositions()[0]);
 			}
 			animate(smallDt);
-			for(GameObject gameObject:overlapsWithGameObject()){
+			for(GameObject gameObject:getOverlappingGameObjects()){
 				if(gameObject instanceof Slime){
 					Slime slime = (Slime)gameObject;
 					if(slime.getSchool().getSize()> getSchool().getSize()){
@@ -71,7 +69,18 @@ public class Slime extends GameObject{
 							slime.setSchool(getSchool());
 						}
 					}
+				}if(gameObject instanceof Mazub || gameObject instanceof Shark){
+					//other instance then slime
+					//TODO blocking movement against each other, not further away!, setting imunity
+					if(!isImmune()){
+						this.schoolHpLoss();
+						this.loseHp(50);
+						this.imunityTime = 0.6d;
+					}
+					//TODO 2sided bounce!
 				}
+				setPositionX(oldPosition.getPositions()[0]);
+				setPositionY(oldPosition.getPositions()[1]);
 			}
 		}
 	}
@@ -201,26 +210,29 @@ public class Slime extends GameObject{
 	}
 	
 	public void setSchool(School school){
-		if(getSchool() != null){
-			int difference = 0;
-			this.school.removeSlime(this);
-			for(Slime slime:this.school.getSlimes()){
-				if(!slime.hasMaxHp()){
-					slime.addHp(1);
-					difference-=1;
+		if(school == null)
+			this.school = null;
+		else{
+			if(getSchool() != null){
+				int difference = 0;
+				this.school.removeSlime(this);
+				for(Slime slime:this.school.getSlimes()){
+					if(!slime.hasMaxHp()){
+						slime.addHp(1);
+						difference-=1;
+					}
 				}
-			}
-			for(Slime slime:school.getSlimes()){
-				if(difference<(hitPoint.getMaximum()-hitPoint.getCurrent())){
-					slime.loseHp(1);
-					difference+=1;
+				for(Slime slime:school.getSlimes()){
+					if(difference<(hitPoint.getMaximum()-hitPoint.getCurrent())){
+						slime.loseHp(1);
+						difference+=1;
+					}
 				}
+				this.addHp(difference);
 			}
-			this.addHp(difference);
-			
+			this.school = school;
+			school.addSlime(this);
 		}
-		this.school = school;
-		school.addSlime(this);
 	}
 	
 	@Basic
@@ -253,5 +265,12 @@ public class Slime extends GameObject{
 	
 	public String toString(){
 		return "slime of( " + getSchool() + ") with hp: " + hitPoint.getCurrent();
+	}
+	
+	public void schoolHpLoss(){
+		for(Slime slime:school.getSlimes()){
+			if(slime != this)
+				slime.loseHp(1);
+		}
 	}
 }

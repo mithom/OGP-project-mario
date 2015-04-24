@@ -20,6 +20,7 @@ public abstract class GameObject {
 	protected boolean terminated = false;
 	protected HitPoint hitPoint;
 	protected int m;
+	protected double imunityTime;
 	
 	@Raw
 	protected GameObject(int pixelLeftX, int pixelBottomY, Sprite[] sprites) throws PositionOutOfBoundsException{
@@ -27,10 +28,16 @@ public abstract class GameObject {
 		this.spriteList = sprites;
 		this.m = (spriteList.length-8)/2;
 		hitPoint = new HitPoint(0,500,100);
+		imunityTime=0.0d;
 	};
 	
 	public void loseHp(int amount){
 		hitPoint.loseHP(amount);
+		if(isDead()){
+			world.removeGameObject(this);
+			world = null;
+			terminated = true;
+		}
 	}
 	
 	public void addHp(int amount){
@@ -169,11 +176,11 @@ public abstract class GameObject {
 		return overlap;
 	}
 
-	public ArrayList<GameObject> overlapsWithGameObject() {
+	public ArrayList<GameObject> getOverlappingGameObjects() {
 		ArrayList<GameObject> gameObjects = world.getAllGameObjects();
 		ArrayList<GameObject> overlappingObjects = new ArrayList<GameObject>();
 		for (int i=0 ; i < gameObjects.size() ; i++){
-			if(overlaps(gameObjects.get(i))){
+			if(overlaps(gameObjects.get(i)) && gameObjects.get(i) != this){//TODO does this work altough copy?
 				overlappingObjects.add(gameObjects.get(i));
 			}
 		}
@@ -193,21 +200,25 @@ public abstract class GameObject {
 
 	public boolean[] placeOverlapsWithGameObject() throws NullPointerException, IllegalSizeException{
 		boolean[] overlap = new boolean[]{false,false,false,false};//left,bot,right,top
-		ArrayList<GameObject> overlappingObjects = overlapsWithGameObject();
+		ArrayList<GameObject> overlappingObjects = getOverlappingGameObjects();
 		for (int  i=0 ; i < overlappingObjects.size() ; i++){
-			if (overlappingObjects.get(i).getPositionX() > this.getPositionX()+this.getSize()[0]){
+			if (overlappingObjects.get(i).getPositionX() < this.getPositionX()){
 				overlap[0]=true;
 			}
-			if (overlappingObjects.get(i).getPositionY() > this.getPositionY()+this.getSize()[1]){
+			if (overlappingObjects.get(i).getPositionY() < this.getPositionY()){
 				overlap[1]=true;
 			}
-			if (overlappingObjects.get(i).getPositionX()+overlappingObjects.get(i).getSize()[0] > this.getPositionX()){
+			if (overlappingObjects.get(i).getPositionX()+overlappingObjects.get(i).getSize()[0] < this.getPositionX()+this.getSize()[0]){
 				overlap[2]=true;
 			}
-			if (overlappingObjects.get(i).getPositionY()+overlappingObjects.get(i).getSize()[1] > this.getPositionY()){
+			if (overlappingObjects.get(i).getPositionY()+overlappingObjects.get(i).getSize()[1] < this.getPositionY()+this.getSize()[1]){
 				overlap[3]=true;
 			}
 		}
 		return overlap;
+	}
+	
+	public boolean isImmune(){
+		return imunityTime>0;
 	}
 }
