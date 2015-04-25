@@ -187,12 +187,12 @@ public class Shark extends GameObject{
 		//update position and speed (still need to compensate for velocity over max first time)
 		//int stateSign =this.groundState.getSign();
 		double newSpeed;
-		if(overlapsWithWall()[1]==true)
+		if(overlapsWithWall()[0]==true)
 			newSpeed = this.getVerticalVelocity() + (this.getVerticalAcceleration()+Math.max(0, randomAcceleration))*dt;
 		else
 			newSpeed = this.getVerticalVelocity() + (this.getVerticalAcceleration()+ randomAcceleration)*dt;
 		double newPositiony = getPositionY() + travelledVerticalDistance(dt);
-		
+		/*
 		if(newPositiony < 0){
 			if(getVerticalVelocity()<=0.0d){
 				this.groundState = GroundState.GROUNDED;
@@ -204,7 +204,7 @@ public class Shark extends GameObject{
 				this.setVerticalVelocity(newSpeed);
 				return ((world.getHeight()-1)/100.0d);
 			}
-		}
+		}*/
 		this.setVerticalVelocity(newSpeed);
 		return newPositiony;
 	}
@@ -233,6 +233,7 @@ public class Shark extends GameObject{
 		}
 		if(getPositionX()>(world.getWidth()-1)/100d)
 			return (world.getWidth()-1)/100.0d;
+		System.out.println("horisontal:"+ getPositionX()+s);
 		return getPositionX()+s;
 	}
 	
@@ -258,14 +259,15 @@ public class Shark extends GameObject{
 				min2=Float.POSITIVE_INFINITY;
 			
 			if (this.getHorizontalAcceleration()!=0.0d){//mogelijkheid 3
-				min3 = Math.abs((-getHorizontalVelocity() + Math.sqrt(Math.pow(getHorizontalVelocity(), 2)-2*getHorizontalAcceleration()/100))/getHorizontalAcceleration());
+				min3 = Math.abs((-getHorizontalVelocity() + Math.sqrt(Math.pow(getHorizontalVelocity(), 2)+2*Math.abs(getHorizontalAcceleration())/100))/getHorizontalAcceleration());
 			}else
 				min3=Float.POSITIVE_INFINITY;
 			
 			if (this.getVerticalAcceleration()!=0.0d)
-				min4 = Math.abs((-getVerticalVelocity() + Math.sqrt(Math.pow(getVerticalVelocity(), 2)-2*getVerticalAcceleration()/100))/getVerticalAcceleration());
+				min4 = Math.abs((-getVerticalVelocity() + Math.sqrt(Math.pow(getVerticalVelocity(), 2)+2*Math.abs(getVerticalAcceleration())/100))/getVerticalAcceleration());
 			else 
 				min4=Float.POSITIVE_INFINITY;
+			System.out.println(Math.min(Math.min(Math.min(Math.min(min1,min2), min3),min4),dt));
 			return Math.min(Math.min(Math.min(Math.min(min1,min2), min3),min4),dt); // mag geen NaN bevatten
 		}
 	}

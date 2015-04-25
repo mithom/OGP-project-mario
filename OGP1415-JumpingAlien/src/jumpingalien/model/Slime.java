@@ -69,6 +69,8 @@ public class Slime extends GameObject{
 							slime.setSchool(getSchool());
 						}
 					}
+					setPositionX(oldPosition.getPositions()[0]);
+					setPositionY(oldPosition.getPositions()[1]);
 				}if(gameObject instanceof Mazub || gameObject instanceof Shark){
 					//other instance then slime
 					//TODO blocking movement against each other, not further away!, setting imunity
@@ -78,9 +80,9 @@ public class Slime extends GameObject{
 						this.imunityTime = 0.6d;
 					}
 					//TODO 2sided bounce!
+					setPositionX(oldPosition.getPositions()[0]);
+					setPositionY(oldPosition.getPositions()[1]);
 				}
-				setPositionX(oldPosition.getPositions()[0]);
-				setPositionY(oldPosition.getPositions()[1]);
 			}
 			if(isInLava()){
 				if(lastLavaHit < 0){
