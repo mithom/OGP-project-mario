@@ -135,6 +135,7 @@ public class Mazub extends GameObject{
 		while(dt>0 && !isTerminated()){
 			double correctDt=this.calculateCorrectDt(dt);
 			dt -= correctDt;
+			imunityTime = Math.max(0, imunityTime - correctDt);
 			double new_position_x = this.moveHorizontal(correctDt);// return new Position(x,y) ipv void
 			double new_position_y = this.moveVertical(correctDt);
 			Position oldPosition = getPosition();
@@ -169,6 +170,14 @@ public class Mazub extends GameObject{
 			}
 			executeEndDuck();
 			this.animate(correctDt);
+			for(GameObject gameObject:getOverlappingGameObjects()){
+				if(gameObject instanceof Slime || gameObject instanceof Shark){
+					setPositionX(oldPosition.getPositions()[0]);
+					setPositionY(oldPosition.getPositions()[1]);
+				}//don't bounce with plants
+				EffectOnCollisionWith(gameObject);
+				gameObject.EffectOnCollisionWith(this);
+			}
 			this.moveWindow();
 			if(isInLava()){
 				if(lastLavaHit < 0){
@@ -620,6 +629,15 @@ public class Mazub extends GameObject{
 			world.moveWindowTo((perimeters[2]+2.0d)-world.viewWidth/100.0d, world.getVisibleWindow()[1]/100.0d);
 		}if(world.getVisibleWindow()[3]/100.0d-2<perimeters[3]){
 		world.moveWindowTo(world.getVisibleWindow()[0]/100.0d,(perimeters[3]+2.0d)-world.viewHeight/100.0d);
+		}
+	}
+	
+	public void EffectOnCollisionWith(GameObject gameObject){
+		if(gameObject instanceof Shark || gameObject instanceof Slime){
+			if(!isImmune()){
+				this.loseHp(50);
+				this.imunityTime = 0.6d;
+			}
 		}
 	}
 }

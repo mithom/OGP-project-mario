@@ -60,29 +60,12 @@ public class Slime extends GameObject{
 			}
 			animate(smallDt);
 			for(GameObject gameObject:getOverlappingGameObjects()){
-				if(gameObject instanceof Slime){
-					Slime slime = (Slime)gameObject;
-					if(slime.getSchool().getSize()> getSchool().getSize()){
-						setSchool(slime.getSchool());
-					}else{
-						if(slime.getSchool().getSize()< getSchool().getSize()){
-							slime.setSchool(getSchool());
-						}
-					}
+				if(gameObject instanceof Slime || gameObject instanceof Mazub || gameObject instanceof Shark){
 					setPositionX(oldPosition.getPositions()[0]);
 					setPositionY(oldPosition.getPositions()[1]);
-				}if(gameObject instanceof Mazub || gameObject instanceof Shark){
-					//other instance then slime
-					//TODO blocking movement against each other, not further away!, setting imunity
-					if(!isImmune()){
-						this.schoolHpLoss();
-						this.loseHp(50);
-						this.imunityTime = 0.6d;
-					}
-					//TODO 2sided bounce!
-					setPositionX(oldPosition.getPositions()[0]);
-					setPositionY(oldPosition.getPositions()[1]);
-				}
+				}//don't bounce with plants
+				EffectOnCollisionWith(gameObject);
+				gameObject.EffectOnCollisionWith(this);
 			}
 			if(isInLava()){
 				if(lastLavaHit < 0){
@@ -297,4 +280,24 @@ public class Slime extends GameObject{
 				slime.loseHp(1);
 		}
 	}
+	
+	public void EffectOnCollisionWith(GameObject gameObject){
+		if(gameObject instanceof Slime){
+			Slime slime = (Slime)gameObject;
+			if(slime.getSchool().getSize()> getSchool().getSize()){
+				setSchool(slime.getSchool());
+			}else{
+				if(slime.getSchool().getSize()< getSchool().getSize()){
+					slime.setSchool(getSchool());
+				}
+			}
+		}
+		if(gameObject instanceof Mazub || gameObject instanceof Shark){
+			if(!isImmune()){
+				this.schoolHpLoss();
+				this.loseHp(50);
+				this.imunityTime = 0.6d;
+			}
+		}
+	};
 }

@@ -26,9 +26,8 @@ public class Plant extends GameObject{
 			dt-= smallDt;
 			moveHorizontal(smallDt);
 			for(GameObject gameObject:getOverlappingGameObjects()){
-				if(gameObject instanceof Mazub){
-					consume((Mazub)gameObject);
-				}
+				EffectOnCollisionWith(gameObject);
+				gameObject.EffectOnCollisionWith(this);
 			}
 			animate();
 		}
@@ -79,6 +78,12 @@ public class Plant extends GameObject{
 		if(this.world == null && canHaveAsWorld(world)){
 			this.world = world;
 			world.addPlant(this);
+		}
+	}
+	
+	public void EffectOnCollisionWith(GameObject gameObject){
+		if(gameObject instanceof Mazub){
+			consume((Mazub)gameObject);
 		}
 	}
 }
