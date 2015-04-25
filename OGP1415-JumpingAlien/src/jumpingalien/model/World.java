@@ -59,7 +59,6 @@ public class World {
 			mazub = null;
 		if(gameObject instanceof Shark)
 			sharks.remove(gameObject);
-		//TODO extend for other gameObjects
 	}
 	
 	public void removePlant(Plant plant){
@@ -219,8 +218,14 @@ public class World {
 	public boolean didPlayerWin(){
 		if(mazub == null)
 			return false;
-		if(Arrays.equals(getTileOfPosition(targetTile), getTileOfPosition(mazub.getPosition()))){
+		/*if(Arrays.equals(getTileOfPosition(targetTile), getTileOfPosition(mazub.getPosition()))){
 			return true;
+		}*/
+		double[] perimeters = mazub.getPerimeters();
+		int [][] occupied_tiles = getTilePositionsIn((int)(perimeters[0]*100), (int)(perimeters[1]*100), (int)(perimeters[2]*100),(int)(perimeters[3]*100));
+		for(int[] tile:occupied_tiles){
+			if(Arrays.equals(getTileOfPosition(targetTile),tile))
+				return true;
 		}
 		return false;
 	}

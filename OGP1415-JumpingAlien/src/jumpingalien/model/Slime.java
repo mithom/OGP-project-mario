@@ -116,7 +116,7 @@ public class Slime extends GameObject{
 	
 	private double moveVertical(double dt)throws PositionOutOfBoundsException{
 		//update position and speed (still need to compensate for velocity over max first time)
-		int stateSign =this.groundState.getSign(); 
+		int stateSign =this.groundState.getMultiplier(); 
 		double newSpeed = this.getVerticalVelocity() + this.getVerticalAcceleration()*dt*stateSign;
 		
 		double newPositiony = getPositionY() + travelledVerticalDistance(dt);
@@ -137,7 +137,7 @@ public class Slime extends GameObject{
 	}
 	
 	private double moveHorizontal(double dt) throws IllegalMovementException,PositionOutOfBoundsException{
-		int dirSign =this.direction.getSign(); 
+		int dirSign =this.direction.getMultiplier(); 
 		double newSpeed = this.getHorizontalVelocity()+this.getHorizontalAcceleration()*dt;
 		double s;
 		//dirsign is used in here to compensate for the current direction of the mazub.
@@ -193,7 +193,7 @@ public class Slime extends GameObject{
 	
 	@Basic
 	public double getVerticalAcceleration(){
-		return Slime.verticalAcceleration* groundState.getSign();
+		return Slime.verticalAcceleration* groundState.getMultiplier();
 	}
 	
 	@Basic
@@ -211,9 +211,9 @@ public class Slime extends GameObject{
 	
 	@Basic
 	public double getHorizontalAcceleration(){
-		if(getHorizontalVelocity()*direction.getSign()==getMaxHorizontalVelocity() || direction == Direction.STALLED)
+		if(getHorizontalVelocity()*direction.getMultiplier()==getMaxHorizontalVelocity() || direction == Direction.STALLED)
 			return 0;
-		return horizontalAcceleration*direction.getSign();
+		return horizontalAcceleration*direction.getMultiplier();
 	}
 	
 	public void setSchool(School school){

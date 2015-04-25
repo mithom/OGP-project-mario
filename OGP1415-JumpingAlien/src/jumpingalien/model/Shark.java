@@ -38,7 +38,6 @@ public class Shark extends GameObject{
 		}
 
 	@Override //TODO movement wanneer op de grond in orde brengen
-	//TODO stoppen met vallen wanneer terug in water!
 	public void advanceTime(double dt) throws PositionOutOfBoundsException, NullPointerException, IllegalSizeException{
 		while(!isTerminated() && dt >0){
 			if(actionTime == actionDuration){
@@ -221,7 +220,7 @@ public class Shark extends GameObject{
 	}
 	
 	private double moveHorizontal(double dt) throws IllegalMovementException,PositionOutOfBoundsException{
-		int dirSign =this.direction.getSign(); 
+		int dirSign =this.direction.getMultiplier(); 
 		double newSpeed = this.getHorizontalVelocity()+this.getHorizontalAcceleration()*dt;
 		double s;
 		//dirsign is used in here to compensate for the current direction of the mazub.
@@ -304,7 +303,7 @@ public class Shark extends GameObject{
 		if(isBottomInWater()){
 			return 0;
 		}
-		return verticalAcceleration* groundState.getSign();
+		return verticalAcceleration* groundState.getMultiplier();
 	}
 	
 	@Basic
@@ -322,9 +321,9 @@ public class Shark extends GameObject{
 	
 	@Basic
 	public double getHorizontalAcceleration(){
-		if(getHorizontalVelocity()*direction.getSign()==getMaxHorizontalVelocity() || direction == Direction.STALLED)
+		if(getHorizontalVelocity()*direction.getMultiplier()==getMaxHorizontalVelocity() || direction == Direction.STALLED)
 			return 0;
-		return horizontalAcceleration*direction.getSign();
+		return horizontalAcceleration*direction.getMultiplier();
 	}
 	
 	@Override

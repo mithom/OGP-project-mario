@@ -44,13 +44,13 @@ public class Plant extends GameObject{
 		if(actionTimer+dt < 0.5d){
 			actionTimer += dt;
 			double oldPositionX = getPositionX();
-			setPositionX(oldPositionX +dt*direction.getSign()*horizontalVelocity);
-			if(this.overlapsWithWall()[1]==true && direction.getSign()<0){
+			setPositionX(oldPositionX +dt*direction.getMultiplier()*horizontalVelocity);
+			if(this.overlapsWithWall()[1]==true && direction.getMultiplier()<0){
 				setPositionX(oldPositionX);
 				direction = Direction.RIGHT;
 				actionTimer = 0.0d;
 			}
-			if( overlapsWithWall()[3]==true && direction.getSign()>0){
+			if( overlapsWithWall()[3]==true && direction.getMultiplier()>0){
 				setPositionX(oldPositionX);
 				direction = Direction.LEFT;
 				actionTimer = 0.0d;
