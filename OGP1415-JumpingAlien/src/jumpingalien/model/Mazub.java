@@ -135,6 +135,7 @@ public class Mazub extends GameObject{
 		while(dt>0 && !isTerminated()){
 			double correctDt=this.calculateCorrectDt(dt);
 			dt -= correctDt;
+			imunityTime = Math.max(0, imunityTime - correctDt);
 			double new_position_x = this.moveHorizontal(correctDt);// return new Position(x,y) ipv void
 			double new_position_y = this.moveVertical(correctDt);
 			Position oldPosition = getPosition();
@@ -169,6 +170,14 @@ public class Mazub extends GameObject{
 			}
 			executeEndDuck();
 			this.animate(correctDt);
+			for(GameObject gameObject:getOverlappingGameObjects()){
+				if(gameObject instanceof Slime || gameObject instanceof Shark){
+					setPositionX(oldPosition.getPositions()[0]);
+					setPositionY(oldPosition.getPositions()[1]);
+				}//don't bounce with plants
+				EffectOnCollisionWith(gameObject);
+				gameObject.EffectOnCollisionWith(this);
+			}
 			this.moveWindow();
 			if(isInLava()){
 				if(lastLavaHit < 0){
@@ -238,7 +247,7 @@ public class Mazub extends GameObject{
 	}
 	
 	private double moveHorizontal(double dt) throws IllegalMovementException,PositionOutOfBoundsException{
-		int dirSign =this.direction.getSign(); 
+		int dirSign =this.direction.getMultiplier(); 
 		double newSpeed = this.getHorizontalVelocity()+this.getHorizontalAcceleration()*dt;
 		double s;
 		//dirsign is used in here to compensate for the current direction of the mazub.
@@ -267,7 +276,7 @@ public class Mazub extends GameObject{
 	
 	private double moveVertical(double dt)throws PositionOutOfBoundsException{
 		//update position and speed (still need to compensate for velocity over max first time)
-		int stateSign =this.groundState.getSign(); 
+		int stateSign =this.groundState.getMultiplier(); 
 		double newSpeed = this.getVerticalVelocity() + this.getVerticalAcceleration()*dt*stateSign;
 		
 		double newPositiony = getPositionY() + travelledVerticalDistance(dt,stateSign);
@@ -326,25 +335,25 @@ public class Mazub extends GameObject{
 				}
 			}else{
 				if(duckState == DuckState.STRAIGHT){
-					currentSpriteNumber = 2- (lastMovingDirection.getSign()-1)/2;
+					currentSpriteNumber = 2- (lastMovingDirection.getMultiplier()-1)/2;
 				}else{
-					currentSpriteNumber = 6 - (lastMovingDirection.getSign()-1)/2;
+					currentSpriteNumber = 6 - (lastMovingDirection.getMultiplier()-1)/2;
 				}
 			}
 		}else{
 			if(groundState == GroundState.AIR && duckState == DuckState.STRAIGHT){
-				currentSpriteNumber = 4- (getOriëntation().getSign()-1)/2;
+				currentSpriteNumber = 4- (getOriëntation().getMultiplier()-1)/2;
 			}else{
 				if(duckState == DuckState.DUCKED || duckState == DuckState.TRY_STRAIGHT){
-					currentSpriteNumber = 6- (getOriëntation().getSign()-1)/2;
+					currentSpriteNumber = 6- (getOriëntation().getMultiplier()-1)/2;
 				}else{
 					if((currentSpriteNumber<8) || (getOriëntation() == Direction.LEFT && currentSpriteNumber <8+m) || (getOriëntation()==Direction.RIGHT && currentSpriteNumber >= 8+m)){
 						timeSinceLastAnimation =0;
-						currentSpriteNumber = 8 - (getOriëntation().getSign()-1)*m/2;
+						currentSpriteNumber = 8 - (getOriëntation().getMultiplier()-1)*m/2;
 					}else{
 						if(timeSinceLastAnimation >= 0.075){
 							timeSinceLastAnimation =0;
-							currentSpriteNumber = (currentSpriteNumber-(8 - (getOriëntation().getSign()-1)*m/2) + 1)%m+8 - (getOriëntation().getSign()-1)*m/2;
+							currentSpriteNumber = (currentSpriteNumber-(8 - (getOriëntation().getMultiplier()-1)*m/2) + 1)%m+8 - (getOriëntation().getMultiplier()-1)*m/2;
 						}
 					}
 				}
@@ -393,9 +402,9 @@ public class Mazub extends GameObject{
 	 */
 	@Basic
 	public double getHorizontalAcceleration(){
-		if(getHorizontalVelocity()*getOriëntation().getSign()==getMaxHorizontalVelocity() || getHorizontalVelocity()==0.0d)
+		if(getHorizontalVelocity()*getOriëntation().getMultiplier()==getMaxHorizontalVelocity() || getHorizontalVelocity()==0.0d)
 			return 0;
-		return Mazub.horizontalAcceleration*getOriëntation().getSign();
+		return Mazub.horizontalAcceleration*getOriëntation().getMultiplier();
 	}
 	
 	/**
@@ -404,7 +413,7 @@ public class Mazub extends GameObject{
 	 */
 	@Basic
 	public double getVerticalAcceleration(){
-		return Mazub.verticalAcceleration* groundState.getSign();
+		return Mazub.verticalAcceleration* groundState.getMultiplier();
 	}
 	
 	/**
@@ -451,7 +460,7 @@ public class Mazub extends GameObject{
 			movingOtherSideAfterRelease = true;
 		this.direction = dir;
 		this.lastMovingDirection = dir;
-		this.setHorizontalVelocity(this.initialHorizontalVelocity*dir.getSign());
+		this.setHorizontalVelocity(this.initialHorizontalVelocity*dir.getMultiplier());
 		return;
 	}
 	
@@ -468,7 +477,7 @@ public class Mazub extends GameObject{
 	public void endMove(Direction dir){
 		//recht,links,links los->zou rechts moeten wandelen, doet nu niet
 		assert dir != null && dir != Direction.STALLED;
-		if(dir.getSign()== Math.signum(getHorizontalVelocity()) ||getHorizontalVelocity()==0 ){
+		if(dir.getMultiplier()== Math.signum(getHorizontalVelocity()) ||getHorizontalVelocity()==0 ){
 			if(movingOtherSideAfterRelease){
 				Direction dir2;
 				if(dir==Direction.RIGHT) {
@@ -476,7 +485,7 @@ public class Mazub extends GameObject{
 				}else{
 					dir2 = Direction.RIGHT;
 				}
-				this.setHorizontalVelocity(this.initialHorizontalVelocity*dir2.getSign());
+				this.setHorizontalVelocity(this.initialHorizontalVelocity*dir2.getMultiplier());
 				this.direction = dir2;
 			}else{
 				this.setHorizontalVelocity(0.0d);
@@ -620,6 +629,15 @@ public class Mazub extends GameObject{
 			world.moveWindowTo((perimeters[2]+2.0d)-world.viewWidth/100.0d, world.getVisibleWindow()[1]/100.0d);
 		}if(world.getVisibleWindow()[3]/100.0d-2<perimeters[3]){
 		world.moveWindowTo(world.getVisibleWindow()[0]/100.0d,(perimeters[3]+2.0d)-world.viewHeight/100.0d);
+		}
+	}
+	
+	public void EffectOnCollisionWith(GameObject gameObject){
+		if(gameObject instanceof Shark || gameObject instanceof Slime){
+			if(!isImmune()){
+				this.loseHp(50);
+				this.imunityTime = 0.6d;
+			}
 		}
 	}
 }

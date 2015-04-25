@@ -38,7 +38,6 @@ public class Shark extends GameObject{
 		}
 
 	@Override //TODO movement wanneer op de grond in orde brengen
-	//TODO stoppen met vallen wanneer terug in water!
 	public void advanceTime(double dt) throws PositionOutOfBoundsException, NullPointerException, IllegalSizeException{
 		while(!isTerminated() && dt >0){
 			if(actionTime == actionDuration){
@@ -82,7 +81,7 @@ public class Shark extends GameObject{
 			double smallDt = Math.min(calculateCorrectDt(dt),actionDuration-actionTime);
 			actionTime+=smallDt;
 			dt-= smallDt;
-			
+			imunityTime = Math.max(0, imunityTime - smallDt);
 			Position oldPosition = getPosition();
 			setPositionY(moveVertical(smallDt));
 			//bot
@@ -91,8 +90,12 @@ public class Shark extends GameObject{
 				setPositionY(oldPosition.getPositions()[1]-0.01d);
 				groundState = GroundState.GROUNDED;
 			}else{
-				if(this.overlapsWithWall()[0]==false){
+				if(this.overlapsWithWall()[0]==false && !isBottomInWater()){
 					groundState = GroundState.AIR;
+				}
+				if(isBottomInWater() && getVerticalVelocity()<0 && groundState == GroundState.AIR){
+					groundState= GroundState.GROUNDED;
+					setVerticalVelocity(0.0d);//REDEN dat vissen ff op water blijven drijven, ik denk dat dit zo bedoeld is
 				}
 			}
 			//top
@@ -112,6 +115,14 @@ public class Shark extends GameObject{
 				setPositionX(oldPosition.getPositions()[0]);
 			}
 			animate(smallDt);
+			for(GameObject gameObject:getOverlappingGameObjects()){
+				if(gameObject instanceof Slime || gameObject instanceof Mazub){
+					setPositionX(oldPosition.getPositions()[0]);
+					setPositionY(oldPosition.getPositions()[1]);
+				}//don't bounce with plants
+				EffectOnCollisionWith(gameObject);
+				gameObject.EffectOnCollisionWith(this);
+			}
 			if(isInLava()){
 				if(lastLavaHit < 0){
 					loseHp(50);
@@ -210,7 +221,7 @@ public class Shark extends GameObject{
 	}
 	
 	private double moveHorizontal(double dt) throws IllegalMovementException,PositionOutOfBoundsException{
-		int dirSign =this.direction.getSign(); 
+		int dirSign =this.direction.getMultiplier(); 
 		double newSpeed = this.getHorizontalVelocity()+this.getHorizontalAcceleration()*dt;
 		double s;
 		//dirsign is used in here to compensate for the current direction of the mazub.
@@ -233,7 +244,6 @@ public class Shark extends GameObject{
 		}
 		if(getPositionX()>(world.getWidth()-1)/100d)
 			return (world.getWidth()-1)/100.0d;
-		System.out.println("horisontal:"+ getPositionX()+s);
 		return getPositionX()+s;
 	}
 	
@@ -267,7 +277,6 @@ public class Shark extends GameObject{
 				min4 = Math.abs((-getVerticalVelocity() + Math.sqrt(Math.pow(getVerticalVelocity(), 2)+2*Math.abs(getVerticalAcceleration())/100))/getVerticalAcceleration());
 			else 
 				min4=Float.POSITIVE_INFINITY;
-			System.out.println(Math.min(Math.min(Math.min(Math.min(min1,min2), min3),min4),dt));
 			return Math.min(Math.min(Math.min(Math.min(min1,min2), min3),min4),dt); // mag geen NaN bevatten
 		}
 	}
@@ -295,7 +304,7 @@ public class Shark extends GameObject{
 		if(isBottomInWater()){
 			return 0;
 		}
-		return verticalAcceleration* groundState.getSign();
+		return verticalAcceleration* groundState.getMultiplier();
 	}
 	
 	@Basic
@@ -313,9 +322,9 @@ public class Shark extends GameObject{
 	
 	@Basic
 	public double getHorizontalAcceleration(){
-		if(getHorizontalVelocity()*direction.getSign()==getMaxHorizontalVelocity() || direction == Direction.STALLED)
+		if(getHorizontalVelocity()*direction.getMultiplier()==getMaxHorizontalVelocity() || direction == Direction.STALLED)
 			return 0;
-		return horizontalAcceleration*direction.getSign();
+		return horizontalAcceleration*direction.getMultiplier();
 	}
 	
 	@Override
@@ -334,5 +343,14 @@ public class Shark extends GameObject{
 	@Override
 	public String toString(){
 		return "hp: " + getNbHitPoints(); 
+	}
+	
+	public void EffectOnCollisionWith(GameObject gameObject){
+		if(gameObject instanceof Mazub || gameObject instanceof Slime){
+			if(!isImmune()){
+				this.loseHp(50);
+				this.imunityTime = 0.6d;
+			}
+		}
 	}
 }

@@ -60,29 +60,12 @@ public class Slime extends GameObject{
 			}
 			animate(smallDt);
 			for(GameObject gameObject:getOverlappingGameObjects()){
-				if(gameObject instanceof Slime){
-					Slime slime = (Slime)gameObject;
-					if(slime.getSchool().getSize()> getSchool().getSize()){
-						setSchool(slime.getSchool());
-					}else{
-						if(slime.getSchool().getSize()< getSchool().getSize()){
-							slime.setSchool(getSchool());
-						}
-					}
+				if(gameObject instanceof Slime || gameObject instanceof Mazub || gameObject instanceof Shark){
 					setPositionX(oldPosition.getPositions()[0]);
 					setPositionY(oldPosition.getPositions()[1]);
-				}if(gameObject instanceof Mazub || gameObject instanceof Shark){
-					//other instance then slime
-					//TODO blocking movement against each other, not further away!, setting imunity
-					if(!isImmune()){
-						this.schoolHpLoss();
-						this.loseHp(50);
-						this.imunityTime = 0.6d;
-					}
-					//TODO 2sided bounce!
-					setPositionX(oldPosition.getPositions()[0]);
-					setPositionY(oldPosition.getPositions()[1]);
-				}
+				}//don't bounce with plants
+				EffectOnCollisionWith(gameObject);
+				gameObject.EffectOnCollisionWith(this);
 			}
 			if(isInLava()){
 				if(lastLavaHit < 0){
@@ -133,7 +116,7 @@ public class Slime extends GameObject{
 	
 	private double moveVertical(double dt)throws PositionOutOfBoundsException{
 		//update position and speed (still need to compensate for velocity over max first time)
-		int stateSign =this.groundState.getSign(); 
+		int stateSign =this.groundState.getMultiplier(); 
 		double newSpeed = this.getVerticalVelocity() + this.getVerticalAcceleration()*dt*stateSign;
 		
 		double newPositiony = getPositionY() + travelledVerticalDistance(dt);
@@ -154,7 +137,7 @@ public class Slime extends GameObject{
 	}
 	
 	private double moveHorizontal(double dt) throws IllegalMovementException,PositionOutOfBoundsException{
-		int dirSign =this.direction.getSign(); 
+		int dirSign =this.direction.getMultiplier(); 
 		double newSpeed = this.getHorizontalVelocity()+this.getHorizontalAcceleration()*dt;
 		double s;
 		//dirsign is used in here to compensate for the current direction of the mazub.
@@ -210,7 +193,7 @@ public class Slime extends GameObject{
 	
 	@Basic
 	public double getVerticalAcceleration(){
-		return Slime.verticalAcceleration* groundState.getSign();
+		return Slime.verticalAcceleration* groundState.getMultiplier();
 	}
 	
 	@Basic
@@ -228,9 +211,9 @@ public class Slime extends GameObject{
 	
 	@Basic
 	public double getHorizontalAcceleration(){
-		if(getHorizontalVelocity()*direction.getSign()==getMaxHorizontalVelocity() || direction == Direction.STALLED)
+		if(getHorizontalVelocity()*direction.getMultiplier()==getMaxHorizontalVelocity() || direction == Direction.STALLED)
 			return 0;
-		return horizontalAcceleration*direction.getSign();
+		return horizontalAcceleration*direction.getMultiplier();
 	}
 	
 	public void setSchool(School school){
@@ -297,4 +280,24 @@ public class Slime extends GameObject{
 				slime.loseHp(1);
 		}
 	}
+	
+	public void EffectOnCollisionWith(GameObject gameObject){
+		if(gameObject instanceof Slime){
+			Slime slime = (Slime)gameObject;
+			if(slime.getSchool().getSize()> getSchool().getSize()){
+				setSchool(slime.getSchool());
+			}else{
+				if(slime.getSchool().getSize()< getSchool().getSize()){
+					slime.setSchool(getSchool());
+				}
+			}
+		}
+		if(gameObject instanceof Mazub || gameObject instanceof Shark){
+			if(!isImmune()){
+				this.schoolHpLoss();
+				this.loseHp(50);
+				this.imunityTime = 0.6d;
+			}
+		}
+	};
 }

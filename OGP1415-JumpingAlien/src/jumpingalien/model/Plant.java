@@ -26,9 +26,8 @@ public class Plant extends GameObject{
 			dt-= smallDt;
 			moveHorizontal(smallDt);
 			for(GameObject gameObject:getOverlappingGameObjects()){
-				if(gameObject instanceof Mazub){
-					consume((Mazub)gameObject);
-				}
+				EffectOnCollisionWith(gameObject);
+				gameObject.EffectOnCollisionWith(this);
 			}
 			animate();
 		}
@@ -45,13 +44,13 @@ public class Plant extends GameObject{
 		if(actionTimer+dt < 0.5d){
 			actionTimer += dt;
 			double oldPositionX = getPositionX();
-			setPositionX(oldPositionX +dt*direction.getSign()*horizontalVelocity);
-			if(this.overlapsWithWall()[1]==true && direction.getSign()<0){
+			setPositionX(oldPositionX +dt*direction.getMultiplier()*horizontalVelocity);
+			if(this.overlapsWithWall()[1]==true && direction.getMultiplier()<0){
 				setPositionX(oldPositionX);
 				direction = Direction.RIGHT;
 				actionTimer = 0.0d;
 			}
-			if( overlapsWithWall()[3]==true && direction.getSign()>0){
+			if( overlapsWithWall()[3]==true && direction.getMultiplier()>0){
 				setPositionX(oldPositionX);
 				direction = Direction.LEFT;
 				actionTimer = 0.0d;
@@ -79,6 +78,12 @@ public class Plant extends GameObject{
 		if(this.world == null && canHaveAsWorld(world)){
 			this.world = world;
 			world.addPlant(this);
+		}
+	}
+	
+	public void EffectOnCollisionWith(GameObject gameObject){
+		if(gameObject instanceof Mazub){
+			consume((Mazub)gameObject);
 		}
 	}
 }

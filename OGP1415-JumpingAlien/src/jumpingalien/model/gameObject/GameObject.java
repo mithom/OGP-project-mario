@@ -38,7 +38,7 @@ public abstract class GameObject {
 	
 	public void loseHp(int amount){
 		hitPoint.loseHP(amount);
-		if(isDead()){
+		if(isDead() && !isTerminated()){
 			world.removeGameObject(this);
 			terminated = true;
 		}
@@ -271,4 +271,6 @@ public abstract class GameObject {
 		}
 		return false;
 	}
+	
+	public abstract void EffectOnCollisionWith(GameObject gameObject);
 }

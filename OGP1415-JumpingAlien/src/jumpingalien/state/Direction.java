@@ -6,19 +6,19 @@ package jumpingalien.state;
  */
 public enum Direction {
 	LEFT{
-		public int getSign(){//getMultiplier
+		public int getMultiplier(){
 			return -1;
 		}
 	},
 	RIGHT{
-		public int getSign(){
+		public int getMultiplier(){
 			return 1;
 		}
 	},
 	STALLED{
-		public int getSign(){
+		public int getMultiplier(){
 			return 0;
 		}
 	};
-	public abstract int getSign();
+	public abstract int getMultiplier();
 }
