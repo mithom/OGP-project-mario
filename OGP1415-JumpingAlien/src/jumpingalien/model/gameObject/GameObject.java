@@ -156,6 +156,7 @@ public abstract class GameObject {
 		boolean[] overlap = new boolean[]{false,false,false,false};
 		double [] perimeters = this.getPerimeters();//order from perimeter: left,bottom,right,top
 		for(int i=0;i<perimeters.length;i++)perimeters[i]*=100;
+		// occupied tiles = eerst X dan Y
 		int [][] occupied_tiles = world.getTilePositionsIn((int) (perimeters[0]),(int)(perimeters[1]),(int)(perimeters[2]),(int)(perimeters[3]));
 		for (int i=0 ; i < occupied_tiles.length ; i++){
 			if (world.getGeologicalFeature(new int[]{occupied_tiles[i][0]*world.getTileLenght(),occupied_tiles[i][1]*world.getTileLenght()})==1){//TODO intern if-else{if-else{...}}, not if if if
