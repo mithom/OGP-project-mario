@@ -150,10 +150,11 @@ public abstract class GameObject {
 	}
 	
 	public abstract void advanceTime(double dt) throws NullPointerException,IllegalMovementException,IllegalMazubStateException,IllegalTimeException,PositionOutOfBoundsException, IllegalSizeException;
-
+	
+	//bot,left,top,right
 	public boolean[] overlapsWithWall() {
 		boolean[] overlap = new boolean[]{false,false,false,false};
-		double [] perimeters = this.getPerimeters();//order: left,bottom,right,top
+		double [] perimeters = this.getPerimeters();//order from perimeter: left,bottom,right,top
 		for(int i=0;i<perimeters.length;i++)perimeters[i]*=100;
 		int [][] occupied_tiles = world.getTilePositionsIn((int) (perimeters[0]),(int)(perimeters[1]),(int)(perimeters[2]),(int)(perimeters[3]));
 		for (int i=0 ; i < occupied_tiles.length ; i++){
