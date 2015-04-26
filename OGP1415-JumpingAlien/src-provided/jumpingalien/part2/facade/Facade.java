@@ -108,7 +108,7 @@ public class Facade extends jumpingalien.part1.facade.Facade implements IFacadeP
 		try{
 			world.advanceTime(dt);
 		}catch(IllegalMovementException e){
-			throw new ModelException("illegalMovementException");
+			throw new ModelException("illegalMovementException"+e.getMessage());
 		}catch(IllegalMazubStateException ex){
 			throw new ModelException("illegalMazubState");
 		}catch(IllegalTimeException exc){
