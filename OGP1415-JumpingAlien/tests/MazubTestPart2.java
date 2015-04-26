@@ -138,4 +138,8 @@ public class MazubTestPart2 {
 		//still zero because alien is ducked under a rock
 		assertEquals(0.0d, alien.getHorizontalAcceleration(),Util.DEFAULT_EPSILON);
 	}
+	
+	//TODO hpverlies door terrein bij verschillende classes
+	//TODO overlapping testen
+	//TODO schools 
 }
