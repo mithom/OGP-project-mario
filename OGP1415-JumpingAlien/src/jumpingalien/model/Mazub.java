@@ -646,8 +646,11 @@ public class Mazub extends GameObject{
 	public void EffectOnCollisionWith(GameObject gameObject){
 		if(gameObject instanceof Shark || gameObject instanceof Slime){
 			if(!isImmune()){
-				this.loseHp(50);
-				this.imunityTime = 0.6d;
+				if(getPerimeters()[1]<gameObject.getPerimeters()[3]){
+					//indien mazub niet boven zijn vijand staat (na de botsing) zal hij damage nemen. 
+					this.loseHp(50);
+					this.imunityTime = 0.6d;
+				}
 			}
 		}
 	}
