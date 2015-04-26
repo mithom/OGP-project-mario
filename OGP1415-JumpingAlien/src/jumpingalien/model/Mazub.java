@@ -137,6 +137,11 @@ public class Mazub extends GameObject{
 			double correctDt=this.calculateCorrectDt(dt);
 			dt -= correctDt;
 			imunityTime = Math.max(0, imunityTime - correctDt);
+			animate(0.0d);//make the ducking animations etc all right, advancing in walking etc only in end, (otherwise, there's inaccuracy with the timers)
+			//the animation is only shown in the end. Size for eg ducking, is already changed
+			if(getOriëntation()!= Direction.STALLED && getHorizontalVelocity()*getOriëntation().getMultiplier()<initialHorizontalVelocity){
+				setHorizontalVelocity(initialHorizontalVelocity*direction.getMultiplier());
+			}
 			double new_position_x = this.moveHorizontal(correctDt);// return new Position(x,y) ipv void
 			double new_position_y = this.moveVertical(correctDt);
 			Position oldPosition = getPosition();
@@ -253,7 +258,7 @@ public class Mazub extends GameObject{
 		double s;
 		//dirsign is used in here to compensate for the current direction of the mazub.
 		if(newSpeed*dirSign > this.getMaxHorizontalVelocity()){//overgangsverschijnsel (1keer bij berijken max speed)
-			if(getHorizontalAcceleration()==0)throw new IllegalMovementException("impossible to divide by zero");
+			if(getHorizontalAcceleration()==0)throw new IllegalMovementException("impossible to divide by zero"); //should be impossible to come here
 			double accDt = (this.getMaxHorizontalVelocity()- this.getHorizontalVelocity()*dirSign)/(getHorizontalAcceleration()*dirSign);
 			s= travelledHorizontalDistance(accDt)+getMaxHorizontalVelocity()*(dt-accDt)*dirSign;
 			this.setHorizontalVelocity(this.getMaxHorizontalVelocity()*dirSign);
@@ -262,8 +267,9 @@ public class Mazub extends GameObject{
 			s= travelledHorizontalDistance(dt);
 			this.setHorizontalVelocity(newSpeed);
 		}
-		if(((getPositionX()+s <=0d || s<0)&& dirSign>0 )|| (s>0 && dirSign<0)){
+		if(((getPositionX()+s < 0d || s<0)&& dirSign>0 )|| (s>0 && dirSign<0)){
 			throw new IllegalMovementException("positionX overflowed");
+			
 		}
 		//correct position if out of window
 		if(getPositionX() <0){
@@ -352,9 +358,12 @@ public class Mazub extends GameObject{
 						timeSinceLastAnimation =0;
 						currentSpriteNumber = 8 - (getOriëntation().getMultiplier()-1)*m/2;
 					}else{
-						if(timeSinceLastAnimation >= 0.075){
-							timeSinceLastAnimation =0;
+						if(timeSinceLastAnimation >= 0.075d && timeSinceLastAnimation < 0.15d){
+							timeSinceLastAnimation = timeSinceLastAnimation-0.075;
 							currentSpriteNumber = (currentSpriteNumber-(8 - (getOriëntation().getMultiplier()-1)*m/2) + 1)%m+8 - (getOriëntation().getMultiplier()-1)*m/2;
+						}if(timeSinceLastAnimation>=0.15d){
+							timeSinceLastAnimation = timeSinceLastAnimation-0.15;
+							currentSpriteNumber = (currentSpriteNumber-(8 - (getOriëntation().getMultiplier()-1)*m/2) + 2)%m+8 - (getOriëntation().getMultiplier()-1)*m/2;	
 						}
 					}
 				}
@@ -545,6 +554,7 @@ public class Mazub extends GameObject{
 	 */
 	public void endDuck(){
 		duckState = DuckState.TRY_STRAIGHT;
+		executeEndDuck();
 	}
 	
 	public void executeEndDuck(){
