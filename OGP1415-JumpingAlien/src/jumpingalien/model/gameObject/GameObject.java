@@ -13,6 +13,7 @@ import jumpingalien.model.World;
 import jumpingalien.util.ModelException;
 import jumpingalien.util.Sprite;
 
+
 public abstract class GameObject {
 	protected Position position;
 	protected Sprite[] spriteList;
@@ -24,8 +25,19 @@ public abstract class GameObject {
 	protected double imunityTime;
 	protected double lastWaterHit;
 	protected double lastLavaHit;
-	
-	@Raw
+	/**
+	 * 
+	 * @param pixelLeftX
+	 * @param pixelBottomY
+	 * @param sprites
+	 * @throws PositionOutOfBoundsException
+	 * @Post the initial position of the Mazub instance will be (pixelLeftX,pixelBottomY)
+	 * 			|new.getPosition()== (pixelLeftX,pixelBottomY)
+	 * @Post the list of Sprites the mazub instance will use, will be stored in spriteList
+	 * 			|new.spriteList == sprites;
+	 * 
+	 */
+	@Raw @Model
 	protected GameObject(int pixelLeftX, int pixelBottomY, Sprite[] sprites) throws PositionOutOfBoundsException{
 		position = new Position(new double[]{pixelLeftX/100.0d,pixelBottomY/100.0d});
 		this.spriteList = sprites;
