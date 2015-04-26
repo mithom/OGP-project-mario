@@ -6,11 +6,31 @@ import jumpingalien.model.gameObject.HitPoint;
 import jumpingalien.state.Direction;
 import jumpingalien.util.Sprite;
 import jumpingalien.model.World;
-
+/**
+ * Plant is a class representing a GameObject of the world
+ * @author Meerten Wouter & Michiels Thomas
+ * @version 1.0
+ * @Invar 	the position of a plant will always be valid. 
+ * 			This means it will never be outside of the boundaries of the world or overlap with impassable terrain
+ * @Invar	the currentSpriteNumber must always be valid
+ * 			|isValidSpriteNumber(currentSpriteNumber)
+ */
 public class Plant extends GameObject{
 	private Direction direction;
 	private final double horizontalVelocity=0.5d;
 	private double actionTimer;
+	
+	/**
+	 * 
+	 * @param x |the most left position that is part from the currently showing Sprite.
+	 * @param y |the lowest position that is part of the currently showing Sprite.
+	 * @param sprites |a list of Sprites that plant will use to rotate trough
+	 * @throws PositionOutOfBoundsException
+	 * 			plant has an illegal position
+	 * 			| ! hasValidPosition()
+	 * @Post The plant will be automatically moving to the right when the game starts
+	 * 			| direction = Direction.RIGHT
+	 */
 	
 	public Plant(int x, int y, Sprite[] sprites) throws PositionOutOfBoundsException{
 		super(x,y,sprites);
@@ -18,6 +38,19 @@ public class Plant extends GameObject{
 		actionTimer=0.0d;
 		direction = Direction.RIGHT;
 	}
+	
+	/**
+	 * 
+	 * @throws PositionOutOfBoundsException
+	 * 		Plant has an illegal position
+	 * @effect Plant will move horizontally
+	 * 		| moveHorizontal(smallDt)
+	 * @effect If Plant overlaps with an other gameObject, it will check if this has consequences
+	 * 		| EffectOnCollsionWith(gameObject)
+	 * 		| gameObject.EffectOnCollisionWith(this)
+	 * @effect The movement of plant will be animated
+	 * 		| animate()
+	 */
 	
 	@Override
 	public void advanceTime(double dt)throws PositionOutOfBoundsException{
@@ -33,18 +66,43 @@ public class Plant extends GameObject{
 		}
 	}
 	
-	private void animate(){
+	/**
+	 * animates the movement of plant.
+	 * @Post if moving to the right, the spritenumber will be 1, else it will be 0
+	 * 			| if direction == Direction.RIGHT
+				|	currentSpriteNumber=1
+				| else
+				|   currentSpriteNumber=0
+	 */
+	
+	public void animate(){
 		if(direction == Direction.RIGHT)
 			currentSpriteNumber=1;
 		else
 			currentSpriteNumber=0;
 	}
 	
-	private void moveHorizontal(double dt) throws PositionOutOfBoundsException{
+	/**
+	 * @param dt | The period of time that the plant needs to move
+	 * @throws PositionOutOfBoundsException 
+	 * 		plant has an illegal position
+	 * @Post The position of Plant can change if there is nothing that would block his movement and if actionTimer+dt < 0.5d
+	 * 		| if (actionTimer+dt < 0.5d) && !(this.overlapsWithWall()[1]==true && direction.getMultiplier()<0) && !( overlapsWithWall()[3]==true && direction.getMultiplier()>0)
+	 * 		|  		then setPositionX(newPosition)
+	 * @Post When Plant reaches the borders of it's space to move in, he won't move during dt, but will change direction
+	 * 		| if actionTimer+dt > 0.5d 
+	 * 		|   if direction=Direction.RIGHT
+	 * 		|		then new.direction=Direction.LEFT
+	 * 		| 	else
+	 * 		| 		new.direction=Direction.RIGHT  	 
+	 */
+	
+	public void moveHorizontal(double dt) throws PositionOutOfBoundsException{
 		if(actionTimer+dt < 0.5d){
 			actionTimer += dt;
 			double oldPositionX = getPositionX();
-			setPositionX(oldPositionX +dt*direction.getMultiplier()*horizontalVelocity);
+			double newPositionX = oldPositionX +dt*direction.getMultiplier()*horizontalVelocity;
+			setPositionX(newPositionX);
 			if(this.overlapsWithWall()[1]==true && direction.getMultiplier()<0){
 				setPositionX(oldPositionX);
 				direction = Direction.RIGHT;
@@ -65,14 +123,29 @@ public class Plant extends GameObject{
 			}
 		}
 	}
-	
-	private void consume(Mazub alien){
+	/**
+	 * 
+	 * @param alien a Mazub-character that will consume the plant
+	 * @effect if Mazub can consume a plant, he will gain 50Hp and the plant will lose 1Hp
+	 * 			|if alien.hasMaxHp()==false && terminated == false
+				|	then alien.addHp(50)
+				|	this.loseHp(1)
+
+	 */
+	public void consume(Mazub alien){
 		if(alien.hasMaxHp()==false && terminated == false){
 			alien.addHp(50);
 			loseHp(1);
 		}
 	}
 	
+	/**
+	 * Adds the object Plant to the given world if this is a valid world for it
+	 * @Post if the given world is valid, a plant will be added
+	 * 		  | if this.world == null && canHaveAsWorld(world)
+	 * 		  |   then world.addPlant(this)
+	 * 		  |        this.world=world
+	 */
 	@Override
 	public void addToWorld(World world){
 		if(this.world == null && canHaveAsWorld(world)){
@@ -81,6 +154,12 @@ public class Plant extends GameObject{
 		}
 	}
 	
+	/**
+	 * checks if a collision with the given gameobject has an effect
+	 * @Post if the given gameobject is a Mazub then plant will be consumed
+	 * 			| if(gameObject instanceof Mazub)
+				|    then consume((Mazub)gameObject)
+	 */
 	public void EffectOnCollisionWith(GameObject gameObject){
 		if(gameObject instanceof Mazub){
 			consume((Mazub)gameObject);

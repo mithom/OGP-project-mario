@@ -12,7 +12,24 @@ import jumpingalien.state.Direction;
 import jumpingalien.state.GroundState;
 import jumpingalien.util.Sprite;
 
-
+/**
+ * Shark is a class representing a gameObject of the game. 
+ * @author Meerten Wouter & Michiels Thomas
+ * @version 1.0
+ * @Invar 	the position of the lower left pixel will always be valid. 
+ * 			This means it will never be outside of the boundaries of the game.
+ * 			|hasValidPosition()
+ * @Invar	both the groundState and the Orientation have a valid value at
+ * 			all time in the game.
+ * 			|isValidState(this.getOrientation(),this.getGroundState())
+ * @Invar 	at all time in the game, the acceleration and velocity must have valid values
+ * 			|Double.isNaN(this.getHorizontalVelocity())==false
+ * 			|Double.isNaN(this.getVerticalVelocity())==false
+ * 			|Double.isNaN(this.getHorizontalAcceleration())==false
+ * 			|Double.isNaN(this.getVerticalAcceleration())==false
+ * @Invar	the currentSpriteNumber must always be valid
+ * 			|isValidSpriteNumber(currentSpriteNumber)
+ */
 
 public class Shark extends GameObject{
 	
@@ -31,11 +48,26 @@ public class Shark extends GameObject{
 	private double randomAcceleration;
 	private final static double verticalAcceleration = -10.0d;
 	
+	/**
+	 * 
+	 * @param x |the most left position that is part from the currently showing Sprite.
+	 * @param y |the lowest position that is part of the currently showing Sprite.
+	 * @param sprites |a list of Sprites that shark will use to rotate trough
+	 * @throws PositionOutOfBoundsException
+	 * 			shark has an illegal position
+	 * 			| ! hasValidPosition()
+	 * @Post The shark will be automatically standing still when the game starts 
+	 * 			| direction = Direction.STALLED
+	 */
 	public Shark(int x, int y, Sprite[] sprites)throws PositionOutOfBoundsException{
 		super(x,y,sprites); 
 		actionTime = 0.0d;actionDuration = 0.0d;
 		direction = Direction.STALLED;
 		}
+	
+	/**
+	 * 
+	 */
 
 	@Override //TODO movement wanneer op de grond in orde brengen
 	public void advanceTime(double dt) throws PositionOutOfBoundsException, NullPointerException, IllegalSizeException{
@@ -145,6 +177,11 @@ public class Shark extends GameObject{
 		}
 	}
 	
+	/**
+	 * 
+	 * @return returns a number from 0 to 3. If the last time number 2 or 3 was picked is less 
+	 * 			than 4 seconds and if the bottom of shark is is water, it will return the number 0 or 1
+	 */
 	private int decideAction(){
 		if(randomAcceleration==0){
 			endJump();
@@ -158,6 +195,11 @@ public class Shark extends GameObject{
 		}
 		return rand.nextInt(2);
 	}
+	
+	/**
+	 * 
+	 * @return returns true if the bottom of the shark is in water. If it's not, it will return false.
+	 */
 	
 	public boolean isBottomInWater() {
 		double [] perimeters = this.getPerimeters();//order: left,bottom,right,top
@@ -173,11 +215,21 @@ public class Shark extends GameObject{
 		return false;
 	}
 	
+	/**
+	 * Lets the shark jump
+	 * @Post sets the vertical velocity of shark to the initialjumpVelocity
+	 * 			| this.setVerticalVelocity(this.initVerticalVelocity)
+	 */
 	public void startJump(){
 		this.setVerticalVelocity(this.initVerticalVelocity);
 		return;
 	}
-	
+	/**
+	 * Makes an end to a jump of the shark if he is still jumping
+	 * @Post if shark has an positive vertical velocity, his vertical velocity will be set to 0
+	 * 			|if this.getVerticalVelocity()>0
+	 * 			| then this.setVerticalVelocity(0.0d)
+	 */
 	public void endJump(){
 		if(this.getVerticalVelocity()>0){
 			this.setVerticalVelocity(0.0d);
@@ -185,15 +237,33 @@ public class Shark extends GameObject{
 		return;
 	}
 	
-	
-	private void animate(double dt){
+	/**
+	 * animates the movement of shark.
+	 * @Post if moving to the right, the spritenumber will be 1, else it will be 0
+	 * 			| if direction == Direction.RIGHT
+				|	currentSpriteNumber=1
+				| else
+				|   currentSpriteNumber=0
+	 */
+
+	public void animate(double dt){
 		if(direction == Direction.RIGHT)
 			currentSpriteNumber=1;
 		else
 			currentSpriteNumber = 0;
 	}
 	
-	private double moveVertical(double dt)throws PositionOutOfBoundsException,NullPointerException{
+	/**
+	 * @param dt | The period of time that the character needs to move
+	 * @return The new y-position of the character after he has moved for dt seconds
+	 * @throws PositionOutOfBoundsException
+	 * 			(A part of) the shark isn't located within the boundaries of the world
+	 * 			| ! hasValidPosition()
+	 * @throws NullPointerException
+	 * 
+	 * 
+	 */
+	public double moveVertical(double dt)throws PositionOutOfBoundsException,NullPointerException{
 		//update position and speed (still need to compensate for velocity over max first time)
 		//int stateSign =this.groundState.getSign();
 		double newSpeed;
