@@ -193,7 +193,8 @@ public class Shark extends GameObject{
 		if (actionNb >= (lastJumpActionNb+4) && (isBottomInWater()==true || this.overlapsWithWall()[0]==true)){
 			 return rand.nextInt(4);
 		}
-		return rand.nextInt(2);
+		else
+			return rand.nextInt(2);
 	}
 	
 	/**

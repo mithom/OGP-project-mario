@@ -44,7 +44,6 @@ public class World {
 		this.tileSize = tileSize;
 		targetTile = new Position(this, new double[]{targetTileX*tileSize/100.0d,targetTileY*tileSize/100.0d});
 		cameraLocation = new Position(this, new double[]{0,0});
-		System.out.println(java.util.Arrays.toString(targetTile.getPositions()));
 	}
 	
 	public void removeGameObject(GameObject gameObject){

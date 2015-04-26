@@ -33,17 +33,15 @@ public class PartialFacadeTest {
 	@Test
 	public void testZeroAccellerationOnGround() {
 		IFacadePart2 facade = new Facade();
-
 		// 2 vertical tiles, size 500px
 		// ....
 		// a...
 		// XXXX
 		// XXXX
-		World world = facade.createWorld(500, 1, 2, 1, 1, 1, 1);
+		World world = facade.createWorld(500, 1, 2, 1, 1, 0, 1);
 		facade.setGeologicalFeature(world, 0, 0, FEATURE_SOLID);
 		Mazub alien = facade.createMazub(0, 499, spriteArrayForSize(3, 3));
 		facade.setMazub(world, alien);
-
 		assertArrayEquals(doubleArray(0.0, 0.0), facade.getAcceleration(alien),
 				Util.DEFAULT_EPSILON);
 	}
@@ -52,7 +50,7 @@ public class PartialFacadeTest {
 	public void testTilesInRegion() {
 		IFacadePart2 facade = new Facade();
 
-		World world = facade.createWorld(50, 3, 3, 1, 1, 1, 1);
+		World world = facade.createWorld(50, 3, 3, 1, 1, 0, 1);
 
 		int[][] actualTiles = facade
 				.getTilePositionsIn(world, 20, 20, 105, 105);
@@ -70,7 +68,7 @@ public class PartialFacadeTest {
 		// a...
 		// XXXX
 		// XXXX
-		World world = facade.createWorld(500, 1, 2, 1, 1, 1, 1);
+		World world = facade.createWorld(500, 1, 2, 1, 1, 0, 1);
 		facade.setGeologicalFeature(world, 0, 0, FEATURE_SOLID);
 		Mazub alien = facade.createMazub(0, 499, spriteArrayForSize(3, 3));
 		facade.setMazub(world, alien);
@@ -92,7 +90,7 @@ public class PartialFacadeTest {
 		// a...
 		// XXXX
 		// XXXX
-		World world = facade.createWorld(500, 1, 2, 1, 1, 1, 1);
+		World world = facade.createWorld(500, 1, 2, 1, 1, 0, 1);
 		facade.setGeologicalFeature(world, 0, 0, FEATURE_SOLID);
 		Mazub alien = facade.createMazub(0, 499, spriteArrayForSize(3, 3));
 		facade.setMazub(world, alien);
@@ -115,7 +113,7 @@ public class PartialFacadeTest {
 		// a...
 		// XXXX
 		// XXXX
-		World world = facade.createWorld(500, 1, 2, 1, 1, 1, 1);
+		World world = facade.createWorld(500, 1, 2, 1, 1, 0, 1);
 		facade.setGeologicalFeature(world, 0, 0, FEATURE_SOLID);
 
 		int m = 10;

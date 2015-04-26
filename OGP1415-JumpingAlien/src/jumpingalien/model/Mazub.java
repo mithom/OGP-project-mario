@@ -135,6 +135,7 @@ public class Mazub extends GameObject{
 		//dan controleren we die positie
 		//indien niets, zet als positie mazub
 		//indien bezet, laat botsen (snelheden aanpassen, en verplaatsing niet laten doorgaan en eventueel inverteren)
+		double dt2 = dt;
 		while(dt>0 && !isTerminated()){
 			double correctDt=this.calculateCorrectDt(dt);
 			dt -= correctDt;
@@ -172,7 +173,6 @@ public class Mazub extends GameObject{
 				setPositionX(oldPosition.getPositions()[0]);
 			}
 			executeEndDuck();
-			this.animate(correctDt);
 			for(GameObject gameObject:getOverlappingGameObjects()){
 				if(gameObject instanceof Slime || gameObject instanceof Shark){
 					setPositionX(oldPosition.getPositions()[0]);
@@ -202,6 +202,7 @@ public class Mazub extends GameObject{
 				lastWaterHit =0.2d;
 			}
 		}
+		this.animate(dt2);
 	}
 	
 	
