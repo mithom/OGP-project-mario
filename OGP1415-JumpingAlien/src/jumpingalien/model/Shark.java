@@ -73,41 +73,7 @@ public class Shark extends GameObject{
 	public void advanceTime(double dt) throws PositionOutOfBoundsException, NullPointerException, IllegalSizeException{
 		while(!isTerminated() && dt >0){
 			if(actionTime == actionDuration){
-				switch(decideAction()){
-				case 0:
-					direction = Direction.RIGHT;
-					if (isBottomInWater()){
-						Random rand = new Random();
-						randomAcceleration =  2*verticalMaxRandAcceleration*rand.nextDouble()-verticalMaxRandAcceleration;
-					}else
-						randomAcceleration = 0.0d;
-					break;
-				case 1:
-					direction = Direction.LEFT;
-					if (isBottomInWater()){
-						Random rand = new Random();
-						randomAcceleration =  2*verticalMaxRandAcceleration*rand.nextDouble()-verticalMaxRandAcceleration;
-					}else
-						randomAcceleration = 0.0d;
-					break;
-				case 2:
-					direction = Direction.RIGHT;
-					startJump();
-			    	lastJumpActionNb = actionNb;
-			    	randomAcceleration = 0.0d;
-					break;
-				case 3:
-					direction = Direction.LEFT;
-					startJump();
-	    			lastJumpActionNb = actionNb;
-	    			randomAcceleration = 0.0d;
-					break;
-				default:
-					System.err.println("unsupported action");
-					break;
-				}
-				//System.out.println("randomAcc: "+ randomAcceleration);
-				actionNb += 1 ;
+				decideAction();
 			}
 			
 			double smallDt = Math.min(calculateCorrectDt(dt),actionDuration-actionTime);
@@ -156,20 +122,18 @@ public class Shark extends GameObject{
 				gameObject.EffectOnCollisionWith(this);
 			}
 			if(isInLava()){
-				if(lastLavaHit < 0){
+				lastLavaHit -= smallDt;
+				if(lastLavaHit <= 0){
 					loseHp(50);
 					lastLavaHit = 0.2d;
-				}else{
-					lastLavaHit -= smallDt;
 				}
 			}else
 				lastLavaHit=0.0d;
 			if(isInAir()){
-				if(lastWaterHit < 0){
+				lastWaterHit -= smallDt;
+				if(lastWaterHit <= 0){
 					loseHp(2);
 					lastWaterHit = 0.2d;
-				}else{
-					lastWaterHit -= smallDt;
 				}
 			}else{
 				lastWaterHit =0.2d;
@@ -177,24 +141,61 @@ public class Shark extends GameObject{
 		}
 	}
 	
+
 	/**
 	 * 
 	 * @return returns a number from 0 to 3. If the last time number 2 or 3 was picked is less 
 	 * 			than 4 seconds and if the bottom of shark is is water, it will return the number 0 or 1
 	 */
-	private int decideAction(){
+	private void decideAction(){
 		if(randomAcceleration==0){
 			endJump();
 		}
-		setHorizontalVelocity(0.0d);
+		endMove();
 		Random rand = new Random();
 		actionDuration = rand.nextDouble()*3.0d+1.0d;
 		actionTime = 0.0d;
-		if (actionNb >= (lastJumpActionNb+4) && (isBottomInWater()==true || this.overlapsWithWall()[0]==true)){
-			 return rand.nextInt(4);
+		int nextAction;
+		if (actionNb > (lastJumpActionNb+4) && (isBottomInWater()==true || this.overlapsWithWall()[0]==true)){
+			 nextAction = rand.nextInt(4);
 		}
 		else
-			return rand.nextInt(2);
+			nextAction = rand.nextInt(2);
+		
+		switch(nextAction){
+		case 0:
+			startMove(Direction.RIGHT, true);
+			break;
+		case 1:
+			startMove(Direction.LEFT, true);
+			break;
+		case 2:
+			startMove(Direction.RIGHT, false);
+			startJump();
+			break;
+		case 3:
+			startMove(Direction.LEFT, false);
+			startJump();
+			break;
+		default:
+			System.err.println("unsupported action");
+			break;
+		}
+		actionNb += 1 ;
+	}
+	
+	public void startMove(Direction dir,boolean withRandomAcc){
+		direction = dir;
+		if (isBottomInWater() && withRandomAcc){
+			Random rand = new Random();
+			randomAcceleration =  2*verticalMaxRandAcceleration*rand.nextDouble()-verticalMaxRandAcceleration;
+		}else
+			randomAcceleration = 0.0d;
+	}
+	
+	public void endMove(){
+		randomAcceleration = 0.0d;
+		setHorizontalVelocity(0.0d);
 	}
 	
 	/**
@@ -223,6 +224,7 @@ public class Shark extends GameObject{
 	 */
 	public void startJump(){
 		this.setVerticalVelocity(this.initVerticalVelocity);
+		lastJumpActionNb = actionNb;
 		return;
 	}
 	/**
@@ -273,7 +275,7 @@ public class Shark extends GameObject{
 		else
 			newSpeed = this.getVerticalVelocity() + (this.getVerticalAcceleration()+ randomAcceleration)*dt;
 		double newPositiony = getPositionY() + travelledVerticalDistance(dt);
-		/*
+		
 		if(newPositiony < 0){
 			if(getVerticalVelocity()<=0.0d){
 				this.groundState = GroundState.GROUNDED;
@@ -285,7 +287,7 @@ public class Shark extends GameObject{
 				this.setVerticalVelocity(newSpeed);
 				return ((world.getHeight()-1)/100.0d);
 			}
-		}*/
+		}
 		this.setVerticalVelocity(newSpeed);
 		return newPositiony;
 	}
@@ -309,10 +311,10 @@ public class Shark extends GameObject{
 			throw new IllegalMovementException("positionX overflowed");
 		}
 		//correct position if out of window
-		if(getPositionX() <0){
+		if(getPositionX()+s <0){
 			return 0.0d;
 		}
-		if(getPositionX()>(world.getWidth()-1)/100d)
+		if(getPositionX()+s>(world.getWidth()-1)/100d)
 			return (world.getWidth()-1)/100.0d;
 		return getPositionX()+s;
 	}

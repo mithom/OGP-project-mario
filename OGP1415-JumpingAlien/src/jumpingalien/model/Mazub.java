@@ -180,20 +180,18 @@ public class Mazub extends GameObject{
 			}
 			this.moveWindow();
 			if(isInLava()){
-				if(lastLavaHit < 0){
+				lastLavaHit -= correctDt;
+				if(lastLavaHit <= 0){
 					loseHp(50);
 					lastLavaHit = 0.2d;
-				}else{
-					lastLavaHit -= correctDt;
 				}
 			}else
 				lastLavaHit=0.0d;
 			if(isInWater()){
-				if(lastWaterHit < 0){
+				lastWaterHit -= correctDt;
+				if(lastWaterHit <= 0){
 					loseHp(2);
 					lastWaterHit = 0.2d;
-				}else{
-					lastWaterHit -= correctDt;
 				}
 			}else{
 				lastWaterHit =0.2d;
@@ -279,11 +277,11 @@ public class Mazub extends GameObject{
 			throw new IllegalMovementException("positionX overflowed");
 		}
 		//correct position if out of window
-		if(getPositionX() <0){
+		if(getPositionX()+s <0){
 			return 0.0d;
 			//setPositionX(0); //ELKE SITUATIE VERANDEREN HE
 		}
-		if(getPositionX()>(world.getWidth()-1)/100d)
+		if(getPositionX()+s>(world.getWidth()-1)/100d)
 			return (world.getWidth()-1)/100.0d;
 		return getPositionX()+s;
 	} 
@@ -671,7 +669,7 @@ public class Mazub extends GameObject{
 	 */
 	@Override
 	public void addToWorld(World world){
-		if(this.world == null && canHaveAsWorld(world)){
+		if(canHaveAsWorld(world)){
 			this.world = world;
 			world.addMazub(this);
 			if(overlapsWithWall()[0]){
@@ -709,8 +707,11 @@ public class Mazub extends GameObject{
 	public void EffectOnCollisionWith(GameObject gameObject){
 		if(gameObject instanceof Shark || gameObject instanceof Slime){
 			if(!isImmune()){
-				this.loseHp(50);
-				this.imunityTime = 0.6d;
+				if(getPerimeters()[1]<gameObject.getPerimeters()[3]){
+					//indien mazub niet boven zijn vijand staat (na de botsing) zal hij damage nemen. 
+					this.loseHp(50);
+					this.imunityTime = 0.6d;
+				}
 			}
 		}
 	}
