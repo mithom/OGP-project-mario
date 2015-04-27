@@ -44,7 +44,8 @@ public class Mazub extends GameObject{
 	private double timeSinceLastMovement;
 	private Direction lastMovingDirection = Direction.STALLED;
 	private double maxDuckingVelocity = 1.0d;
-	private boolean movingOtherSideAfterRelease = false;
+	private boolean movingLeft = false;
+	private boolean movingRight = false;
 
 	/**
 	 * 
@@ -128,10 +129,6 @@ public class Mazub extends GameObject{
 	 */
 	//moveHor publiek maken of @effect vervangen door doc.
 	public void advanceTime(double dt)throws PositionOutOfBoundsException{
-		//maak nieuwe positie aan, maar niet als die van mazub
-		//dan controleren we die positie
-		//indien niets, zet als positie mazub
-		//indien bezet, laat botsen (snelheden aanpassen, en verplaatsing niet laten doorgaan en eventueel inverteren)
 		double dt2 = dt;
 		while(dt>0 && !isTerminated()){
 			double correctDt=this.calculateCorrectDt(dt);
@@ -146,8 +143,7 @@ public class Mazub extends GameObject{
 			double new_position_y = this.moveVertical(correctDt);
 			Position oldPosition = getPosition();
 			this.setPositionY(new_position_y);
-			
-			//TODO fix movement by: 1) check sides, 2) check grounded 3) if still grounded, move back to side and check sideoverlapping, or move vertical, check grounded, move horizontal, check sides 
+			 
 			// check if character overlaps with a wall above or beneath it 
 			if (this.overlapsWithWall()[0]==true && getVerticalVelocity()<0.0d){
 				this.setVerticalVelocity(0.0d);
@@ -179,6 +175,11 @@ public class Mazub extends GameObject{
 				if(gameObject instanceof Slime || gameObject instanceof Shark){
 					setPositionX(oldPosition.getPositions()[0]);
 					setPositionY(oldPosition.getPositions()[1]);
+					boolean[] sides = sideOverlappingBetween(gameObject);
+					if(sides[1]){
+						setVerticalVelocity(0.0d);
+						groundState=GroundState.GROUNDED;
+					}
 				}//don't bounce with plants
 				EffectOnCollisionWith(gameObject);
 				gameObject.EffectOnCollisionWith(this);
@@ -460,12 +461,13 @@ public class Mazub extends GameObject{
 	 * 			|new.getHorizontalVelocity()== this.initialHorizontalVelocity*dir.getSign()
 	 * 			|new.getOrientation() == dir
 	 */
-	public void startMove(Direction dir){//TODO bug wanneer links en rechts op zelfde moment ingedrukt
+	public void startMove(Direction dir){
 		assert dir != null && dir != Direction.STALLED;
 		assert this.initialHorizontalVelocity>=0;
-		if((direction == Direction.RIGHT && dir == Direction.LEFT) || 
-				(direction == Direction.LEFT && dir == Direction.RIGHT))
-			movingOtherSideAfterRelease = true;
+		if(dir == Direction.RIGHT)
+			movingRight=true;
+		else
+			movingLeft=true;
 		this.direction = dir;
 		this.lastMovingDirection = dir;
 		this.setHorizontalVelocity(this.initialHorizontalVelocity*dir.getMultiplier());
@@ -483,26 +485,26 @@ public class Mazub extends GameObject{
 	 * 			|			new.getOrientation == Direction.STALLED
 	 */
 	public void endMove(Direction dir){
-		//recht,links,links los->zou rechts moeten wandelen, doet nu niet
 		assert dir != null && dir != Direction.STALLED;
-		if(dir.getMultiplier()== Math.signum(getHorizontalVelocity()) ||getHorizontalVelocity()==0 ){
-			if(movingOtherSideAfterRelease){
-				Direction dir2;
-				if(dir==Direction.RIGHT) {
-					dir2 = Direction.LEFT;
-				}else{
-					dir2 = Direction.RIGHT;
-				}
-				this.setHorizontalVelocity(this.initialHorizontalVelocity*dir2.getMultiplier());
-				this.direction = dir2;
+		if(dir==Direction.RIGHT){
+			movingRight = false;
+			if(movingLeft){
+				this.setHorizontalVelocity(this.initialHorizontalVelocity*Direction.LEFT.getMultiplier());
+				this.direction=Direction.LEFT;
 			}else{
 				this.setHorizontalVelocity(0.0d);
 				this.direction = Direction.STALLED;
 			}
 		}else{
-			movingOtherSideAfterRelease = false;
+			movingLeft=false;
+			if(movingRight){
+				this.setHorizontalVelocity(this.initialHorizontalVelocity*Direction.RIGHT.getMultiplier());
+				this.direction=Direction.RIGHT;
+			}else{
+				this.setHorizontalVelocity(0.0d);
+				this.direction = Direction.STALLED;
+			}
 		}
-		return;
 	}
 	
 	/**

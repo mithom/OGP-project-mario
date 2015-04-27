@@ -159,7 +159,7 @@ public abstract class GameObject {
 		// occupied tiles = eerst X dan Y
 		int [][] occupied_tiles = world.getTilePositionsIn((int) (perimeters[0]),(int)(perimeters[1]),(int)(perimeters[2]),(int)(perimeters[3]));
 		for (int i=0 ; i < occupied_tiles.length ; i++){
-			if (world.getGeologicalFeature(new int[]{occupied_tiles[i][0]*world.getTileLenght(),occupied_tiles[i][1]*world.getTileLenght()})==1){//TODO intern if-else{if-else{...}}, not if if if
+			if (world.getGeologicalFeature(new int[]{occupied_tiles[i][0]*world.getTileLenght(),occupied_tiles[i][1]*world.getTileLenght()})==1){
 				//check if tile is beneath character
 				if (world.getBottomLeftPixelOfTile(occupied_tiles[i][0],occupied_tiles[i][1])[1] < perimeters[1])
 					overlap[0]=true;
@@ -185,7 +185,7 @@ public abstract class GameObject {
 		ArrayList<GameObject> gameObjects = world.getAllGameObjects();
 		ArrayList<GameObject> overlappingObjects = new ArrayList<GameObject>();
 		for (int i=0 ; i < gameObjects.size() ; i++){
-			if(overlaps(gameObjects.get(i)) && gameObjects.get(i) != this){//TODO does this work altough copy?
+			if(overlaps(gameObjects.get(i)) && gameObjects.get(i) != this){
 				overlappingObjects.add(gameObjects.get(i));
 			}
 		}
@@ -239,7 +239,7 @@ public abstract class GameObject {
 				System.out.println("something went wrong, should never have happened!, error in isInWater");
 			}
 		}
-		return false;//TODO check if isBottomInWater isn't good enough
+		return false;
 	}
 	
 	public boolean isInLava(){
@@ -273,4 +273,20 @@ public abstract class GameObject {
 	}
 	
 	public abstract void EffectOnCollisionWith(GameObject gameObject);
+	
+	//left,bottom,right,top, need to be checked after position has been resetted
+	public boolean[] sideOverlappingBetween(GameObject bounceAgainst){
+		double[] own = getPerimeters();
+		double[] other = bounceAgainst.getPerimeters();
+		boolean[] overlap=new boolean[4];
+		if(own[0] > other[2])
+			overlap[0]=true;
+		if(own[1] > other[3])
+			overlap[1]=true;
+		if(own[2]<other[0])
+			overlap[2]=true;
+		if(own[3]<other[1])
+			overlap[3]=true;
+		return overlap;
+	}
 }

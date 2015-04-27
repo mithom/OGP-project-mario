@@ -47,16 +47,26 @@ public class Plant extends GameObject{
 			setPositionX(oldPositionX +dt*direction.getMultiplier()*horizontalVelocity);
 			if(this.overlapsWithWall()[1]==true && direction.getMultiplier()<0){
 				setPositionX(oldPositionX);
-				direction = Direction.RIGHT;
-				actionTimer = 0.0d;
 			}
 			if( overlapsWithWall()[3]==true && direction.getMultiplier()>0){
 				setPositionX(oldPositionX);
-				direction = Direction.LEFT;
-				actionTimer = 0.0d;
 			}
 		}else{
-			actionTimer = (actionTimer+dt)-0.5d;//TODO exacte omkering maken, dit is niet exact
+			double oldDirTime = (0.5-actionTimer);
+			actionTimer = (actionTimer+dt)-0.5d;
+			double realMovementDt = oldDirTime - actionTimer;//can be negative, this means moving to the new side instead of the old one.
+			
+			//make the movement
+			double oldPositionX = getPositionX();
+			setPositionX(oldPositionX +realMovementDt*direction.getMultiplier()*horizontalVelocity);
+			if(this.overlapsWithWall()[1]==true && direction.getMultiplier()*Math.signum(realMovementDt)<0){
+				setPositionX(oldPositionX);
+			}
+			if( overlapsWithWall()[3]==true && direction.getMultiplier()*Math.signum(realMovementDt)>0){
+				setPositionX(oldPositionX);
+			}
+			
+			//change the direction
 			if(direction == Direction.RIGHT){
 				direction = Direction.LEFT;
 			}
