@@ -7,8 +7,11 @@ import jumpingalien.part2.facade.Facade;
 import jumpingalien.part2.facade.IFacadePart2;
 import jumpingalien.exception.PositionOutOfBoundsException;
 import jumpingalien.model.*;
+import jumpingalien.model.gameObject.Position;
+import jumpingalien.state.Direction;
 import jumpingalien.util.Sprite;
 import jumpingalien.util.Util;
+import jumpingalien.common.sprites.JumpingAlienSprites;
 
 import org.junit.Test;
 
@@ -116,7 +119,7 @@ public class MazubTestPart2 {
 			facade.setGeologicalFeature(world, i, 0, 1);//to move normally
 		facade.setGeologicalFeature(world, 2, 2, 1);//to duck under
 		
-		Mazub alien = facade.createMazub(0, 69, jumpingalien.common.sprites.JumpingAlienSprites.ALIEN_SPRITESET);
+		Mazub alien = facade.createMazub(0, 69, JumpingAlienSprites.ALIEN_SPRITESET);
 		facade.setMazub(world, alien);
 		//should be 0 if not walking
 		assertEquals(0, alien.getHorizontalAcceleration(),Util.DEFAULT_EPSILON);
@@ -274,33 +277,101 @@ public class MazubTestPart2 {
 	public void testChangeSchool(){
 		//setting up a world
 		IFacadePart2 facade = new Facade();
-		World world = facade.createWorld(70, 5, 2, 1, 1, 0, 1);
-		for(int i=0;i<5;i++)
+		World world = facade.createWorld(70, 10, 2, 1, 1, 0, 1);
+		for(int i=0;i<10;i++)
 			facade.setGeologicalFeature(world, i, 0, 1);//to move normally
 		School school1 = facade.createSchool();
 		School school2 = facade.createSchool();
 		School school3 = facade.createSchool();
-		Slime slime1 = facade.createSlime(280, 75, spriteArrayForSize(70, 40, 2), school1);
-		Slime slime2 = facade.createSlime(0, 75, spriteArrayForSize(70, 40, 2), school2);
-		Slime slime3 = facade.createSlime(0, 75, spriteArrayForSize(70, 40, 2), school3);
-		facade.addSlime(world, slime3);
-		facade.addSlime(world, slime2);
+		Slime slime1 = facade.createSlime(0, 69, spriteArrayForSize(70, 40, 2), school1);
+		Slime slime2 = facade.createSlime(71, 69, spriteArrayForSize(70, 40, 2), school2);
+		Slime slime3 = facade.createSlime(142, 69, spriteArrayForSize(70, 40, 2), school3);
 		facade.addSlime(world, slime1);
-		//TODO test they do not change school
+		facade.addSlime(world, slime2);
+		facade.addSlime(world, slime3);
 		
-		Slime slime4 = facade.createSlime(0, 75, spriteArrayForSize(70, 40, 2), school1);
+		//here they don't change school because all schools are equally sized.
+		facade.advanceTime(world, 0.0000005d);
+		slime1.endMove();slime1.startMove(Direction.RIGHT);
+		slime2.endMove();slime2.startMove(Direction.LEFT);
+		slime3.endMove();slime3.startMove(Direction.LEFT);
+		facade.advanceTime(world, 0.2d);
+		assertEquals(school1, slime1.getSchool());assertEquals(100, slime1.getNbHitPoints());
+		assertEquals(school2, slime2.getSchool());assertEquals(100, slime2.getNbHitPoints());
+		assertEquals(school3, slime3.getSchool());assertEquals(100, slime3.getNbHitPoints());
+		
+		//here they do change order because school 1 is larger then the other ones.
+		Slime slime4 = facade.createSlime(500, 75, spriteArrayForSize(70, 40, 2), school1);
 		facade.addSlime(world, slime4);
-		//TODO test they do change school
-		
+		facade.advanceTime(world, 0.2d);
+		assertEquals(school1, slime1.getSchool());assertEquals(98, slime1.getNbHitPoints());
+		assertEquals(school1, slime2.getSchool());assertEquals(101, slime2.getNbHitPoints());
+		assertEquals(school1, slime3.getSchool());assertEquals(103, slime3.getNbHitPoints());
+		assertEquals(school1, slime4.getSchool());assertEquals(98, slime4.getNbHitPoints());
 	}
 	
-	@Test void testGameOverSituations(){
+	@Test public void testGameOverSituations(){
 		IFacadePart2 facade = new Facade();
-		World world = facade.createWorld(70, 5, 2, 1, 1, 0, 1);
+		World world = facade.createWorld(70, 5, 2, 1, 1, 4, 1);
 		for(int i=0;i<5;i++)
 			facade.setGeologicalFeature(world, i, 0, 1);//to move normally
-		//TODO isGameOver en didPlayerWin testen
+		
+		//world ended right from start, player spawned on endPosition
+		Mazub alien = facade.createMazub(70*4, 69, JumpingAlienSprites.ALIEN_SPRITESET);
+		facade.setMazub(world, alien);
+		assertTrue(facade.isGameOver(world));
+		assertTrue(facade.didPlayerWin(world));
+		
+		Mazub alien2 = facade.createMazub(70*3-2, 69, JumpingAlienSprites.ALIEN_SPRITESET);
+		facade.setMazub(world, alien2);
+		assertFalse(facade.isGameOver(world));
+		assertFalse(facade.didPlayerWin(world));
+		alien2.startMove(Direction.RIGHT);
+		facade.advanceTime(world, 0.2d);
+		assertTrue(facade.didPlayerWin(world));
+		assertTrue(facade.isGameOver(world));
+		
+		Mazub alien3 = facade.createMazub(70*3-2, 69, JumpingAlienSprites.ALIEN_SPRITESET);
+		facade.setMazub(world, alien3);
+		School school = facade.createSchool();
+		Slime slime = facade.createSlime(70*2-2, 69, spriteArrayForSize(70, 40, 2), school);
+		facade.addSlime(world, slime);
+		facade.advanceTime(world, 0.00005d);
+		slime.endMove();slime.startMove(Direction.RIGHT);
+		facade.advanceTime(world, 0.2d);
+		facade.advanceTime(world, 0.2d);
+		assertFalse(facade.isGameOver(world));
+		assertFalse(facade.didPlayerWin(world));
+		facade.advanceTime(world, 0.2d);
+		facade.advanceTime(world, 0.2d);//to bypass the immunity time
+		assertTrue(facade.isGameOver(world));
+		assertFalse(facade.didPlayerWin(world));
 	}
 	
+	@Test
+	public void testGetTileOfPosition() throws PositionOutOfBoundsException{
+		IFacadePart2 facade = new Facade();
+		World world = facade.createWorld(70, 10, 2, 1, 1, 0, 1);
+		assertArrayEquals(new int[2],world.getTileOfPosition(new double[]{0.6,0.6}));//this function works in coordinates, not pixels.
+		assertArrayEquals(new int[]{1,1},world.getTileOfPosition(new double[]{0.7,0.7}));
+		
+		assertArrayEquals(new int[2],world.getTileOfPosition(new Position(world, new double[]{0.6,0.6})));
+		assertArrayEquals(new int[]{1,1},world.getTileOfPosition(new Position(world, new double[]{0.7,0.7})));
+	}
+	
+	@Test
+	public void testGetVisibleWindow(){
+		IFacadePart2 facade = new Facade();
+		World world = facade.createWorld(70, 10, 3, 470, 210, 9, 1);
+		for(int i=0;i<10;i++)
+			facade.setGeologicalFeature(world, i, 0, 1);//to move normally
+		Mazub alien = facade.createMazub(200, 70, JumpingAlienSprites.ALIEN_SPRITESET);
+		facade.setMazub(world, alien);
+		alien.startMove(Direction.RIGHT);
+		assertArrayEquals(new int[]{0,0,469,209}, facade.getVisibleWindow(world));
+		facade.advanceTime(world, 0.1d);
+		assertArrayEquals(new int[]{9,0,478,209}, facade.getVisibleWindow(world));
+		//order: left,bottom,right,top
+	}
 	//TODO algemene functies van world testen!
 }

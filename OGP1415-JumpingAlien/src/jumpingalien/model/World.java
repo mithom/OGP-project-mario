@@ -122,8 +122,8 @@ public class World {
 		int[] visibleWindow = new int[4];
 		visibleWindow[0]=cameraLocation.getPixelPosition()[0];
 		visibleWindow[1]=cameraLocation.getPixelPosition()[1];
-		visibleWindow[2] = visibleWindow[0]+ viewWidth;
-		visibleWindow[3]= visibleWindow[1] + viewHeight;
+		visibleWindow[2] = visibleWindow[0]+ viewWidth-1;
+		visibleWindow[3]= visibleWindow[1] + viewHeight-1;
 		return visibleWindow;
 		//order: left,bottom,right,top
 	}
@@ -249,7 +249,7 @@ public class World {
 		return false;
 	}
 	public void moveWindowTo(double Left, double Bottom)throws PositionOutOfBoundsException{
-		cameraLocation = new Position(this, new double[]{Math.min(Math.max(0,Left),(getWidth()-viewWidth-1)/100.0d),Math.min(Math.max(0,Bottom),(getHeight()-viewHeight-1)/100.0d)});
+		cameraLocation = new Position(this, new double[]{Math.min(Math.max(0,Left),(getWidth()-viewWidth)/100.0d),Math.min(Math.max(0,Bottom),(getHeight()-viewHeight)/100.0d)});//getHeight 1 to big, but viewHeight too, it compensates
 	}
 	
 	public ArrayList<GameObject> getAllGameObjects(){
