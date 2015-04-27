@@ -75,13 +75,44 @@ public class Shark extends GameObject{
 	 * 			if double dt
 	 * @throws IllegalSizeException
 	 * 			The size of shark isn't a legal value
-	 * @Post
-	 * @Post
+	 * @Post 	the position and velocity of shark can be changed depending on the situation. 
+	 * 				|Position oldPosition = getPosition()
+	 * 				|double smallDt = Math.min(calculateCorrectDt(dt),actionDuration-actionTime)
+					|new.getPositionY()==moveVertical(smallDt)
+					|if ((this.overlapsWithWall()[0]==true || this.placeOverlapsWithGameObject()[1]==true) && getVerticalVelocity()<0.0d){
+					|	new.getVerticalVelocity()==0.0d
+					|	new.getPositionY()==oldPosition.getPositions()[1]-0.01d
+					|	new.groundState = GroundState.GROUNDED;
+					|else
+					|	if(this.overlapsWithWall()[0]==false &&isInAir())
+					|		new.groundState = GroundState.AIR
+					|	if(!isInAir() && getVerticalVelocity()<0 && groundState == GroundState.AIR)
+					|		new.groundState= GroundState.GROUNDED
+					|		new.getVerticalVelocity()==0.0d
+					|if( (overlapsWithWall()[2]==true || this.placeOverlapsWithGameObject()[3]==true) && getVerticalVelocity()>0)
+					|	new.getVerticalVelocity()==0.0d
+					|	new.getPositionY()==oldPosition.getPositions()[1]
+					|new.getPositionX()==moveHorizontal(smallDt)
+					|if((this.overlapsWithWall()[1]==true || this.placeOverlapsWithGameObject()[0]==true) && getHorizontalVelocity()<0){
+					|	new.getHorizontalVelocity()==0.0d
+					|	new.getPositionX()==oldPosition.getPositions()[0]
+					|if( (overlapsWithWall()[3]==true || this.placeOverlapsWithGameObject()[2]==true) && getHorizontalVelocity()>0){
+					|	new.getHorizontalVelocity()==0.0d
+					|	new.getPositionX()==oldPosition.getPositions()[0]
 	 * @effect	the position,velocity,acceleration and State from mazub will be update according to the physics over a span from dt seconds.
 	 * 			|moveHorizontal()
 	 * 			|moveVertical()
+	 * @effect	if the time of the action is the duration of the action, a random action will be needed to be decided
+	 * 			|if(actionTime == actionDuration)
+	 * 			|	decideAction()
 	 * @effect	the shown Sprite is updated according to the changed state of mazub.
-	 * 			|animate()	 * 
+	 * 			|double smallDt = Math.min(calculateCorrectDt(dt),actionDuration-actionTime)
+	 * 			|animate(smallDt)	
+	 * @effect  If Mazub is in lava or water, he will lose Hp
+	 * 			|if isInLava() 
+				| 	then loseHp(50)
+				|if isInAir()
+				|	then loseHp(2)
 	 */
 
 	@Override
@@ -159,12 +190,34 @@ public class Shark extends GameObject{
 
 	/**
 	 * 
-	 * @return returns a number from 0 to 3. If the last time number 2 or 3 was picked is less 
-	 * 			than 4 seconds and if the bottom of shark is is water, it will return the number 0 or 1
-	 * @post the horizontal velocity will be set to 0
-	 * 			|new.getHorizontalVelocity = 0.0d
-	 * @effect | if randomAcceleration==0
+	 * decides which random movement shark will be executing
+	 * @effect if the randomacceleration is zero, shark will end jumping
+	 * 		   | if randomAcceleration==0
 	 * 		   |	then endJump()
+	 * @effect shark will stop moving
+	 * 		   |endMove()
+	 * @effect depending on which random number is decided, shark will be executing a random movement. The choices are: moving without jump to the right and to the left and
+	 * 		 	moving with a jump to the right and to the left
+	 * 			|int nextAction;
+				|	if (actionNb > (lastJumpActionNb+4) && (isBottomInWater()==true || this.overlapsWithWall()[0]==true)){
+			 	|		then nextAction = rand.nextInt(4)
+				|	else
+				|		nextAction = rand.nextInt(2);
+	 * 		   	|switch(nextAction){
+			    |case 0:
+				|	startMove(Direction.RIGHT, true);
+				|	break;
+				|case 1:
+				|	startMove(Direction.LEFT, true);
+				|	break;
+				|case 2:
+				|	startMove(Direction.RIGHT, false);
+				|	startJump();
+				|	break;
+				|case 3:
+				|	startMove(Direction.LEFT, false);
+				|	startJump();
+				|	break;}
 	 */
 	private void decideAction(){
 		if(randomAcceleration==0){
@@ -203,6 +256,17 @@ public class Shark extends GameObject{
 		actionNb += 1 ;
 	}
 	
+	/**
+	 * shark will start moving
+	 * @param dir |the direction to which shark needs to move
+	 * @param withRandomAcc | whether or not there needs to be a random vertical acceleration (so true or false)
+	 * @Post  the direction of shark will be changed to the given dir and in some cases there will be a random acceleration
+	 * 			|new.direction == dir
+	 * 			|if (isBottomInWater() && withRandomAcc)
+	 * 			|	then Random rand = new Random();
+				|	     randomAcceleration =  2*verticalMaxRandAcceleration*rand.nextDouble()-verticalMaxRandAcceleration
+			    |else    randomAcceleration = 0.0d
+	 */
 	public void startMove(Direction dir,boolean withRandomAcc){
 		direction = dir;
 		if (!isInAir() && withRandomAcc){
@@ -212,6 +276,13 @@ public class Shark extends GameObject{
 			randomAcceleration = 0.0d;
 	}
 	
+	/**
+	 * shark will end with his movements
+	 * @post the random acceleration and horizontal movement will be set to 0
+	 * 			|new.randomAcceleration == 0.0d
+	 * 			|new.getHorizontalVelocity() == 0.0d
+	 */
+	
 	public void endMove(){
 		randomAcceleration = 0.0d;
 		setHorizontalVelocity(0.0d);
@@ -220,11 +291,7 @@ public class Shark extends GameObject{
 	/**
 	 * 
 	 * @return returns true if the bottom of the shark is in water. If it's not, it will return false.
-	 * 			| if (world.getGeologicalFeature(new int[]{occupied_tiles[i][0]*world.getTileLenght(),occupied_tiles[i][1]*world.getTileLenght()})==2)
-	 *					then if (world.getBottomLeftPixelOfTile(occupied_tiles[i][0],occupied_tiles[i][1])[1] <= perimeters[1])
-	 *				 		then true
-	 *				 		 else
-	 *				 		 	 false
+	 * 
 	 */
 	
 	public boolean isBottomInWater() {
@@ -244,8 +311,9 @@ public class Shark extends GameObject{
 	
 	/**
 	 * Lets the shark jump
-	 * @Post sets the vertical velocity of shark to the initialjumpVelocity
-	 * 			| this.setVerticalVelocity(this.initVerticalVelocity)
+	 * @Post sets the vertical velocity of shark to the initialjumpVelocity and changes the lastJumpingActionNb to actionNb
+	 * 			| new.getVerticalVelocity() == this.initVerticalVelocity
+	 * 			| new.lastJumpActionNb = actionNb
 	 */
 	public void startJump(){
 		this.setVerticalVelocity(this.initVerticalVelocity);
@@ -256,7 +324,7 @@ public class Shark extends GameObject{
 	 * Makes an end to a jump of the shark if he is still jumping
 	 * @Post if shark has an positive vertical velocity, his vertical velocity will be set to 0
 	 * 			|if this.getVerticalVelocity()>0
-	 * 			| then this.setVerticalVelocity(0.0d)
+	 * 			| 	then new.getVerticalVelocity() == 0.0d
 	 */
 	public void endJump(){
 		if(this.getVerticalVelocity()>0){
@@ -269,9 +337,9 @@ public class Shark extends GameObject{
 	 * animates the movement of shark.
 	 * @Post if moving to the right, the spritenumber will be 1, else it will be 0
 	 * 			| if direction == Direction.RIGHT
-				|	currentSpriteNumber=1
+				|	new.currentSpriteNumber=1
 				| else
-				|   currentSpriteNumber=0
+				|   new.currentSpriteNumber=0
 	 */
 
 	public void animate(double dt){
@@ -288,12 +356,19 @@ public class Shark extends GameObject{
 	 * 			(A part of) the shark isn't located within the boundaries of the world
 	 * 			| ! hasValidPosition()
 	 * @throws NullPointerException
-	 * @Post depending on the situation the vetical velocity of shark will be set to the correct value
+	 * @Post depending on the situation the vertical velocity of shark will be set to the correct value
 	 * 			|if  overlapsWithWall()[0]==true
 	 * 			|  then this.setVerticalVelocity(this.getVerticalVelocity() + (this.getVerticalAcceleration()+Math.max(0, randomAcceleration))*dt)
 	 * 			|else
 	 * 			|		this.setVerticalVelocity(this.getVerticalVelocity() + (this.getVerticalAcceleration()+ randomAcceleration)*dt)
-	 * 
+	 * @Post  if shark wants to go out of the upper or lower borders of the world, it's vertical speed will be set to 0. If he wants to go beneath the world, he will also be grounded
+	 * 			|if(newPositiony < 0){
+					if(getVerticalVelocity()<=0.0d)
+						then new.groundState = GroundState.GROUNDED
+							 new.getVerticalVelocity()==0.0d
+				|else	
+					if(newPositiony>(world.getHeight()-1)/100.0d){
+						then new.getVerticalVelocity()==newSpeed()
 	 */
 	public double moveVertical(double dt)throws PositionOutOfBoundsException,NullPointerException{
 		//update position and speed (still need to compensate for velocity over max first time)

@@ -70,9 +70,9 @@ public class Plant extends GameObject{
 	 * animates the movement of plant.
 	 * @Post if moving to the right, the spritenumber will be 1, else it will be 0
 	 * 			| if direction == Direction.RIGHT
-				|	currentSpriteNumber=1
+				|	new.currentSpriteNumber=1
 				| else
-				|   currentSpriteNumber=0
+				|   new.currentSpriteNumber=0
 	 */
 	
 	public void animate(){
@@ -86,9 +86,15 @@ public class Plant extends GameObject{
 	 * @param dt | The period of time that the plant needs to move
 	 * @throws PositionOutOfBoundsException 
 	 * 		plant has an illegal position
-	 * @Post The position of Plant can change if there is nothing that would block his movement and if actionTimer+dt < 0.5d
+	 * @Post The position of Plant can change if there is nothing that would block his movement. Depending on if actionTimer+dt < 0.5d, the position change will be different
 	 * 		| if (actionTimer+dt < 0.5d) && !(this.overlapsWithWall()[1]==true && direction.getMultiplier()<0) && !( overlapsWithWall()[3]==true && direction.getMultiplier()>0)
-	 * 		|  		then setPositionX(newPosition)
+	 * 		|  		then new.getPositionX()== this.getPositionX() +dt*direction.getMultiplier()*horizontalVelocity
+	 * 		| else
+	 * 		|  	double oldDirTime = (0.5-actionTimer);
+			|	actionTimer = (actionTimer+dt)-0.5d;
+			|	double realMovementDt = oldDirTime - actionTimer
+	 * 		| if !(actionTimer+dt < 0.5d) && !(this.overlapsWithWall()[1]==true && direction.getMultiplier()*Math.signum(realMovementDt)<0) && !( overlapsWithWall()[3]==true && direction.getMultiplier()*Math.signum(realMovementDt)>0)
+	 * 		|		then new.getPositionX()==this.getPositionX() +realMovementDt*direction.getMultiplier()*horizontalVelocity)
 	 * @Post When Plant reaches the borders of it's space to move in, he won't move during dt, but will change direction
 	 * 		| if actionTimer+dt > 0.5d 
 	 * 		|   if direction=Direction.RIGHT
@@ -139,7 +145,7 @@ public class Plant extends GameObject{
 	 * @effect if Mazub can consume a plant, he will gain 50Hp and the plant will lose 1Hp
 	 * 			|if alien.hasMaxHp()==false && terminated == false
 				|	then alien.addHp(50)
-				|	this.loseHp(1)
+				|		 loseHp(1)
 
 	 */
 	public void consume(Mazub alien){
@@ -151,10 +157,10 @@ public class Plant extends GameObject{
 	
 	/**
 	 * Adds the object Plant to the given world if this is a valid world for it
-	 * @Post if the given world is valid, a plant will be added
+	 * @effect if the given world is valid, a plant will be added
 	 * 		  | if this.world == null && canHaveAsWorld(world)
 	 * 		  |   then world.addPlant(this)
-	 * 		  |        this.world=world
+	 * 		  |        new.world=world
 	 */
 	@Override
 	public void addToWorld(World world){
@@ -166,7 +172,7 @@ public class Plant extends GameObject{
 	
 	/**
 	 * checks if a collision with the given gameobject has an effect
-	 * @Post if the given gameobject is a Mazub then plant will be consumed
+	 * @effect if the given gameobject is a Mazub then plant will be consumed
 	 * 			| if(gameObject instanceof Mazub)
 				|    then consume((Mazub)gameObject)
 	 */
