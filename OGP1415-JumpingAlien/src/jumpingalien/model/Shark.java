@@ -3,8 +3,10 @@ package jumpingalien.model;
 import java.util.Random;
 
 import be.kuleuven.cs.som.annotate.Basic;
+import jumpingalien.exception.IllegalMazubStateException;
 import jumpingalien.exception.IllegalMovementException;
 import jumpingalien.exception.IllegalSizeException;
+import jumpingalien.exception.IllegalTimeException;
 import jumpingalien.exception.PositionOutOfBoundsException;
 import jumpingalien.model.gameObject.GameObject;
 import jumpingalien.model.gameObject.Position;
@@ -57,16 +59,30 @@ public class Shark extends GameObject{
 	 * 			shark has an illegal position
 	 * 			| ! hasValidPosition()
 	 * @Post The shark will be automatically standing still when the game starts 
-	 * 			| direction = Direction.STALLED
+	 * 			| new.direction = Direction.STALLED
 	 */
 	public Shark(int x, int y, Sprite[] sprites)throws PositionOutOfBoundsException{
 		super(x,y,sprites); 
 		actionTime = 0.0d;actionDuration = 0.0d;
 		direction = Direction.STALLED;
 		}
-	
+	//TODO Nullpointer?????
 	/**
-	 * 
+	 * @param dt	|the time passed since the last frame.
+	 * @throws PositionOutOfBoundsExeption
+	 * 			shark has an illegal position
+	 * 				| ! hasValidPosition()
+	 * @throws NullpointerException
+	 * 			if double dt
+	 * @throws IllegalSizeException
+	 * 			The size of shark isn't a legal value
+	 * @Post
+	 * @Post
+	 * @effect	the position,velocity,acceleration and State from mazub will be update according to the physics over a span from dt seconds.
+	 * 			|moveHorizontal()
+	 * 			|moveVertical()
+	 * @effect	the shown Sprite is updated according to the changed state of mazub.
+	 * 			|animate()	 * 
 	 */
 
 	@Override //TODO movement wanneer op de grond in orde brengen
@@ -181,6 +197,10 @@ public class Shark extends GameObject{
 	 * 
 	 * @return returns a number from 0 to 3. If the last time number 2 or 3 was picked is less 
 	 * 			than 4 seconds and if the bottom of shark is is water, it will return the number 0 or 1
+	 * @post the horizontal velocity will be set to 0
+	 * 			|new.getHorizontalVelocity = 0.0d
+	 * @effect | if randomAcceleration==0
+	 * 		   |	then endJump()
 	 */
 	private int decideAction(){
 		if(randomAcceleration==0){
@@ -200,6 +220,11 @@ public class Shark extends GameObject{
 	/**
 	 * 
 	 * @return returns true if the bottom of the shark is in water. If it's not, it will return false.
+	 * 			| if (world.getGeologicalFeature(new int[]{occupied_tiles[i][0]*world.getTileLenght(),occupied_tiles[i][1]*world.getTileLenght()})==2)
+	 *					then if (world.getBottomLeftPixelOfTile(occupied_tiles[i][0],occupied_tiles[i][1])[1] <= perimeters[1])
+	 *				 		then true
+	 *				 		 else
+	 *				 		 	 false
 	 */
 	
 	public boolean isBottomInWater() {
@@ -261,7 +286,11 @@ public class Shark extends GameObject{
 	 * 			(A part of) the shark isn't located within the boundaries of the world
 	 * 			| ! hasValidPosition()
 	 * @throws NullPointerException
-	 * 
+	 * @Post depending on the situation the vetical velocity of shark will be set to the correct value
+	 * 			|if  overlapsWithWall()[0]==true
+	 * 			|  then this.setVerticalVelocity(this.getVerticalVelocity() + (this.getVerticalAcceleration()+Math.max(0, randomAcceleration))*dt)
+	 * 			|else
+	 * 			|		this.setVerticalVelocity(this.getVerticalVelocity() + (this.getVerticalAcceleration()+ randomAcceleration)*dt)
 	 * 
 	 */
 	public double moveVertical(double dt)throws PositionOutOfBoundsException,NullPointerException{
@@ -290,7 +319,28 @@ public class Shark extends GameObject{
 		return newPositiony;
 	}
 	
-	private double moveHorizontal(double dt) throws IllegalMovementException,PositionOutOfBoundsException{
+	/**
+	 * @param dt | The period of time that the character needs to move
+	 * @return The new y-position of the character after he has moved for dt seconds
+	 * @throws PositionOutOfBoundsException
+	 * 			(A part of) the shark isn't located within the boundaries of the world
+	 * 			| ! hasValidPosition()
+	 * @throws IllegalMazubStateException
+	 * 			the current State of mazub is null.
+	 * 			|getGroundState()==null
+	 * 			|getOrientation()==null
+	 * 			|getDuckState()==null
+	 * @throws IllegalMovementException
+	 * 			one of the parameters has had an overflow
+	 * 			|overflowException()
+	 * @Post the horizontal velocity of shark will be set to the correct new velocity if this isn't more than the maximum allowed velocity. Else it will be set to the maximum velocity
+	 * 			| if ! (newSpeed*dirSign > this.getMaxHorizontalVelocity())
+	 * 			| 	then this.setHorizontalVelocity(this.getHorizontalVelocity()+this.getHorizontalAcceleration()*dt)
+	 * 			| else
+	 * 			| 	this.setHorizontalVelocity(this.getMaxHorizontalVelocity())
+	 */
+	
+	public double moveHorizontal(double dt) throws IllegalMovementException,PositionOutOfBoundsException{
 		int dirSign =this.direction.getMultiplier(); 
 		double newSpeed = this.getHorizontalVelocity()+this.getHorizontalAcceleration()*dt;
 		double s;
@@ -317,10 +367,25 @@ public class Shark extends GameObject{
 		return getPositionX()+s;
 	}
 	
+	/**
+	 * calculates the movement over a given period of time according to the vertical axis.
+	 * @return this.getVerticalVelocity()*dt*stateSign + this.getVerticalAcceleration()*Math.pow(dt, 2)/2;
+	 */
+	
 	private double travelledVerticalDistance(double dt){
 		return this.getVerticalVelocity()*dt +
 				this.getVerticalAcceleration()*Math.pow(dt, 2)/2;
 	}
+	
+	/**
+	 * 
+	 * @param dt | The period of time from which, if necessary, needs to be taken a small part
+	 * @return the correct dt. This is the dt that makes sure that if mazub is moving, he will have moved 1 pixel after this dt.
+	 * 			|Math.min(Math.min(Math.min(Math.min(0.01d/Math.abs(getHorizontalVelocity()),0.01d/Math.abs(getVerticalVelocity()))
+	 * 			 , Math.abs((-getHorizontalVelocity() + Math.sqrt(Math.pow(getHorizontalVelocity(), 2)-2*getHorizontalAcceleration()/100))/getHorizontalAcceleration()))
+	 * 			 , Math.abs((-getVerticalVelocity() + Math.sqrt(Math.pow(getVerticalVelocity(), 2)-2*getVerticalAcceleration()/100))/getVerticalAcceleration()))
+	 * 			 , dt)
+	 */
 	
 	public double calculateCorrectDt(double dt) {
 		double min1;double min2;double min3;double min4; // de 4 mogelijke situaties
@@ -351,24 +416,62 @@ public class Shark extends GameObject{
 		}
 	}
 	
+	/**
+	 * calculates the movement over a given period of time according to the horizontal axis.
+	 * @return this.getHorizontalVelocity()*dt + this.getHorizontalAcceleration()*Math.pow(dt, 2)/2
+	 */
 	private double travelledHorizontalDistance(double dt){
 		return this.getHorizontalVelocity()*dt +
 				this.getHorizontalAcceleration()*Math.pow(dt, 2)/2;
 	}
+	/**
+	 * @param velocity	|the new velocity of shark according to the y-axis
+	 * @post	shark will have the vertical velocity that is passed on to this function
+	 * 			|new.getVerticalVelocity() = velocity
+	 */
 	
 	private void setVerticalVelocity(double velocity){
 		this.verticalVelocity = velocity;
 	}
 	
+	/**
+	 * @param velocity	|the new velocity in the horizontal direction (if not greater then getMaximumHorizontalVelocity())
+	 * @post the new velocity of the gameobject is equal to the given velocity or to the maximum horizontal velocity 
+	 * 		 |if(Math.abs(velocity)>getMaxHorizontalVelocity())
+	 * 		 |  then new.getHorizontalVelocity() = this.getMaxHorizontalvelocity()*Math.signum(horizontalVelocity)
+	 * 		 |else 
+	 * 		 |  new.getHorizontalVelocity() = velocity
+	 * 		
+	 * 
+	 */
 	private void setHorizontalVelocity(double velocity){
-		this.horizontalVelocity = velocity;
+		if(Math.abs(velocity)>getMaxHorizontalVelocity()){
+			this.horizontalVelocity=getMaxHorizontalVelocity()*Math.signum(horizontalVelocity);
+		}
+		else{
+			this.horizontalVelocity = velocity;
+		}
+		
 	}
+	
+	/**
+	 * returns the current velocity of shark according to the horizontal direction
+	 * @return	|this.verticalVelocity
+	 */
 	
 	@Basic
 	public double getVerticalVelocity(){
 		return this.verticalVelocity;
 	}
+	/**
+	 * returns the current acceleration of shark according to the vertical direction
+	 * @return if isBottomInWater()
+	 * 				then  0
+	 * 		   else verticalAcceleration* groundState.getMultiplier()
+	 * 				
+	 */
 	
+	//TODO als ge isbottominwater de groundstate op grounded zet, mss makkelijker?
 	@Basic
 	public double getVerticalAcceleration(){
 		if(isBottomInWater()){
@@ -377,18 +480,33 @@ public class Shark extends GameObject{
 		return verticalAcceleration* groundState.getMultiplier();
 	}
 	
+	/**
+	 *
+	 * @return	the horizontal velocity. 
+	 * 			|this.horizontalVelocity
+	 */
+	
 	@Basic
 	public double getHorizontalVelocity(){
-		if(Math.abs(horizontalVelocity)>getMaxHorizontalVelocity()){
-			return getMaxHorizontalVelocity()*Math.signum(horizontalVelocity);
-		}
 		return horizontalVelocity;
 	}
 	
+	/**
+	 * returns the maximum horizontal velocity	
+	 * @return | maxHorizontalVelcoity
+	 */
 	@Basic
 	public double getMaxHorizontalVelocity(){
 		return maxHorizontalVelocity;
 	}
+	
+	/**
+	 * returns the current acceleration of shark according to the vertical direction
+	 * @return |if getHorizontalVelocity()*direction.getMultiplier()==getMaxHorizontalVelocity() || direction == Direction.STALLED
+	 * 		   |	then  0
+	 * 		   |else horizontalAcceleration* direction.getMultiplier()
+	 * 				
+	 */
 	
 	@Basic
 	public double getHorizontalAcceleration(){
@@ -396,7 +514,17 @@ public class Shark extends GameObject{
 			return 0;
 		return horizontalAcceleration*direction.getMultiplier();
 	}
-	
+	/**
+	 * Adds the object shark to the given world if this is a valid world for it
+	 * @Post if the given world is valid, a shark will be added
+	 * 		  | if canHaveAsWorld(world)
+	 * 		  |   then this.world=world
+	 *        |        world.addShark(this)
+	 * @Post shark will have the groundstate Grounded or Air depending on the spawning place
+	 * 		  |if overlapsWithWall()[0]
+	 * 		  | 	then groudState= Groundstate.GROUNDED
+	 * 		  |else groundState=Groundstate.AIR
+	 */
 	@Override
 	public void addToWorld(World world){
 		if(canHaveAsWorld(world)){
@@ -414,6 +542,14 @@ public class Shark extends GameObject{
 	public String toString(){
 		return "hp: " + getNbHitPoints(); 
 	}
+	
+	/**
+	 * checks if the collision with a given gameobject has an effect
+	 * @effect if Shark isn't immune to the gameobject it will lose Hp and it will have an imunityTime of 0.6 seconds
+	 * 			|if !Immune()
+	 * 			|  then this.loseHp(50)
+	 * 			|		this.imunityTime = 0.6d
+	 */
 	
 	public void EffectOnCollisionWith(GameObject gameObject){
 		if(gameObject instanceof Mazub || gameObject instanceof Slime){

@@ -54,7 +54,7 @@ public class Mazub extends GameObject{
 	 * 						|animations. The first eight Sprites are predefined, while the next 2*m
 	 * 						|amount of Sprites will be used for the walking animation.
 	 * @throws PositionOutOfBoundsExeption 
-	 * 			mazub has an illegal position (error can also be in X and/or Y position)
+	 * 			mazub has an illegal position (error can be in X and/or Y position)
 	 * 			| !hasValidPosition()
 	 * @Post	if the Mazub instance isn't located on the ground, he will know he is in the air.
 	 * 			|if(pixelBottomY>0):
@@ -124,9 +124,9 @@ public class Mazub extends GameObject{
 	 * 			|moveHorizontal()
 	 * 			|moveVertical()
 	 * @effect	the shown Sprite is updated according to the changed state of mazub.
-	 * 			|animate()
+	 * 			|animate(dt)
 	 */
-	
+	//TODO moet de snelheid niet niet aangepast worden hier, want horizontaal wordt op 0 gezet...
 	public void advanceTime(double dt)throws PositionOutOfBoundsException, IllegalTimeException,IllegalMovementException{
 		//maak nieuwe positie aan, maar niet als die van mazub
 		//dan controleren we die positie
@@ -212,6 +212,8 @@ public class Mazub extends GameObject{
 	 * 			 , Math.abs((-getVerticalVelocity() + Math.sqrt(Math.pow(getVerticalVelocity(), 2)-2*getVerticalAcceleration()/100))/getVerticalAcceleration()))
 	 * 			 , dt)
 	 */
+	
+	//TODO de eerste if is toch nutteloos?????
 	public double calculateCorrectDt(double dt) {
 		double min1;double min2;double min3;double min4; // de 4 mogelijke situaties
 		if (getVerticalVelocity()==0 && getHorizontalVelocity()==0
@@ -331,6 +333,7 @@ public class Mazub extends GameObject{
 	
 	/**
 	 * calculates the movement over a given period of time according to the horizontal axis.
+	 * @return this.getHorizontalVelocity()*dt + this.getHorizontalAcceleration()*Math.pow(dt, 2)/2
 	 */
 	private double travelledHorizontalDistance(double dt){
 		return this.getHorizontalVelocity()*dt +
@@ -338,6 +341,7 @@ public class Mazub extends GameObject{
 	}
 	/**
 	 * calculates the movement over a given period of time according to the vertical axis.
+	 * @return this.getVerticalVelocity()*dt*stateSign + this.getVerticalAcceleration()*Math.pow(dt, 2)/2;
 	 */
 	private double travelledVerticalDistance(double dt, int stateSign){
 		return this.getVerticalVelocity()*dt*stateSign +
@@ -393,7 +397,7 @@ public class Mazub extends GameObject{
 	
 	/**
 	 *
-	 * @return	the horizontal velocity. This can never be greater then the maximum velocity
+	 * @return	the horizontal velocity.
 	 * 			|this.horizontalVelocity
 	 */
 	@Basic
@@ -403,9 +407,9 @@ public class Mazub extends GameObject{
 	
 	/**
 	 * @param velocity	|the new velocity in the horizontal direction (if not greater then getMaximumHorizontalVelocity())
-	 * @post the new velocity of the character is equal to the given velocity (or to this
+	 * @post the new velocity of the character is equal to the given velocity (or to the maximum velocity)
 	 * 		 |if(Math.abs(velocity)>getMaxHorizontalVelocity())
-	 * 		 |  then new.getHorizontalVelocity() = this.getMaxHorizontalvelocity()
+	 * 		 |  then new.getHorizontalVelocity() = this.getMaxHorizontalvelocity()*Math.signum(horizontalVelocity)
 	 * 		 |else 
 	 * 		 |  new.getHorizontalVelocity() = velocity
 	 * 		
@@ -423,7 +427,9 @@ public class Mazub extends GameObject{
 	
 	/**
 	 * returns the current maximum horizontal velocity
-	 * @return	|this.maxHorizontalVelocity
+	 * @return	|if duckState=DuckState.STRAIGHT
+	 * 			|	then this.maxHorizontalVelocity
+	 * 			|else this.maxDuckingVelocity
 	 */
 	
 	public double getMaxHorizontalVelocity(){
@@ -435,11 +441,15 @@ public class Mazub extends GameObject{
 		
 	}
 	
+
 	/**
-	 * returns the current acceleration according to the horizontal direction of mazub
-	 * @return this.horizontalAcceleration
+	 * returns the current acceleration of mazub according to the vertical direction
+	 * @return |if getHorizontalVelocity()*getOrientation().getMultiplier()==getMaxHorizontalVelocity() || getHorizontalVelocity == 0.0d
+	 * 		   |	then  0
+	 * 		   |else horizontalAcceleration* getOrientation().getMultiplier()
+	 * 				
 	 */
-	
+	@Basic
 	public double getHorizontalAcceleration(){
 		if(getHorizontalVelocity()*getOriëntation().getMultiplier()==getMaxHorizontalVelocity() || getHorizontalVelocity()==0.0d)
 			return 0;
@@ -448,9 +458,9 @@ public class Mazub extends GameObject{
 	
 	/**
 	 * returns the current acceleration of mazub according to the vertical direction
-	 * @return this.verticalAcceleration
+	 * @return this.verticalAcceleration*groundState.getMultiplier()
 	 */
-
+	@Basic
 	public double getVerticalAcceleration(){
 		return Mazub.verticalAcceleration* groundState.getMultiplier();
 	}
@@ -465,7 +475,7 @@ public class Mazub extends GameObject{
 	}
 	
 	/**
-	 * @param velocity	|the new velocity from mazub according to the y-axis
+	 * @param velocity	|the new velocity of mazub according to the y-axis
 	 * @post	mazub will have the vertical velocity that is passed on to this function
 	 * 			|new.getVerticalVelocity() == velocity
 	 */
@@ -617,8 +627,8 @@ public class Mazub extends GameObject{
 	/**
 	 * 
 	 * @return Checks if the position of the character is within the allowed boundaries of the world
-	 * 			| ! (getPositionX()<0 || getPositionX() >= (world.getWidth())/100.0d) ||
-				|   (getPositionY()<0 || getPositionY() >= (world.getHeight())/100.0d)
+	 * 			| ! ((getPositionX()<0 || getPositionX() >= (world.getWidth())/100.0d) ||
+				|   (getPositionY()<0 || getPositionY() >= (world.getHeight())/100.0d))
 	 */
 	
 	public boolean hasValidPosition(){
@@ -640,6 +650,7 @@ public class Mazub extends GameObject{
 	
 	/**
 	 * checks if Mazub has a valid state of direction, groundstate en duckstate
+	 * @return (direction != null && groundState != null && duckState != null)
 	 */
 	private boolean isValidState(Direction direction,GroundState groundState,DuckState duckState){
 		return direction != null && groundState != null && duckState != null;
@@ -702,10 +713,12 @@ public class Mazub extends GameObject{
 	
 	/**
 	 * checks if the collision with a given gameobject has an effect
-	 * @effect if mazub isn't immune to the gameobject it will lose Hp
+	 * @effect if mazub isn't immune to the gameobject it will lose Hp and it will have an imunityTime of 0.6 seconds
 	 * 			|if !Immune()
 	 * 			|  then this.loseHp(50)
+	 * 			|		this.imunityTime = 0.6d
 	 */
+	//TODO controleer na merge
 	public void EffectOnCollisionWith(GameObject gameObject){
 		if(gameObject instanceof Shark || gameObject instanceof Slime){
 			if(!isImmune()){

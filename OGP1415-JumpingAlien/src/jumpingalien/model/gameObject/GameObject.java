@@ -27,13 +27,16 @@ public abstract class GameObject {
 	protected double lastLavaHit;
 	/**
 	 * 
-	 * @param pixelLeftX
-	 * @param pixelBottomY
-	 * @param sprites
+	 * @param pixelLeftX    |the most left position that is part from the currently showing Sprite.
+	 * @param pixelBottomY	|the lowest position that is part of the currently showing Sprite.
+	 * @param sprites		|a list of Sprites that a gameobject will use to rotate trough, to make
+	 * 						|animations.
 	 * @throws PositionOutOfBoundsException
-	 * @Post the initial position of the Mazub instance will be (pixelLeftX,pixelBottomY)
-	 * 			|new.getPosition()== (pixelLeftX,pixelBottomY)
-	 * @Post the list of Sprites the mazub instance will use, will be stored in spriteList
+	 * 			the gameobject has an illegal position
+	 * 			| ! hasValidPosition()
+	 * @Post the initial position of the Mazub,shark, plant or slime instance instance will be (pixelLeftX,pixelBottomY)
+	 * 			|new.getPosition()== (pixelLeftX,pixelBottomY) 
+	 * @Post the list of Sprites the mazub, shark, plant or slime instance will use, will be stored in spriteList
 	 * 			|new.spriteList == sprites;
 	 * 
 	 */
