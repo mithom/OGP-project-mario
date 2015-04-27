@@ -13,6 +13,11 @@ import jumpingalien.model.World;
 import jumpingalien.util.ModelException;
 import jumpingalien.util.Sprite;
 
+/**
+ * Mazub is a class representing a character/GameObject of the game. 
+ * @author Meerten Wouter & Michiels Thomas
+ * @version 1.0
+ */
 
 public abstract class GameObject {
 	protected Position position;
@@ -51,6 +56,15 @@ public abstract class GameObject {
 		lastLavaHit=0.0d;
 	};
 	
+	/**
+	 * removes the given amount of Hp
+	 * @param amount | the amount of Hp the gameobject has to lose
+	 * @effect lets the gameobject lose Hp | hitPoint.loseHp(amount)
+	 * @effect if the gameobject is dead and not terminated, it will be removed from the world
+	 * 			| world.removeGameObject(this)
+	 * 			| terminated = true
+	 */
+	
 	public void loseHp(int amount){
 		hitPoint.loseHP(amount);
 		if(isDead() && !isTerminated()){
@@ -59,9 +73,22 @@ public abstract class GameObject {
 		}
 	}
 	
+	/**
+	 * 
+	 * @param amount | the amount of Hp the gameobject has to gain
+	 * @effect the given amount has to be added | hitPoint.addHp(amount)
+	 */
 	public void addHp(int amount){
 		hitPoint.addHP(amount);
 	}
+	
+	/**
+	 * checks if the gameobject has maximum number of hitpoints
+	 * @return true if it has maximum Hp. Otherwise false
+	 * 			| if hitPoint.getCurrent() == hitPoint.getMaximum()
+	 * 			| 		then true
+	 * 			| else       false
+	 */
 	
 	public boolean hasMaxHp(){
 		if(hitPoint.getCurrent() == hitPoint.getMaximum()){
@@ -70,14 +97,29 @@ public abstract class GameObject {
 		return false;
 	}
 	
+	/**
+	 * checks if the gameobject is dead
+	 * @return true if gameobject is dead| hitPoint.isDead()
+	 */
+	
 	public boolean isDead(){
 		return hitPoint.isDead();
 	}
 	
+	
+	/**
+	 * returns the number of hitpoints
+	 * @return current number of Hp | hitPoint.getCurrent()
+	 */
 	@Basic
 	public int getNbHitPoints(){
 		return hitPoint.getCurrent();
 	}
+	
+	/**
+	 * returns the current world
+	 * @return | this.world
+	 */
 	
 	@Basic
 	public World getWorld(){
@@ -86,15 +128,32 @@ public abstract class GameObject {
 	
 	public abstract void addToWorld(World world);
 	
+	/**
+	 * checks if the gameobject can have the given world as world
+	 * @param world | the world that needs to be checked
+	 * @return true if the world isn't terminated, the gameobject isn't terminated and the gameobject hasn't a world assigned yet
+	 * 			| if !world.isTerminated() && !this.isTerminated() && this.world==null
+	 * 			| 		then true
+	 * 			| else       false
+	 */
 	protected boolean canHaveAsWorld(World world){
 		if(!world.isTerminated() && !this.isTerminated() && this.world==null)
 			return true;
 		return false;
 	}
 	
+	/**
+	 * checks if the gameobject is Terminated
+	 * @return | terminated
+	 */
 	public boolean isTerminated(){
 		return terminated;
 	}
+	
+	/**
+	 * 
+	 * @return the perimeters of the gameobject 
+	 */
 	
 	public double[] getPerimeters(){
 		//order: left,bottom,right,top
@@ -106,24 +165,56 @@ public abstract class GameObject {
 		return perimeters;
 	}
 	
+	/**
+	 * 
+	 * @return the position of the gameobject | position
+	 */
 	@Basic
 	public Position getPosition(){
 		return position;
 	}
 	
+	/**
+	 * 
+	 * @return the Y-component of the position | position.getPositions()[1]
+	 */
 	@Basic
 	public double getPositionY(){
 		return position.getPositions()[1];
 	}
+	
+	/**
+	 * 
+	 * @return the X-component of the position | position.getPositions()[0]
+	 */
 	
 	@Basic
 	public double getPositionX(){
 		return position.getPositions()[0];
 	}
 	
+	/**
+	 * 
+	 * @param x | the coordinate according to the horizontal axis
+	 * @throws PositionOutOfBoundsException
+	 * 			the position isn't legal
+	 * @Post the x-position of the gameobject will be set to the given x
+	 * 			| new.getPositionX() = x
+	 * 			
+	 */
 	public void setPositionX(double x) throws PositionOutOfBoundsException{
 		position = new Position(world,new double[]{x,getPositionY()}); 
 	}
+	
+	/**
+	 * 
+	 * @param y | the coordinate according to the vertical axis
+	 * @throws PositionOutOfBoundsException
+	 * 			the position isn't legal
+	 * @Post the y-position of the gameobject will be set to the given y
+	 * 			| new.getPositionY() = y
+	 * 			
+	 */
 	
 	public void setPositionY(double y) throws PositionOutOfBoundsException{
 		position = new Position(world,new double[]{getPositionX(),y}); 
@@ -136,6 +227,7 @@ public abstract class GameObject {
 	 * @Pre		this.currentSpriteNumber must be a valid index from the spriteList
 	 * 			| isValidSpriteNumber(currentSpriteNumber)
 	 */
+	
 	@Basic
 	public Sprite getCurrentSprite() {
 		assert isValidSpriteNumber(currentSpriteNumber);
@@ -143,7 +235,7 @@ public abstract class GameObject {
 	}
 
 	/**
-	 * returns the size of mazub at the moment time has last advanced.
+	 * returns the size of the game at the moment time has last advanced.
 	 * @throws NullPointerException
 	 * 			the current Sprite points toward null
 	 * 			|currentSprite == null
@@ -159,13 +251,26 @@ public abstract class GameObject {
 		if(currentSprite.getWidth() <= 0 || currentSprite.getHeight() <= 0) throw new IllegalSizeException(currentSprite.getWidth(),currentSprite.getHeight());
 		return new int[]{getCurrentSprite().getWidth(),getCurrentSprite().getHeight()};
 	}
+	
+	/**
+	 * checks if the given spriteNumber is valid
+	 * @param currentSpriteNb | the number of the currently showing sprite
+	 * @return the number of the sprite is a valid number, true or false
+	 * 			| currentSpriteNb >= 0 && currentSpriteNb < spriteList.length
+	 */
 
 	protected boolean isValidSpriteNumber(int currentSpriteNb) {
 		return currentSpriteNb >= 0 && currentSpriteNb < spriteList.length;
 	}
 	
+
 	public abstract void advanceTime(double dt) throws NullPointerException,IllegalMovementException,IllegalMazubStateException,IllegalTimeException,PositionOutOfBoundsException, IllegalSizeException;
 	
+	
+	/**
+	 * checks if the gameobject overlaps with a wall and where it overlaps
+	 * @return an array with 4 booleans. First slot describes if gameobject overlaps to the left, the second at the bottom, third to the right and last at the top.
+	 */
 	//bot,left,top,right
 	public boolean[] overlapsWithWall() {
 		boolean[] overlap = new boolean[]{false,false,false,false};
@@ -195,18 +300,33 @@ public abstract class GameObject {
 		//bot,left,top,right
 		return overlap;
 	}
-
+	
+/**
+ * returns an arraylist with all overlapping gameobjects
+ * @return array with overlapping gameobjects
+ * 				|ArrayList<GameObject> gameObjects = world.getAllGameObjects();
+				|ArrayList<GameObject> overlappingObjects = new ArrayList<GameObject>();
+				|	for (int i=0 ; i < gameObjects.size() ; i++){
+				|		if(overlaps(gameObjects.get(i)) && gameObjects.get(i) != this)
+				|			overlappingObjects.add(gameObjects.get(i));
+				|return overlappingObjects;
+ */
 	public ArrayList<GameObject> getOverlappingGameObjects() {
 		ArrayList<GameObject> gameObjects = world.getAllGameObjects();
 		ArrayList<GameObject> overlappingObjects = new ArrayList<GameObject>();
 		for (int i=0 ; i < gameObjects.size() ; i++){
-			if(overlaps(gameObjects.get(i)) && gameObjects.get(i) != this){//TODO does this work altough copy?
+			if(overlaps(gameObjects.get(i)) && gameObjects.get(i) != this){
 				overlappingObjects.add(gameObjects.get(i));
 			}
 		}
 		return overlappingObjects;
 	}
-	
+	/**
+	 * checks if the gameobject overlaps with the given object
+	 * @param object | the given object that can overlap with the gameobject
+	 * @return true if the gameobject overlaps with the given object, false if it doesn't
+	 * 			
+	 */			
 	private boolean overlaps(GameObject object){
 		double [] perimeters = this.getPerimeters();//order: left,bottom,right,top
 		double [] perimetersGameObject = object.getPerimeters();//order: left,bottom,right,top
@@ -217,7 +337,14 @@ public abstract class GameObject {
 		return false;
 	}
 
-
+	/**
+	 * checks where a gameobject overlaps with another gameobject.
+	 * @return an array with 4 booleans.  First slot describes if gameobject overlaps to the left, the second at the bottom, third to the right and last at the top.
+	 * @throws NullPointerException
+	 * 			trying to take the size of the value null as if it was an array
+	 * @throws IllegalSizeException
+	 * 			the array has an illegal size
+	 */
 	public boolean[] placeOverlapsWithGameObject() throws NullPointerException, IllegalSizeException{
 		boolean[] overlap = new boolean[]{false,false,false,false};//left,bot,right,top
 		ArrayList<GameObject> overlappingObjects = getOverlappingGameObjects();
@@ -238,10 +365,19 @@ public abstract class GameObject {
 		return overlap;
 	}
 	
+	/**
+	 * check whether the gameobject is immune or not
+	 * @return true if it is immune, otherwise false
+	 * 			|immunityTime>0
+	 */
 	public boolean isImmune(){
 		return imunityTime>0;
 	}
 	
+	/**
+	 * checks if gameobject is in water
+	 * @return true if the gameobject is in a waterTile, otherwise false
+	 */
 	public boolean isInWater(){
 		double[] perimeters = getPerimeters();
 		int [][] occupied_tiles = world.getTilePositionsIn((int)(perimeters[0]*100), (int)(perimeters[1]*100), (int)(perimeters[2]*100),(int)(perimeters[3]*100));
@@ -256,7 +392,10 @@ public abstract class GameObject {
 		}
 		return false;//TODO check if isBottomInWater isn't good enough
 	}
-	
+	/**
+	 * checks if gameobject is in water
+	 * @return true if the gameobject is in a lavaTile, otherwise false
+	 */
 	public boolean isInLava(){
 		double[] perimeters = getPerimeters();
 		int [][] occupied_tiles = world.getTilePositionsIn((int)(perimeters[0]*100), (int)(perimeters[1]*100), (int)(perimeters[2]*100),(int)(perimeters[3]*100));
@@ -272,6 +411,11 @@ public abstract class GameObject {
 		return false;
 	}
 	
+	/**
+	 * checks if gameobject is in the air
+	 * @return true if the gameobject is in an airTile, otherwise false
+	 */
+	
 	public boolean isInAir(){
 		double[] perimeters = getPerimeters();
 		int [][] occupied_tiles = world.getTilePositionsIn((int)(perimeters[0]*100), (int)(perimeters[1]*100), (int)(perimeters[2]*100),(int)(perimeters[3]*100));
@@ -281,7 +425,7 @@ public abstract class GameObject {
 					return true;
 			}catch(InvalidKeyException e){
 				System.out.println(tile[0] +","+ tile[1]);
-				System.out.println("something went wrong, should never have happened!, error in isInLava");
+				System.out.println("something went wrong, should never have happened!, error in isInAir");
 			}
 		}
 		return false;
