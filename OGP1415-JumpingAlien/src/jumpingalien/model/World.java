@@ -254,7 +254,8 @@ public class World {
 		ArrayList<int[]> tilePositions = new ArrayList<int[]>();
 		for(int rowPos = (pixelBottom/tileSize)*tileSize; rowPos <= pixelTop; rowPos+=tileSize){
 			for(int colPos = (pixelLeft/tileSize)*tileSize;colPos <= pixelRight;colPos+=tileSize){
-				tilePositions.add(new int[]{colPos/tileSize,rowPos/tileSize});
+				if(getHeight()-getTileLength()>=rowPos && getWidth()-getTileLength()>=colPos)
+					tilePositions.add(new int[]{colPos/tileSize,rowPos/tileSize});
 			}
 		}
 		return tilePositions.toArray(new int[tilePositions.size()][]);
@@ -272,8 +273,8 @@ public class World {
 		int[] visibleWindow = new int[4];
 		visibleWindow[0]=cameraLocation.getPixelPosition()[0];
 		visibleWindow[1]=cameraLocation.getPixelPosition()[1];
-		visibleWindow[2] = visibleWindow[0]+ viewWidth;
-		visibleWindow[3]= visibleWindow[1] + viewHeight;
+		visibleWindow[2] = visibleWindow[0]+ viewWidth-1;
+		visibleWindow[3]= visibleWindow[1] + viewHeight-1;
 		return visibleWindow;
 		//order: left,bottom,right,top
 	}
@@ -418,6 +419,7 @@ public class World {
 	public ArrayList<Slime> getSlimes(){
 		return new ArrayList<Slime>(slimes);
 	}
+<<<<<<< HEAD
 	/**
 	 * Returns the length of a square tile side in the world.
 	 * 
@@ -425,7 +427,7 @@ public class World {
 	 *         pixels.
 	 */
 	@Basic
-	public int getTileLenght(){
+	public int getTileLength(){
 		return this.tileSize;
 	}
 	
@@ -433,7 +435,8 @@ public class World {
 	
 	public void advanceTime(double dt)throws IllegalMovementException,IllegalMazubStateException,IllegalTimeException,PositionOutOfBoundsException, NullPointerException, IllegalSizeException{
 		ArrayList<GameObject> worldObjects = new ArrayList<GameObject>();
-		worldObjects.add(mazub);
+		if(isValidMazub())
+			worldObjects.add(mazub);
 		worldObjects.addAll(plants);
 		worldObjects.addAll(getSlimes());
 		worldObjects.addAll(sharks);
@@ -441,6 +444,10 @@ public class World {
 		for(GameObject worldObject:worldObjects){
 			worldObject.advanceTime(dt);
 		}
+	}
+	
+	public boolean isValidMazub(){
+		return mazub != null && !mazub.isTerminated();
 	}
 	
 	/**
@@ -527,7 +534,7 @@ public class World {
 	 * 
 	 */
 	public void moveWindowTo(double Left, double Bottom)throws PositionOutOfBoundsException{
-		cameraLocation = new Position(this, new double[]{Math.min(Math.max(0,Left),(getWidth()-viewWidth-1)/100.0d),Math.min(Math.max(0,Bottom),(getHeight()-viewHeight-1)/100.0d)});
+		cameraLocation = new Position(this, new double[]{Math.min(Math.max(0,Left),(getWidth()-viewWidth)/100.0d),Math.min(Math.max(0,Bottom),(getHeight()-viewHeight)/100.0d)});//getHeight 1 to big, but viewHeight too, it compensates
 	}
 	
 	/**

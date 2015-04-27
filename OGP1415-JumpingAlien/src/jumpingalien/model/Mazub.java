@@ -44,7 +44,8 @@ public class Mazub extends GameObject{
 	private double timeSinceLastMovement;
 	private Direction lastMovingDirection = Direction.STALLED;
 	private double maxDuckingVelocity = 1.0d;
-	private boolean movingOtherSideAfterRelease = false;
+	private boolean movingLeft = false;
+	private boolean movingRight = false;
 
 	/**
 	 * 
@@ -126,23 +127,25 @@ public class Mazub extends GameObject{
 	 * @effect	the shown Sprite is updated according to the changed state of mazub.
 	 * 			|animate(dt)
 	 */
-	//TODO moet de snelheid niet niet aangepast worden hier, want horizontaal wordt op 0 gezet...
+
 	public void advanceTime(double dt)throws PositionOutOfBoundsException, IllegalTimeException,IllegalMovementException{
-		//maak nieuwe positie aan, maar niet als die van mazub
-		//dan controleren we die positie
-		//indien niets, zet als positie mazub
-		//indien bezet, laat botsen (snelheden aanpassen, en verplaatsing niet laten doorgaan en eventueel inverteren)
+
+	//moveHor publiek maken of @effect vervangen door doc.
 		double dt2 = dt;
 		while(dt>0 && !isTerminated()){
 			double correctDt=this.calculateCorrectDt(dt);
 			dt -= correctDt;
 			imunityTime = Math.max(0, imunityTime - correctDt);
+			animate(0.0d);//make the ducking animations etc all right, advancing in walking etc only in end, (otherwise, there's inaccuracy with the timers)
+			//the animation is only shown in the end. Size for eg ducking, is already changed
+			if(getOriëntation()!= Direction.STALLED && getHorizontalVelocity()*getOriëntation().getMultiplier()<initialHorizontalVelocity){
+				setHorizontalVelocity(initialHorizontalVelocity*direction.getMultiplier());
+			}
 			double new_position_x = this.moveHorizontal(correctDt);// return new Position(x,y) ipv void
 			double new_position_y = this.moveVertical(correctDt);
 			Position oldPosition = getPosition();
 			this.setPositionY(new_position_y);
-			
-			//TODO fix movement by: 1) check sides, 2) check grounded 3) if still grounded, move back to side and check sideoverlapping, or move vertical, check grounded, move horizontal, check sides 
+			 
 			// check if character overlaps with a wall above or beneath it 
 			if (this.overlapsWithWall()[0]==true && getVerticalVelocity()<0.0d){
 				this.setVerticalVelocity(0.0d);
@@ -174,26 +177,29 @@ public class Mazub extends GameObject{
 				if(gameObject instanceof Slime || gameObject instanceof Shark){
 					setPositionX(oldPosition.getPositions()[0]);
 					setPositionY(oldPosition.getPositions()[1]);
+					boolean[] sides = sideOverlappingBetween(gameObject);
+					if(sides[1]){
+						setVerticalVelocity(0.0d);
+						groundState=GroundState.GROUNDED;
+					}
 				}//don't bounce with plants
 				EffectOnCollisionWith(gameObject);
 				gameObject.EffectOnCollisionWith(this);
 			}
 			this.moveWindow();
 			if(isInLava()){
-				if(lastLavaHit < 0){
+				lastLavaHit -= correctDt;
+				if(lastLavaHit <= 0){
 					loseHp(50);
 					lastLavaHit = 0.2d;
-				}else{
-					lastLavaHit -= correctDt;
 				}
 			}else
 				lastLavaHit=0.0d;
 			if(isInWater()){
-				if(lastWaterHit < 0){
+				lastWaterHit -= correctDt;
+				if(lastWaterHit <= 0){
 					loseHp(2);
 					lastWaterHit = 0.2d;
-				}else{
-					lastWaterHit -= correctDt;
 				}
 			}else{
 				lastWaterHit =0.2d;
@@ -281,11 +287,11 @@ public class Mazub extends GameObject{
 			throw new IllegalMovementException("positionX overflowed");
 		}
 		//correct position if out of window
-		if(getPositionX() <0){
+		if(getPositionX()+s <0){
 			return 0.0d;
 			//setPositionX(0); //ELKE SITUATIE VERANDEREN HE
 		}
-		if(getPositionX()>(world.getWidth()-1)/100d)
+		if(getPositionX()+s>(world.getWidth()-1)/100d)
 			return (world.getWidth()-1)/100.0d;
 		return getPositionX()+s;
 	} 
@@ -501,12 +507,13 @@ public class Mazub extends GameObject{
 	 * 			|new.getHorizontalVelocity()== this.initialHorizontalVelocity*dir.getSign()
 	 * 			|new.getOrientation() == dir
 	 */
-	public void startMove(Direction dir){//TODO bug wanneer links en rechts op zelfde moment ingedrukt
+	public void startMove(Direction dir){
 		assert dir != null && dir != Direction.STALLED;
 		assert this.initialHorizontalVelocity>=0;
-		if((direction == Direction.RIGHT && dir == Direction.LEFT) || 
-				(direction == Direction.LEFT && dir == Direction.RIGHT))
-			movingOtherSideAfterRelease = true;
+		if(dir == Direction.RIGHT)
+			movingRight=true;
+		else
+			movingLeft=true;
 		this.direction = dir;
 		this.lastMovingDirection = dir;
 		this.setHorizontalVelocity(this.initialHorizontalVelocity*dir.getMultiplier());
@@ -524,26 +531,26 @@ public class Mazub extends GameObject{
 	 * 			|			new.getOrientation == Direction.STALLED
 	 */
 	public void endMove(Direction dir){
-		//recht,links,links los->zou rechts moeten wandelen, doet nu niet
 		assert dir != null && dir != Direction.STALLED;
-		if(dir.getMultiplier()== Math.signum(getHorizontalVelocity()) ||getHorizontalVelocity()==0 ){
-			if(movingOtherSideAfterRelease){
-				Direction dir2;
-				if(dir==Direction.RIGHT) {
-					dir2 = Direction.LEFT;
-				}else{
-					dir2 = Direction.RIGHT;
-				}
-				this.setHorizontalVelocity(this.initialHorizontalVelocity*dir2.getMultiplier());
-				this.direction = dir2;
+		if(dir==Direction.RIGHT){
+			movingRight = false;
+			if(movingLeft){
+				this.setHorizontalVelocity(this.initialHorizontalVelocity*Direction.LEFT.getMultiplier());
+				this.direction=Direction.LEFT;
 			}else{
 				this.setHorizontalVelocity(0.0d);
 				this.direction = Direction.STALLED;
 			}
 		}else{
-			movingOtherSideAfterRelease = false;
+			movingLeft=false;
+			if(movingRight){
+				this.setHorizontalVelocity(this.initialHorizontalVelocity*Direction.RIGHT.getMultiplier());
+				this.direction=Direction.RIGHT;
+			}else{
+				this.setHorizontalVelocity(0.0d);
+				this.direction = Direction.STALLED;
+			}
 		}
-		return;
 	}
 	
 	/**
@@ -592,7 +599,9 @@ public class Mazub extends GameObject{
 	 * 			|new.getDuckState() == DuckState.TRY_STRAIGHT
 	 */
 	public void endDuck(){
+		//dit moet blijven
 		duckState = DuckState.TRY_STRAIGHT;
+		executeEndDuck();
 	}
 	/**
 	 * @Post	if mazub wants to stand up, he will if possible. Otherwise he will stay ducked
@@ -682,7 +691,7 @@ public class Mazub extends GameObject{
 	 */
 	@Override
 	public void addToWorld(World world){
-		if(this.world == null && canHaveAsWorld(world)){
+		if(canHaveAsWorld(world)){
 			this.world = world;
 			world.addMazub(this);
 			if(overlapsWithWall()[0]){
@@ -722,8 +731,11 @@ public class Mazub extends GameObject{
 	public void EffectOnCollisionWith(GameObject gameObject){
 		if(gameObject instanceof Shark || gameObject instanceof Slime){
 			if(!isImmune()){
-				this.loseHp(50);
-				this.imunityTime = 0.6d;
+				if(getPerimeters()[1]<gameObject.getPerimeters()[3]){
+					//indien mazub niet boven zijn vijand staat (na de botsing) zal hij damage nemen. 
+					this.loseHp(50);
+					this.imunityTime = 0.6d;
+				}
 			}
 		}
 	}
