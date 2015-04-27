@@ -485,6 +485,7 @@ public class Mazub extends GameObject{
 	 * 			|			new.getOrientation == Direction.STALLED
 	 */
 	public void endMove(Direction dir){
+		//hier gebeurd iets vreemd als ik commit
 		assert dir != null && dir != Direction.STALLED;
 		if(dir==Direction.RIGHT){
 			movingRight = false;
