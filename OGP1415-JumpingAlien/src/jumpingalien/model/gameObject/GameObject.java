@@ -17,11 +17,17 @@ import jumpingalien.util.Sprite;
  * Mazub is a class representing a character/GameObject of the game. 
  * @author Meerten Wouter & Michiels Thomas
  * @version 1.0
+ * 
+ * @Invar	each gameObject that has a world, must have a valid position
+ * 			|Position.isValidCoordinate(getPosition().getPositions())
+ * @Invar	each GameObject has valid hitPoints, this means, a hitpoint located between a given minimum and maximum.
+ * 			|getNbHitPoints()>minimum && getNbHitPoints()<maximum
+ * @Invar	each gameObject has at least 1 sprite
+ * 			|spriteList.length()>=1 
  */
-
 public abstract class GameObject {
 	protected Position position;
-	protected Sprite[] spriteList;
+	protected final Sprite[] spriteList;
 	protected int currentSpriteNumber=0;
 	protected World world;
 	protected boolean terminated = false;
@@ -43,10 +49,13 @@ public abstract class GameObject {
 	 * 			|new.getPosition()== (pixelLeftX,pixelBottomY) 
 	 * @Post the list of Sprites the mazub, shark, plant or slime instance will use, will be stored in spriteList
 	 * 			|new.spriteList == sprites;
+	 * @Pre		sprites must at least have 1 sprite
+	 * 			|sprites.lenght>=1
 	 * 
 	 */
 	@Raw @Model
 	protected GameObject(int pixelLeftX, int pixelBottomY, Sprite[] sprites) throws PositionOutOfBoundsException{
+		assert sprites.length>=1;
 		position = new Position(new double[]{pixelLeftX/100.0d,pixelBottomY/100.0d});
 		this.spriteList = sprites;
 		this.m = (spriteList.length-8)/2;
@@ -224,14 +233,22 @@ public abstract class GameObject {
 	 * 
 	 * @return	returns the Sprite that is currently showing.
 	 * 			|spriteList[currentSpriteNumber]
-	 * @Pre		this.currentSpriteNumber must be a valid index from the spriteList
-	 * 			| isValidSpriteNumber(currentSpriteNumber)
 	 */
 	
 	@Basic
 	public Sprite getCurrentSprite() {
-		assert isValidSpriteNumber(currentSpriteNumber);
 		return spriteList[currentSpriteNumber];
+	}
+	
+	/*
+	 * @Param	number| the number that has to be set as currentSpriteNumber
+	 * @Pre		this.currentSpriteNumber must be a valid index from the spriteList
+	 * 			| isValidSpriteNumber(currentSpriteNumber)
+	 */
+	public void setCurrentSprite(int number){
+		assert isValidSpriteNumber(number);
+		currentSpriteNumber = number;
+		
 	}
 
 	/**

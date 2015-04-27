@@ -14,6 +14,20 @@ import jumpingalien.model.gameObject.GameObject;
 import jumpingalien.model.gameObject.Position;
 import jumpingalien.model.gameObject.GeologicalFeature;
 
+/**
+ * World is a class representing the gameworld in which a game shall be played.
+ * 
+ * @Invar 	the world shall only contain objects that are alive.
+ * 			|for(GameObject gameObject:getAllGameObjects())
+ * 			|		gameObject.isDead() == false
+ * @Invar	each world has a target that is located inside the world
+ * 			|Postion.isValidCoordinate(new double[]{targetTileX*tileSize/100.0d,targetTileY*tileSize/100.0d})
+ * @Invar	the visible window shall always be inside of the gameWorld
+ * 			|getVisibleWindow()[0]>=0
+ * 			|getVisibleWindow()[1]>=0
+ * 			|getVisiblewindow()[2]<=getWidth()-1
+ * 			|getVisibleWindow()[3]<=getHeigth()-1
+ */
 public class World {
 	private final int height;//in pixels
 	private final int width;//in pixels
@@ -322,7 +336,7 @@ public class World {
 					| else 				 false
 	 */
 	public boolean canHaveAsPlant(Plant plant){
-		if((!plant.isTerminated()) && plant.getWorld() == null || plant.getWorld() == this
+		if((!plant.isTerminated() || !plant.isDead()) && plant.getWorld() == null || plant.getWorld() == this
 				&& !this.isTerminated())
 			return true;
 		return false;
@@ -435,7 +449,7 @@ public class World {
 	}
 	
 	public boolean isValidMazub(){
-		return mazub != null && !mazub.isTerminated();
+		return mazub != null && !mazub.isTerminated() && !mazub.isDead();
 	}
 	
 	/**
