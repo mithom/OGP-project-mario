@@ -554,6 +554,7 @@ public class Mazub extends GameObject{
 	 * 			|new.getDuckState() == DuckState.STRAIGHT
 	 */
 	public void endDuck(){
+		//dit moet blijven
 		duckState = DuckState.TRY_STRAIGHT;
 		executeEndDuck();
 	}
