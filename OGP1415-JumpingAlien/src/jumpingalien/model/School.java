@@ -108,8 +108,6 @@ public class School {
 		return slimes.size();
 	}
 
-	
-	//TODO: geen idee wat hiervan commentaar moet zijn
 	public String toString(){
 		return "school nr:"+ world.getSchools().indexOf(this)+"of size "+getSize();
 	}

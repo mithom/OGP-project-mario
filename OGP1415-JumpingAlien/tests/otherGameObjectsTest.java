@@ -1,21 +1,12 @@
-import static jumpingalien.tests.util.TestUtils.intArray;
 import static jumpingalien.tests.util.TestUtils.spriteArrayForSize;
 import static org.junit.Assert.*;
 import jumpingalien.model.Mazub;
 import jumpingalien.model.World;
 import jumpingalien.part2.facade.Facade;
 import jumpingalien.part2.facade.IFacadePart2;
-
-import java.security.InvalidKeyException;
-
-import jumpingalien.exception.PositionOutOfBoundsException;
 import jumpingalien.model.*;
-import jumpingalien.model.gameObject.GameObject;
-import jumpingalien.model.gameObject.Position;
 import jumpingalien.state.Direction;
-import jumpingalien.util.Sprite;
 import jumpingalien.util.Util;
-import jumpingalien.common.sprites.JumpingAlienSprites;
 
 import org.junit.Test;
 

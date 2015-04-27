@@ -573,7 +573,6 @@ public class Slime extends GameObject{
 	 * 			|		new.imunityTime = 0.6d
 	 * 			|		schoolHpLoss()
 	 */
-	//TODO implementeer 1 Hp bij leaven en joinen van schools???
 	public void EffectOnCollisionWith(GameObject gameObject){
 		if(gameObject instanceof Slime){
 			Slime slime = (Slime)gameObject;

@@ -277,8 +277,6 @@ public class Mazub extends GameObject{
 	 * 			 , Math.abs((-getVerticalVelocity() + Math.sqrt(Math.pow(getVerticalVelocity(), 2)-2*getVerticalAcceleration()/100))/getVerticalAcceleration()))
 	 * 			 , dt)
 	 */
-	
-	//TODO de eerste if is toch nutteloos?????
 	public double calculateCorrectDt(double dt) {
 		double min1;double min2;double min3;double min4; // de 4 mogelijke situaties
 		if (getVerticalVelocity()==0 && getHorizontalVelocity()==0
