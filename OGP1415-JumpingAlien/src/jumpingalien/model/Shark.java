@@ -88,10 +88,10 @@ public class Shark extends GameObject{
 				setPositionY(oldPosition.getPositions()[1]-0.01d);
 				groundState = GroundState.GROUNDED;
 			}else{
-				if(this.overlapsWithWall()[0]==false && !isBottomInWater()){
+				if(this.overlapsWithWall()[0]==false &&isInAir()){
 					groundState = GroundState.AIR;
 				}
-				if(isBottomInWater() && getVerticalVelocity()<0 && groundState == GroundState.AIR){
+				if(!isInAir() && getVerticalVelocity()<0 && groundState == GroundState.AIR){
 					groundState= GroundState.GROUNDED;
 					setVerticalVelocity(0.0d);//REDEN dat vissen ff op water blijven drijven, ik denk dat dit zo bedoeld is
 				}
