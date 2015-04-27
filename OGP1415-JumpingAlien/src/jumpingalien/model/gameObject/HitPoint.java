@@ -4,7 +4,7 @@ import be.kuleuven.cs.som.annotate.Basic;
 
 /**
  * HitPoint is a class representing a the lifepoints of a character/GameObject in the game. 
- * @author Meerten Wouter & Michiels Thomas
+ * @author Meerten Wouter & Michiels Thomas (both 2de fase ingenieurswetenschappen)
  * @version 1.0
  * @Invar 	the current hitPoints of a gameobject will never be more than the allowed maximum
  * 			or less than the minimum

@@ -6,7 +6,7 @@ import jumpingalien.model.World;
 
 /**
  * Position is a class about coordinates in meter and pixelpositions.
- * @author Meerten Wouter & Michiels Thomas
+ * @author Meerten Wouter & Michiels Thomas (both 2de fase ingenieurswetenschappen)
  * @version 1.0
  */
 public class Position {

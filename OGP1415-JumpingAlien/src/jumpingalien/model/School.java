@@ -5,7 +5,7 @@ import be.kuleuven.cs.som.annotate.*;
 
 /**
  * School is a class representing a group of slimes in a world
- * @author Meerten Wouter & Michiels Thomas
+ * @author Meerten Wouter & Michiels Thomas (both 2de fase ingenieurswetenschappen)
  * @version 1.0
  * @invar Every school will at least contain one slime
  * 			|getSize()!=0
