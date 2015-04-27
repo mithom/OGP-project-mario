@@ -417,5 +417,33 @@ public class MazubTestPart2 {
 		assertArrayEquals(new int[]{9,0,478,209}, facade.getVisibleWindow(world));
 		//order: left,bottom,right,top
 	}
-	//TODO algemene functies van world testen!
+
+	@Test
+	public void noDeathObjectsInGetAllObjects(){
+		IFacadePart2 facade = new Facade();
+		World world = facade.createWorld(70, 10, 10, 1, 1, 0, 1);
+		for(int i=0;i<10;i++)
+			for(int j=0;j<10;j++)
+				facade.setGeologicalFeature(world, i, j, 1);//to move normally
+		for(int i=1;i<9;i++)
+			for(int j=1;j<9;j++)
+				facade.setGeologicalFeature(world, i, j, 3);//lava
+		Mazub alien = facade.createMazub(69, 69, spriteArrayForSize(70, 70, 20));
+		Slime slime = facade.createSlime(140, 70, spriteArrayForSize(70, 40, 2), facade.createSchool());
+		Slime slime2 = facade.createSlime(140, 140, spriteArrayForSize(70, 40, 2), facade.createSchool());
+		Shark shark1 = facade.createShark(210, 70, spriteArrayForSize(70, 40, 2));
+		Shark shark2 = facade.createShark(210, 140, spriteArrayForSize(70, 40, 2));
+		facade.setMazub(world, alien);
+		facade.addShark(world, shark2);
+		facade.addShark(world, shark1);
+		facade.addSlime(world, slime2);
+		facade.addSlime(world, slime);
+		for(GameObject gameObject:world.getAllGameObjects())
+			assertFalse(gameObject.isDead());
+		for(int i=0;i<5;i++){
+			facade.advanceTime(world, 0.2d);
+			for(GameObject gameObject:world.getAllGameObjects())
+				assertFalse(gameObject.isDead());
+		}
+	}
 }
