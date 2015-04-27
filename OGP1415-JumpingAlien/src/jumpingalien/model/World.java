@@ -72,17 +72,7 @@ public class World {
 		if(gameObject instanceof Shark)
 			sharks.remove(gameObject);
 	}
-	//TODO waarom bestaat deze methode???
-	/**
-	 * 
-	 * @param plant | the plant that needs to be removed
-	 * @Post the plant will be removed from plants
-	 * 			|plants.remove(plant)
-	 */
-	public void removePlant(Plant plant){
-		plants.remove(plant);
-	}
-	
+
 	/**
 	 * returns the height of the world
 	 * @return | height
@@ -168,7 +158,6 @@ public class World {
 	 * @throw InvalidKeyException if the given position does not correspond to the
 	 *        bottom left pixel of a tile.
 	 */
-	
 	public int getGeologicalFeature(int pixelX, int pixelY )throws InvalidKeyException{
 		if(pixelX % tileSize != 0 || pixelY %tileSize !=0)
 			throw new InvalidKeyException();

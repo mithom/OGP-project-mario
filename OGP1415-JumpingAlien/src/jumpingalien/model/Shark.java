@@ -6,7 +6,6 @@ import be.kuleuven.cs.som.annotate.Basic;
 import jumpingalien.exception.IllegalMazubStateException;
 import jumpingalien.exception.IllegalMovementException;
 import jumpingalien.exception.IllegalSizeException;
-import jumpingalien.exception.IllegalTimeException;
 import jumpingalien.exception.PositionOutOfBoundsException;
 import jumpingalien.model.gameObject.GameObject;
 import jumpingalien.model.gameObject.Position;
@@ -104,12 +103,12 @@ public class Shark extends GameObject{
 				setPositionY(oldPosition.getPositions()[1]-0.01d);
 				groundState = GroundState.GROUNDED;
 			}else{
-				if(this.overlapsWithWall()[0]==false &&isInAir()){
+				if(this.overlapsWithWall()[0]==false && isInAir()){
 					groundState = GroundState.AIR;
 				}
 				if(!isInAir() && getVerticalVelocity()<0 && groundState == GroundState.AIR){
 					groundState= GroundState.GROUNDED;
-					setVerticalVelocity(0.0d);//REDEN dat vissen ff op water blijven drijven, ik denk dat dit zo bedoeld is
+					setVerticalVelocity(0.0d);
 				}
 			}
 			//top
@@ -130,7 +129,7 @@ public class Shark extends GameObject{
 			}
 			animate(smallDt);
 			for(GameObject gameObject:getOverlappingGameObjects()){
-				if(gameObject instanceof Slime || gameObject instanceof Mazub){
+				if(gameObject instanceof Slime || gameObject instanceof Mazub|| gameObject instanceof Shark){
 					setPositionX(oldPosition.getPositions()[0]);
 					setPositionY(oldPosition.getPositions()[1]);
 				}//don't bounce with plants
@@ -206,7 +205,7 @@ public class Shark extends GameObject{
 	
 	public void startMove(Direction dir,boolean withRandomAcc){
 		direction = dir;
-		if (isBottomInWater() && withRandomAcc){
+		if (!isInAir() && withRandomAcc){
 			Random rand = new Random();
 			randomAcceleration =  2*verticalMaxRandAcceleration*rand.nextDouble()-verticalMaxRandAcceleration;
 		}else
@@ -473,8 +472,6 @@ public class Shark extends GameObject{
 	 * 		   else verticalAcceleration* groundState.getMultiplier()
 	 * 				
 	 */
-	
-	//TODO als ge isbottominwater de groundstate op grounded zet, mss makkelijker?
 	@Basic
 	public double getVerticalAcceleration(){
 		if(isBottomInWater()){

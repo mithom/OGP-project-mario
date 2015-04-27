@@ -327,7 +327,7 @@ public abstract class GameObject {
 	 * @return true if the gameobject overlaps with the given object, false if it doesn't
 	 * 			
 	 */			
-	private boolean overlaps(GameObject object){
+	public boolean overlaps(GameObject object){
 		double [] perimeters = this.getPerimeters();//order: left,bottom,right,top
 		double [] perimetersGameObject = object.getPerimeters();//order: left,bottom,right,top
 		if((perimeters[0]<perimetersGameObject[2] && perimeters[2]>perimetersGameObject[0])

@@ -7,6 +7,7 @@ import jumpingalien.part2.facade.Facade;
 import jumpingalien.part2.facade.IFacadePart2;
 import jumpingalien.exception.PositionOutOfBoundsException;
 import jumpingalien.model.*;
+import jumpingalien.model.gameObject.GameObject;
 import jumpingalien.model.gameObject.Position;
 import jumpingalien.state.Direction;
 import jumpingalien.util.Sprite;
@@ -270,7 +271,49 @@ public class MazubTestPart2 {
 	
 	@Test
 	public void testBouncingGameObjects(){
-		//TODO overlapping testen
+		//since sharks move randomly, we just let them move a lot and will check the result.
+		IFacadePart2 facade = new Facade();
+		World world = facade.createWorld(70, 10, 10, 1, 1, 0, 1);
+		for(int i=0;i<10;i++)
+			for(int j=0;j<10;j++)
+				facade.setGeologicalFeature(world, i, j, 1);//to move normally
+		for(int i=1;i<9;i++)
+			for(int j=1;j<9;j++)
+				facade.setGeologicalFeature(world, i, j, 2);//water
+		Shark shark1 = facade.createShark(70, 70, spriteArrayForSize(70, 40, 2));
+		Shark shark2 = facade.createShark(200, 200, spriteArrayForSize(70, 40, 2));
+		facade.addShark(world, shark2);
+		facade.addShark(world, shark1);
+		for(int i=0;i<500;i++){
+			facade.advanceTime(world, 0.2d);
+			assertFalse(shark1.overlaps(shark2));
+		}
+		
+		
+		World world2 = facade.createWorld(70, 10, 10, 1, 1, 0, 1);
+		for(int i=0;i<10;i++)
+			for(int j=0;j<10;j++)
+				facade.setGeologicalFeature(world2, i, j, 1);//to move normally
+		for(int i=1;i<9;i++)
+			for(int j=1;j<9;j++)
+				facade.setGeologicalFeature(world2, i, j, 2);//water
+		Shark shark3 = facade.createShark(70, 70, spriteArrayForSize(70, 40, 2));
+		Shark shark4 = facade.createShark(200, 200, spriteArrayForSize(70, 40, 2));
+		facade.addShark(world, shark3);
+		facade.addShark(world, shark4);
+		Slime slime1 = facade.createSlime(100, 100, spriteArrayForSize(70, 40, 2), facade.createSchool());
+		Slime slime2 = facade.createSlime(100, 100, spriteArrayForSize(70, 40, 2), facade.createSchool());
+		Mazub alien = facade.createMazub(180, 180, spriteArrayForSize(70, 70, 20));
+		facade.setMazub(world2, alien);
+		facade.addSlime(world2, slime1);
+		facade.addSlime(world2, slime2);
+		for(int i=0; i<50;i++){
+			facade.advanceTime(world2, 0.2d);
+			for(GameObject gameObject:world2.getAllGameObjects()){//death objects are filtered out of this getter
+				assertEquals(0, gameObject.getOverlappingGameObjects().size());
+				assertFalse(gameObject.isDead());
+			}
+		}
 	}
 	
 	@Test

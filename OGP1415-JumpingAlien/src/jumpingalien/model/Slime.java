@@ -4,7 +4,6 @@ import java.util.Random;
 
 import be.kuleuven.cs.som.annotate.Basic;
 import jumpingalien.exception.IllegalMovementException;
-import jumpingalien.exception.IllegalSizeException;
 import jumpingalien.exception.PositionOutOfBoundsException;
 import jumpingalien.model.gameObject.GameObject;
 import jumpingalien.model.gameObject.Position;
