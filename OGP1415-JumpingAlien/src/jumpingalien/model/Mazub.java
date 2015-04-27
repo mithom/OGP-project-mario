@@ -61,6 +61,9 @@ public class Mazub extends GameObject{
 	 * 			|if(pixelBottomY>0):
 	 * 			|	then new.groundState == GroundState.AIR
 	 * 			|	else new.groundState == GroundState.GROUNDED; 
+	 * @Post  Mazub will be automatically standing still and not ducking when the game starts 
+	 * 			| new.direction == Direction.STALLED
+	 * 			| new.duckstate == DuckState.STRAIGHT
 	 */
 	public Mazub(int pixelLeftX, int pixelBottomY, Sprite[] sprites) throws PositionOutOfBoundsException{
 		super(pixelLeftX, pixelBottomY, sprites);
@@ -81,10 +84,6 @@ public class Mazub extends GameObject{
 	 * 						|amount of Sprites will be used for the walking animation.
 	 * @param initHorVel	|the initial velocity at which the Mazub instance will walk when starting to move horizontally.
 	 * @param maxHorVel		|the maximum velocity at which the Mazub instance will walk.
-	 * @Post	the initial position of the Mazub instance will be (pixelLeftX,pixelBottomY)
-	 * 			|new.getPosition()== (pixelLeftX,pixelBottomY)
-	 * @Post	the list of Sprites the mazub instance will use, will be stored in spriteList
-	 * 			|new.spriteList == sprites;
 	 * @Post	if the Mazub instance isn't located on the ground, he will know he is in the air.
 	 * 			|if(pixelBottomY>0):
 	 * 			|	then new.groundState == GroundState.AIR
@@ -120,17 +119,76 @@ public class Mazub extends GameObject{
 	 * @throws IllegalMovementException
 	 * 			trying to divide by 0
 	 * 			|newSpeed*dirSign > this.getMaxHorizontalVelocity() && this.getHorizontalAcceleration()==0
-	 * @throws 
+	 * @throws PositionOutOfBoundsException
+	 * 			mazub has an illegal position
+	 * 			| ! isValidPosition()
+	 * @Post	if mazub isn't standing still and the horizontal velocity is less than the initial velocity, his velocity will be set to the initial velocity
+	 * 			| while(dt>0 && !isTerminated())
+	 * 			|	if(getOriëntation()!= Direction.STALLED && getHorizontalVelocity()*getOriëntation().getMultiplier()<initialHorizontalVelocity){
+	 *			|			then new.getHorizontalVelocity()==initialHorizontalVelocity*direction.getMultiplier()
+	 * @Post 	if mazub isn't overlapping with a wall, it's y-position will be changed and mazub will be in the air. If it is overlapping, his position won't change 
+	 * 			and his vertical velocity will be set to 0. Depending on if mazub is overlapping with a wall beneath itself, the groundstate will change to grounded 
+	 * 			(if it is beneath) or in the air (if not).
+	 * 			|while(dt>0 && !isTerminated())
+	 * 			|	double correctDt=this.calculateCorrectDt(dt)
+	 * 			|	double new_position_y = this.moveVertical(correctDt)
+				|	Position oldPosition = this.getPosition()
+				|	new.getPositionY() == new_position_y
+				|	if (this.overlapsWithWall()[0]==true && getVerticalVelocity()<0.0d)
+				|		then new.getVerticalVelocity()==0.0d
+				|			 new.groundState == GroundState.GROUNDED;
+				|			 new.getPositionY()== oldPosition.getPositions()[1]-0.01d
+				| 	else  
+				|		if (this.overlapsWithWall()[0]==false)
+				|			new.groundState = GroundState.AIR
+				|	if(overlapsWithWall()[2]== true && getVerticalVelocity()>0.0d)
+				|		new.getVerticalVelocity()==0.0d
+				|		new.getPositionY()==oldPosition.getPositions()[1]
+	 * @Post 	if mazub isn't overlapping with a wall, it's x-position will be changed. If it is overlapping with a wall, 
+	 * 			it's horizontal velocity will be set to 0 and it's position will remain the same		
+	 * 			|while(dt>0 && !isTerminated())
+	 * 			|	double correctDt=this.calculateCorrectDt(dt)
+	 * 			|	double new_position_x = this.moveHorizontal(correctDt)
+	 * 			|	Position oldPosition = this.getPosition()
+	 * 			|	this.setPositionX(new_position_x);
+				|		if(this.overlapsWithWall()[1]==true && getHorizontalVelocity()<0)
+				|			new.getHorizontalVelocity()==0.0d
+				|			new.getPositionX()==oldPosition.getPositions()[0]
+				|		if( overlapsWithWall()[3]==true && getHorizontalVelocity()>0){
+				|			new.getHorizontalVelocity()==0.0d
+				|			new.getPositionX() == oldPosition.getPositions()[0]
+	 * @Post 	if Mazub collides with a Shark or Slime, his movement will be blocked (the change of position will be undone) and his velocity set to 0
+	 * 			|while(dt>0 && !isTerminated())
+	 * 			|	for(GameObject gameObject:getOverlappingGameObjects()){
+				|		if(gameObject instanceof Slime || gameObject instanceof Shark){
+				|			new.getPositionX()== oldPosition.getPositions()[0]
+				|			new.getPositionY()==oldPosition.getPositions()[1]
+				|			boolean[] sides = sideOverlappingBetween(gameObject);
+				|			if(sides[1]){
+				|				new.getVerticalVelocity()==0.0d
+	 *			|				new.groundState=GroundState.GROUNDED
+	 *
 	 * @effect	the position,velocity,acceleration and State from mazub will be update according to the physics over a span from dt seconds.
 	 * 			|moveHorizontal()
 	 * 			|moveVertical()
 	 * @effect	the shown Sprite is updated according to the changed state of mazub.
+	 * 			|animate(0.0d)
 	 * 			|animate(dt)
-	 */
+	 * @effect  Mazub may be willing to end ducking
+	 * 			|executeEndDuck()
+	 * @effect  The window will be moving along with Mazub
+	 * 			|moveWindow()
+	 * @effect  If mazub collides with a gameObject, it will be checked if there are any consequences
+	 * 			|EffectOnCollisionWith(gameObject);
+				|gameObject.EffectOnCollisionWith(this);
+	 * @effect  If Mazub is in lava or water, he will lose Hp
+	 * 			|if isInLava() 
+				| 	then loseHp(50)
+				|if isInWater
+				|	then loseHp(2)
+	 */			
 
-	public void advanceTime(double dt)throws PositionOutOfBoundsException, IllegalTimeException,IllegalMovementException{
-
-	//moveHor publiek maken of @effect vervangen door doc.
+	public void advanceTime(double dt)throws PositionOutOfBoundsException, IllegalMazubStateException, IllegalTimeException,IllegalMovementException{
 		double dt2 = dt;
 		while(dt>0 && !isTerminated()){
 			double correctDt=this.calculateCorrectDt(dt);
@@ -264,9 +322,9 @@ public class Mazub extends GameObject{
 	 * 			| ! hasValidPosition()
 	 * @Post the horizontal velocity of mazub will be set to the correct new velocity if this isn't more than the maximum allowed velocity. Else it will be set to the maximum velocity
 	 * 			| if ! (newSpeed*dirSign > this.getMaxHorizontalVelocity())
-	 * 			| 	then this.setHorizontalVelocity(this.getHorizontalVelocity()+this.getHorizontalAcceleration()*dt)
+	 * 			| 	then new.getHorizontalVelocity()==this.getHorizontalVelocity()+this.getHorizontalAcceleration()*dt
 	 * 			| else
-	 * 			| 	this.setHorizontalVelocity(this.getMaxHorizontalVelocity())
+	 * 			| 	new.getHorizontalVelocity()==this.getMaxHorizontalVelocity()
 	 */
 	public double moveHorizontal(double dt) throws IllegalMovementException,PositionOutOfBoundsException{
 		int dirSign =this.direction.getMultiplier(); 
@@ -303,11 +361,13 @@ public class Mazub extends GameObject{
 	 * @throws PositionOutOfBoundsException
 	 * 			(A part of) the character isn't located within the boundaries of the world
 	 * 			| ! hasValidPosition()
-	 * @Post the horizontal velocity of mazub will be set to the correct new velocity if mazub isn't standing on the bottom perimeter of the world. Else it will be set to 0.
+	 * @Post the vertical velocity of mazub will be set to the correct new velocity if mazub isn't standing on the bottom perimeter of the world. 
+	 * 		 Else it will be set to 0 and it's groundstate will be set to grounded
 	 * 			| if ! (newPositiony<0)
-	 * 			| 	then this.setHorizontalVelocity(this.getHorizontalVelocity()+this.getHorizontalAcceleration()*dt)
+	 * 			| 	then new.getHorizontalVelocity()==this.getHorizontalVelocity()+this.getHorizontalAcceleration()*dt
 	 * 			| else
-	 * 			| 	this.VerticalVelocity(this.getMaxHorizontalVelocity())
+	 * 			| 	new.getVerticalVelocity()==0
+	 * 			|	new.groundState==Groundstate.GROUNDED
 	 */
 	
 	public double moveVertical(double dt)throws PositionOutOfBoundsException{
@@ -500,7 +560,7 @@ public class Mazub extends GameObject{
 	
 	/**
 	 * 
-	 * @param dir	|the direction mazub is currently facing
+	 * @param   dir	|the direction mazub is currently facing
 	 * @Pre		the given Direction dir cannot be empty (null), neither can it be Direction.STALLED.
 	 * 			|(dir != null)&& (dir != Direction.STALLED)
 	 * @Post	mazub is ready to move in the given direction when time advances.
@@ -586,6 +646,7 @@ public class Mazub extends GameObject{
 	}
 	
 	/**
+	 * lets mazub duck
 	 * @Post	mazub will duck when time advances
 	 * 			|new.getDuckState() = DuckState.DUCKED
 	 */
@@ -595,8 +656,11 @@ public class Mazub extends GameObject{
 	}
 	
 	/**
+	 * lets mazub end with ducking
 	 * @Post	mazub will try to stand up (or stay straight if he was already staying straight)
 	 * 			|new.getDuckState() == DuckState.TRY_STRAIGHT
+	 * @effect  mazub will try to stand up
+	 * 			|executeEndDuck()
 	 */
 	public void endDuck(){
 		//dit moet blijven
@@ -605,10 +669,9 @@ public class Mazub extends GameObject{
 	}
 	/**
 	 * @Post	if mazub wants to stand up, he will if possible. Otherwise he will stay ducked
-	 * 			 |if OverlapsWithWall()[2] = false
-	 * 			 |  then this.getduckState= DuckState.STRAIGHT
-	 * 			 |else
-	 * 			 |  this.duckState= DuckState.TRY_STRAIGHT
+	 * 			 |if(duckState == DuckState.TRY_STRAIGHT)
+	 * 			 |	if OverlapsWithWall()[2] = false
+	 * 			 | 		 then new.getduckState= DuckState.STRAIGHT
 	 */
 	public void executeEndDuck(){
 		if(duckState == DuckState.TRY_STRAIGHT){
@@ -686,7 +749,7 @@ public class Mazub extends GameObject{
 	 * Adds the character Mazub to the given world if this is a valid world for it
 	 * @Post if the given world is valid, a mazub will be added
 	 * 		  | if this.world == null && canHaveAsWorld(world)
-	 * 		  |   then this.world = world
+	 * 		  |   then new.world = world
 	 *        |        world.addMazub(this)
 	 */
 	@Override
@@ -703,9 +766,20 @@ public class Mazub extends GameObject{
 	}
 	
 	/**
-	 * 
+	 * The window will move along with mazub
 	 * @throws PositionOutOfBoundsException
 	 * 		the window has illegal borders
+	 * @effect Depending on the situation the window will be moved down, up, to the right or to the left
+	 * 			|double[] perimeters = getPerimeters(); // in meters
+				|if(world.getVisibleWindow()[0]/100.0d+2>perimeters[0])
+				|		world.moveWindowTo(perimeters[0]-2.0d, world.getVisibleWindow()[1]/100.0d)
+				|if(world.getVisibleWindow()[1]/100.0d+2>perimeters[1])
+				|		world.moveWindowTo(world.getVisibleWindow()[0]/100.0d,(perimeters[1]-2.0d))
+				|if(world.getVisibleWindow()[2]/100.0d-2<perimeters[2])
+				|		world.moveWindowTo((perimeters[2]+2.0d)-world.viewWidth/100.0d, world.getVisibleWindow()[1]/100.0d)
+	 *			|if(world.getVisibleWindow()[3]/100.0d-2<perimeters[3])
+	 *			|		world.moveWindowTo(world.getVisibleWindow()[0]/100.0d,(perimeters[3]+2.0d)-world.viewHeight/100.0d)
+	 *	
 	 */
 	public void moveWindow() throws PositionOutOfBoundsException{
 		double[] perimeters = getPerimeters(); // in meters
@@ -716,16 +790,16 @@ public class Mazub extends GameObject{
 		}if(world.getVisibleWindow()[2]/100.0d-2<perimeters[2]){
 			world.moveWindowTo((perimeters[2]+2.0d)-world.viewWidth/100.0d, world.getVisibleWindow()[1]/100.0d);
 		}if(world.getVisibleWindow()[3]/100.0d-2<perimeters[3]){
-		world.moveWindowTo(world.getVisibleWindow()[0]/100.0d,(perimeters[3]+2.0d)-world.viewHeight/100.0d);
+			world.moveWindowTo(world.getVisibleWindow()[0]/100.0d,(perimeters[3]+2.0d)-world.viewHeight/100.0d);
 		}
 	}
 	
 	/**
 	 * checks if the collision with a given gameobject has an effect
-	 * @effect if mazub isn't immune to the gameobject it will lose Hp and it will have an imunityTime of 0.6 seconds
-	 * 			|if !Immune()
-	 * 			|  then this.loseHp(50)
-	 * 			|		this.imunityTime = 0.6d
+	 * @effect if mazub isn't immune to the gameobject and if it doesn't overlap on top of it, it will lose Hp and it will have an imunityTime of 0.6 seconds
+	 * 			|if !Immune() && if(getPerimeters()[1]<gameObject.getPerimeters()[3])
+	 * 			|  then loseHp(50)
+	 * 			|		new.imunityTime = 0.6d
 	 */
 	//TODO controleer na merge
 	public void EffectOnCollisionWith(GameObject gameObject){

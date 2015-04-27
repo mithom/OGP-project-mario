@@ -7,8 +7,11 @@ import be.kuleuven.cs.som.annotate.*;
  * School is a class representing a group of slimes in a world
  * @author Meerten Wouter & Michiels Thomas
  * @version 1.0
- *
+ * @invar Every school will at least contain one slime
+ * 			|getSize()!=0
  */
+
+
 public class School {
 	private ArrayList<Slime> slimes = new ArrayList<Slime>();
 	private World world;
@@ -20,9 +23,9 @@ public class School {
 	/**
 	 * 
 	 * @param world | the world to which a school needs to be added
-	 * @Post if the given world contains the school, the world of this school wil be set to world
+	 * @Post if the given world contains the school, the world of this school will be set to world
 	 * 		 | if world.getSchools().contains(this)
-	 * 		 | 		then this.world = world
+	 * 		 | 		then new.world = world
 	 */
 	public void addWorld(World world){
 		if(world.getSchools().contains(this)){
@@ -73,7 +76,7 @@ public class School {
 	
 	/**
 	 * 
-	 * @param slime | the slime that needs to be checked wether it is in this school or not	
+	 * @param slime | the slime that needs to be checked whether it is in this school or not	
 	 * @return returns true if this school contains the given slime
 	 * 			| if slimes.contains(slime)
 	 * 			|	then true
@@ -89,7 +92,7 @@ public class School {
 	
 	/**
 	 * 
-	 * @return returns the world that contains this school 
+	 * @return returns the world that contains this school | this.world
 	 */
 	@Basic 
 	public World getWorld(){
@@ -98,13 +101,15 @@ public class School {
 	
 	/**
 	 * 
-	 * @return returns the size of this school
+	 * @return returns the size of this school |slimes.size()
 	 */
 	@Basic
 	public int getSize(){
 		return slimes.size();
 	}
 
+	
+	//TODO: geen idee wat hiervan commentaar moet zijn
 	public String toString(){
 		return "school nr:"+ world.getSchools().indexOf(this)+"of size "+getSize();
 	}
