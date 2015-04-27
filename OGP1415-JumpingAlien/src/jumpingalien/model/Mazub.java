@@ -179,8 +179,9 @@ public class Mazub extends GameObject{
 	 * @effect  The window will be moving along with Mazub
 	 * 			|moveWindow()
 	 * @effect  If mazub collides with a gameObject, it will be checked if there are any consequences
-	 * 			|EffectOnCollisionWith(gameObject);
-				|gameObject.EffectOnCollisionWith(this);
+	 * 			|for(GameObject gameObject:getOverlappingGameObjects())
+	 * 			|	EffectOnCollisionWith(gameObject)
+				|	gameObject.EffectOnCollisionWith(this)
 	 * @effect  If Mazub is in lava or water, he will lose Hp
 	 * 			|if isInLava() 
 				| 	then loseHp(50)

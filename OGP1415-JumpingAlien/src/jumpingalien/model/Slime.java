@@ -3,6 +3,7 @@ package jumpingalien.model;
 import java.util.Random;
 
 import be.kuleuven.cs.som.annotate.Basic;
+import jumpingalien.exception.IllegalMazubStateException;
 import jumpingalien.exception.IllegalMovementException;
 import jumpingalien.exception.PositionOutOfBoundsException;
 import jumpingalien.model.gameObject.GameObject;
@@ -65,15 +66,49 @@ public class Slime extends GameObject{
 	 * @throws PositionOutOfBoundsExeption
 	 * 			slime has an illegal position
 	 * 				| ! hasValidPosition()
-	 * @Post
-	 * @Post
+	 * @Post    imunitytime is changed
+	 * 			|double smallDt = Math.min(calculateCorrectDt(dt),actionDuration-actionTime);
+	 * 			|imunityTime= Math.max(0,imunityTime-smallDt);
+	 * @Post	depending on the situation, the groundstate and speed of slime can be changed
+	 * 			|Position oldPosition = getPosition();
+				|new.getPositionY()==moveVertical(smallDt)
+				|new.getPositionX()==moveHorizontal(smallDt)
+				|if (this.overlapsWithWall()[0]==true && getVerticalVelocity()<0.0d)
+				|	new.getVerticalVelocity(0.0d)
+				|	new.groundState = GroundState.GROUNDED
+				|	new.getPositionY(oldPosition.getPositions()[1]-0.01d)
+				|else
+				|	if(this.overlapsWithWall()[0]==false)
+				|		new.groundState = GroundState.AIR
+				|if(this.overlapsWithWall()[1]==true && getHorizontalVelocity()<0)
+				|	new.getHorizontalVelocity()==0.0d
+				|	new.getPositionX()==oldPosition.getPositions()[0]
+				|if( overlapsWithWall()[3]==true && getHorizontalVelocity()>0)
+				|	new.getHorizontalVelocity()==0.0d
+				|	new.getPositionX()==oldPosition.getPositions()[0]
+	 * @Post if slime collides with another object (shark or mazub) the changed movemement will be undone
+	 * 			|while(dt>0 && !isTerminated())
+	 * 			|	for(GameObject gameObject:getOverlappingGameObjects()){
+				|		if(gameObject instanceof Shark || gameObject instanceof Mazub)
+				|			new.getPositionX()== oldPosition.getPositions()[0]
+				|			new.getPositionY()==oldPosition.getPositions()[1]
 	 * @effect 	the action that slime will execute needs to be determined
 	 * 			|decideAction()
 	 * @effect	the position,velocity,acceleration and State from mazub will be update according to the physics over a span from dt seconds.
 	 * 			|moveHorizontal()
 	 * 			|moveVertical()
+	 * @effect  If slime collides with a gameObject, it will be checked if there are any consequences
+	 * 			|for(GameObject gameObject:getOverlappingGameObjects())
+	 * 			|	EffectOnCollisionWith(gameObject);
+				|	gameObject.EffectOnCollisionWith(this);
 	 * @effect	the shown Sprite is updated according to the changed state of mazub.
-	 * 			|animate()	 
+	 * 			|double smallDt = Math.min(calculateCorrectDt(dt),actionDuration-actionTime)
+	 * 			|animate(smallDt)	 
+	 * @effect  If Mazub is in lava or water, he will lose Hp
+	 * 			|if isInLava() 
+				| 	then loseHp(50)
+				|if isInWater
+				|	then loseHp(2)
 	 */
 	
 	@Override
@@ -160,11 +195,22 @@ public class Slime extends GameObject{
 		}
 	}
 	
+	/**
+	 * 
+	 * @param dir |the direction in which slime needs to move
+	 * @Post the direction of slime is changed
+	 * 			| new.direction = dir
+	 */
 	public void startMove(Direction dir){
 		direction = dir;
 		//Extendible in case slimes should get initial velocity or something else on movement.
 	}
 	
+	/**
+	 * stops the movement of slime
+	 * @Post the horizontal velocity is set to 0
+	 * 			|new.getHorizontalVelocity() == 0.0d
+	 */
 	public void endMove(){
 		setHorizontalVelocity(0.0d);
 	}
@@ -183,6 +229,21 @@ public class Slime extends GameObject{
 			currentSpriteNumber=0;
 	}
 	
+	/**
+	 * @param dt | The period of time that the character needs to move
+	 * @return The new y-position of the character after he has moved for dt seconds
+	 * @throws PositionOutOfBoundsException
+	 * 			(A part of) the sliem isn't located within the boundaries of the world
+	 * 			| ! hasValidPosition()
+	 * @Post  if slime wants to go out of the lower borders of the world, it's vertical speed will be set to 0 and be grounded
+	 * 			|if(newPositiony < 0){
+					if(getVerticalVelocity()<=0.0d)
+						then new.groundState = GroundState.GROUNDED
+							 new.getVerticalVelocity()==0.0d
+				|else	
+					new.getVerticalVelocity()==this.getVerticalVelocity() + this.getVerticalAcceleration()*dt*stateSign
+	*/					
+
 	private double moveVertical(double dt)throws PositionOutOfBoundsException{
 		//update position and speed (still need to compensate for velocity over max first time)
 		int stateSign =this.groundState.getMultiplier(); 
@@ -204,6 +265,24 @@ public class Slime extends GameObject{
 		this.setVerticalVelocity(newSpeed);
 		return newPositiony;
 	}
+	/**
+	 * @param dt | The period of time that the character needs to move
+	 * @return The new y-position of the character after he has moved for dt seconds
+	 * @throws PositionOutOfBoundsException
+	 * 			(A part of) the slime isn't located within the boundaries of the world
+	 * 			| ! hasValidPosition()
+	 * @throws IllegalMovementException
+	 * 			one of the parameters has had an overflow
+	 * 			|overflowException()
+	 * @throws IllegalMovementException
+	 * 			trying to divide by 0
+	 * 			|newSpeed*dirSign > this.getMaxHorizontalVelocity() && this.getHorizontalAcceleration()==0
+	 * @Post the horizontal velocity of shark will be set to the correct new velocity if this isn't more than the maximum allowed velocity. Else it will be set to the maximum velocity
+	 * 			| if ! (newSpeed*dirSign > this.getMaxHorizontalVelocity())
+	 * 			| 	then new.getHorizontalVelocity()== this.getHorizontalVelocity()+this.getHorizontalAcceleration()*dt
+	 * 			| else
+	 * 			| 	new.getHorizontalVelocity()== this.getMaxHorizontalVelocity()
+	 */
 	
 	private double moveHorizontal(double dt) throws IllegalMovementException,PositionOutOfBoundsException{
 		int dirSign =this.direction.getMultiplier(); 
@@ -244,8 +323,12 @@ public class Slime extends GameObject{
 	
 	/**
 	 * 
-	 * @param dt
-	 * @return
+	 * @param dt | The period of time from which, if necessary, needs to be taken a small part
+	 * @return the correct dt. This is the dt that makes sure that if mazub is moving, he will have moved 1 pixel after this dt.
+	 * 			|Math.min(Math.min(Math.min(Math.min(0.01d/Math.abs(getHorizontalVelocity()),0.01d/Math.abs(getVerticalVelocity()))
+	 * 			 , Math.abs((-getHorizontalVelocity() + Math.sqrt(Math.pow(getHorizontalVelocity(), 2)-2*getHorizontalAcceleration()/100))/getHorizontalAcceleration()))
+	 * 			 , Math.abs((-getVerticalVelocity() + Math.sqrt(Math.pow(getVerticalVelocity(), 2)-2*getVerticalAcceleration()/100))/getVerticalAcceleration()))
+	 * 			 , dt)
 	 */
 	
 	public double calculateCorrectDt(double dt){
@@ -373,6 +456,11 @@ public class Slime extends GameObject{
 	/**
 	 * 
 	 * @param school | the school to which the slime needs to be set 
+	 * 
+	 * @post if the given school is null, slime will have null as school
+	 * 			|new.school = null
+	 * @effect if slime leaves a school, it will be removed from the school and this slime will give 1 Hp to each of the slimes in the school he is leaving. In returns he 
+	 * 			recieves 1 Hp from every slime in the school he is joining. He also joins this school
 	 * 
 	 */
 	public void setSchool(School school){

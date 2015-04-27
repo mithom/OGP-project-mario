@@ -99,9 +99,19 @@ public class Shark extends GameObject{
 					|if( (overlapsWithWall()[3]==true || this.placeOverlapsWithGameObject()[2]==true) && getHorizontalVelocity()>0){
 					|	new.getHorizontalVelocity()==0.0d
 					|	new.getPositionX()==oldPosition.getPositions()[0]
+	 * @Post 	if shark collides with another object (slime or mazub) the changed movemement will be undone
+	 * 			|while(dt>0 && !isTerminated())
+	 * 			|	for(GameObject gameObject:getOverlappingGameObjects()){
+				|		if(gameObject instanceof Slime || gameObject instanceof Mazub){
+				|			new.getPositionX()== oldPosition.getPositions()[0]
+				|			new.getPositionY()==oldPosition.getPositions()[1]
 	 * @effect	the position,velocity,acceleration and State from mazub will be update according to the physics over a span from dt seconds.
 	 * 			|moveHorizontal()
 	 * 			|moveVertical()
+	 * @effect  If shark collides with a gameObject, it will be checked if there are any consequences
+	 * 			|for(GameObject gameObject:getOverlappingGameObjects())
+	 * 			|	EffectOnCollisionWith(gameObject);
+				|	gameObject.EffectOnCollisionWith(this);
 	 * @effect	if the time of the action is the duration of the action, a random action will be needed to be decided
 	 * 			|if(actionTime == actionDuration)
 	 * 			|	decideAction()
@@ -368,7 +378,7 @@ public class Shark extends GameObject{
 							 new.getVerticalVelocity()==0.0d
 				|else	
 					if(newPositiony>(world.getHeight()-1)/100.0d){
-						then new.getVerticalVelocity()==newSpeed()
+						then new.getVerticalVelocity()==this.getVerticalVelocity() + this.getVerticalAcceleration()*dt*stateSign
 	 */
 	public double moveVertical(double dt)throws PositionOutOfBoundsException,NullPointerException{
 		//update position and speed (still need to compensate for velocity over max first time)
@@ -402,19 +412,18 @@ public class Shark extends GameObject{
 	 * @throws PositionOutOfBoundsException
 	 * 			(A part of) the shark isn't located within the boundaries of the world
 	 * 			| ! hasValidPosition()
-	 * @throws IllegalMazubStateException
-	 * 			the current State of mazub is null.
-	 * 			|getGroundState()==null
-	 * 			|getOrientation()==null
-	 * 			|getDuckState()==null
+
 	 * @throws IllegalMovementException
 	 * 			one of the parameters has had an overflow
 	 * 			|overflowException()
+	 * @throws IllegalMovementException
+	 * 			trying to divide by 0
+	 * 			|newSpeed*dirSign > this.getMaxHorizontalVelocity() && this.getHorizontalAcceleration()==0
 	 * @Post the horizontal velocity of shark will be set to the correct new velocity if this isn't more than the maximum allowed velocity. Else it will be set to the maximum velocity
 	 * 			| if ! (newSpeed*dirSign > this.getMaxHorizontalVelocity())
-	 * 			| 	then this.setHorizontalVelocity(this.getHorizontalVelocity()+this.getHorizontalAcceleration()*dt)
+	 * 			| 	then new.getHorizontalVelocity()== this.getHorizontalVelocity()+this.getHorizontalAcceleration()*dt
 	 * 			| else
-	 * 			| 	this.setHorizontalVelocity(this.getMaxHorizontalVelocity())
+	 * 			| 	new.getHorizontalVelocity()== this.getMaxHorizontalVelocity()
 	 */
 	
 	public double moveHorizontal(double dt) throws IllegalMovementException,PositionOutOfBoundsException{
@@ -540,6 +549,7 @@ public class Shark extends GameObject{
 	public double getVerticalVelocity(){
 		return this.verticalVelocity;
 	}
+	
 	/**
 	 * returns the current acceleration of shark according to the vertical direction
 	 * @return if isBottomInWater()
@@ -622,8 +632,8 @@ public class Shark extends GameObject{
 	 * checks if the collision with a given gameobject has an effect
 	 * @effect if Shark isn't immune to the gameobject it will lose Hp and it will have an imunityTime of 0.6 seconds
 	 * 			|if !Immune()
-	 * 			|  then this.loseHp(50)
-	 * 			|		this.imunityTime = 0.6d
+	 * 			|  then loseHp(50)
+	 * 			|		new.imunityTime = 0.6d
 	 */
 	
 	public void EffectOnCollisionWith(GameObject gameObject){
