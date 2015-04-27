@@ -69,7 +69,7 @@ public class Shark extends GameObject{
 	 * 
 	 */
 
-	@Override //TODO movement wanneer op de grond in orde brengen
+	@Override
 	public void advanceTime(double dt) throws PositionOutOfBoundsException, NullPointerException, IllegalSizeException{
 		while(!isTerminated() && dt >0){
 			if(actionTime == actionDuration){
@@ -208,7 +208,7 @@ public class Shark extends GameObject{
 		for(int i=0;i<perimeters.length;i++)perimeters[i]*=100;
 		int [][] occupied_tiles = world.getTilePositionsIn((int) (perimeters[0]),(int)(perimeters[1]),(int)(perimeters[2]),(int)(perimeters[3]));
 		for (int i=0 ; i < occupied_tiles.length ; i++){
-			if (world.getGeologicalFeature(new int[]{occupied_tiles[i][0]*world.getTileLenght(),occupied_tiles[i][1]*world.getTileLenght()})==2){//TODO intern if-else{if-else{...}}, not if if if
+			if (world.getGeologicalFeature(new int[]{occupied_tiles[i][0]*world.getTileLength(),occupied_tiles[i][1]*world.getTileLength()})==2){//TODO intern if-else{if-else{...}}, not if if if
 				//check if tile is beneath character
 				if (world.getBottomLeftPixelOfTile(occupied_tiles[i][0],occupied_tiles[i][1])[1] <= perimeters[1])
 					 return true;

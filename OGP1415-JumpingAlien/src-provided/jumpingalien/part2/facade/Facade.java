@@ -150,7 +150,7 @@ public class Facade extends jumpingalien.part1.facade.Facade implements IFacadeP
 	
 	@Override
 	public int getTileLength(World world){
-		return world.getTileLenght();
+		return world.getTileLength();
 	};
 	
 	@Override
