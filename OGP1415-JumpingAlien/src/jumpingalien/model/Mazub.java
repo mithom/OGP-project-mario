@@ -619,7 +619,7 @@ public class Mazub extends GameObject{
 	
 	@Override
 	public void addToWorld(World world){
-		if(this.world == null && canHaveAsWorld(world)){
+		if(canHaveAsWorld(world)){
 			this.world = world;
 			world.addMazub(this);
 			if(overlapsWithWall()[0]){

@@ -6,8 +6,7 @@ import java.security.InvalidKeyException;
 import jumpingalien.part2.facade.Facade;
 import jumpingalien.part2.facade.IFacadePart2;
 import jumpingalien.exception.PositionOutOfBoundsException;
-import jumpingalien.model.Mazub;
-import jumpingalien.model.World;
+import jumpingalien.model.*;
 import jumpingalien.util.Sprite;
 import jumpingalien.util.Util;
 
@@ -139,6 +138,46 @@ public class MazubTestPart2 {
 		assertEquals(0.0d, alien.getHorizontalAcceleration(),Util.DEFAULT_EPSILON);
 	}
 	
+	@Test
+	public void testDamageByTerrainAndRemovingOnDeath(){
+		//setting up a world
+		IFacadePart2 facade = new Facade();
+		World world = facade.createWorld(70, 5, 3, 1, 1, 0, 1);
+		for(int i=0;i<5;i++)
+			facade.setGeologicalFeature(world, i, 0, 1);//to move normally
+		facade.setGeologicalFeature(world, 2, 1, 1);//land
+		facade.setGeologicalFeature(world, 0, 1, 3);//lava
+		facade.setGeologicalFeature(world, 1, 1, 3);//lava
+		facade.setGeologicalFeature(world, 3, 1, 2);//water
+		facade.setGeologicalFeature(world, 4, 1, 2);//water
+		
+		//tests for Slimes
+		School school = facade.createSchool();
+		Slime slimeForWater = facade.createSlime(70*3, 69, spriteArrayForSize(70, 40, 2), school);
+		Slime slimeForLava = facade.createSlime(70*3, 69, spriteArrayForSize(70, 40, 2), school);
+		facade.addSlime(world, slimeForLava);
+		facade.addSlime(world, slimeForWater);
+		
+		//tests for Mazub
+		Mazub mazubForWater = facade.createMazub(70*3, 69, spriteArrayForSize(70, 40, 20));
+		Mazub mazubForLava = facade.createMazub(70*3, 69, spriteArrayForSize(70, 40, 20));
+		facade.setMazub(world, mazubForLava);
+		facade.setMazub(world, mazubForWater);
+		
+		//tests for Sharks
+		Shark sharkForLava = facade.createShark(70*3, 69, spriteArrayForSize(70, 40, 2));
+		Shark sharkForWater = facade.createShark(70*3, 69, spriteArrayForSize(70, 40, 2));
+		facade.addShark(world, sharkForWater);
+		facade.addShark(world, sharkForLava);
+		
+		//tests for Plants
+		Plant plantInLava = facade.createPlant(0, 0, spriteArrayForSize(70, 40, 2));
+		Plant plantInAir = facade.createPlant(70*3, 69, spriteArrayForSize(70, 40, 2));
+		Plant plantInWater = facade.createPlant(70*5-35, 0, spriteArrayForSize(70, 40, 2));
+		facade.addPlant(world, plantInWater);
+		facade.addPlant(world, plantInAir);
+		facade.addPlant(world, plantInLava);
+	}
 	//TODO hpverlies door terrein bij verschillende classes
 	//TODO overlapping testen
 	//TODO schools 

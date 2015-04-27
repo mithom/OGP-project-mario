@@ -91,20 +91,29 @@ public class Slime extends GameObject{
 	
 	private void decideAction(){
 		if(actionTime == actionDuration){
-			setHorizontalVelocity(0.0d);
+			endMove(direction);
 			Random rand = new Random();
 			actionDuration = rand.nextDouble()*4.0d+2.0d;
 			actionTime = 0.0d;
-		    int randomNum = rand.nextInt((1 - 0) + 1) + 0;
+		    int randomNum = rand.nextInt(2);
 		    switch(randomNum){
 		    case 0:
-		    	direction = Direction.RIGHT;
+		    	startMove(Direction.RIGHT);
 		    	break;
 		    case 1:
-		    	direction = Direction.LEFT;
+		    	startMove(Direction.LEFT);
 		    	break;
 		    }
 		}
+	}
+	
+	public void startMove(Direction dir){
+		direction = dir;
+		//Extendible in case slimes should get initial velocity or something else on movement.
+	}
+	
+	public void endMove(Direction dir){
+		setHorizontalVelocity(0.0d);
 	}
 	
 	private void animate(double dt){
