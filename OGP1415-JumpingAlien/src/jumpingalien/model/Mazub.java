@@ -134,6 +134,11 @@ public class Mazub extends GameObject{
 			double correctDt=this.calculateCorrectDt(dt);
 			dt -= correctDt;
 			imunityTime = Math.max(0, imunityTime - correctDt);
+			animate(0.0d);//make the ducking animations etc all right, advancing in walking etc only in end, (otherwise, there's inaccuracy with the timers)
+			//the animation is only shown in the end. Size for eg ducking, is already changed
+			if(getOriëntation()!= Direction.STALLED && getHorizontalVelocity()*getOriëntation().getMultiplier()<initialHorizontalVelocity){
+				setHorizontalVelocity(initialHorizontalVelocity*direction.getMultiplier());
+			}
 			double new_position_x = this.moveHorizontal(correctDt);// return new Position(x,y) ipv void
 			double new_position_y = this.moveVertical(correctDt);
 			Position oldPosition = getPosition();
@@ -583,6 +588,7 @@ public class Mazub extends GameObject{
 	 */
 	public void endDuck(){
 		duckState = DuckState.TRY_STRAIGHT;
+		executeEndDuck();
 	}
 	/**
 	 * @Post	if mazub wants to stand up, he will if possible. Otherwise he will stay ducked
