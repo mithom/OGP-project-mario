@@ -111,7 +111,7 @@ public class World {
 		ArrayList<int[]> tilePositions = new ArrayList<int[]>();
 		for(int rowPos = (pixelBottom/tileSize)*tileSize; rowPos <= pixelTop; rowPos+=tileSize){
 			for(int colPos = (pixelLeft/tileSize)*tileSize;colPos <= pixelRight;colPos+=tileSize){
-				if(getHeight()-getTileLenght()>=rowPos && getWidth()-getTileLenght()>=colPos)
+				if(getHeight()-getTileLength()>=rowPos && getWidth()-getTileLength()>=colPos)
 					tilePositions.add(new int[]{colPos/tileSize,rowPos/tileSize});
 			}
 		}
@@ -189,7 +189,7 @@ public class World {
 		return new ArrayList<Slime>(slimes);
 	}
 	
-	public int getTileLenght(){
+	public int getTileLength(){
 		return this.tileSize;
 	}
 	

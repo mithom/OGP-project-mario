@@ -159,7 +159,7 @@ public abstract class GameObject {
 		// occupied tiles = eerst X dan Y
 		int [][] occupied_tiles = world.getTilePositionsIn((int) (perimeters[0]),(int)(perimeters[1]),(int)(perimeters[2]),(int)(perimeters[3]));
 		for (int i=0 ; i < occupied_tiles.length ; i++){
-			if (world.getGeologicalFeature(new int[]{occupied_tiles[i][0]*world.getTileLenght(),occupied_tiles[i][1]*world.getTileLenght()})==1){
+			if (world.getGeologicalFeature(new int[]{occupied_tiles[i][0]*world.getTileLength(),occupied_tiles[i][1]*world.getTileLength()})==1){
 				//check if tile is beneath character
 				if (world.getBottomLeftPixelOfTile(occupied_tiles[i][0],occupied_tiles[i][1])[1] < perimeters[1])
 					overlap[0]=true;
@@ -232,7 +232,7 @@ public abstract class GameObject {
 		int [][] occupied_tiles = world.getTilePositionsIn((int)(perimeters[0]*100), (int)(perimeters[1]*100), (int)(perimeters[2]*100),(int)(perimeters[3]*100));
 		for(int[] tile:occupied_tiles){
 			try{
-				if(world.getGeologicalFeature(tile[0]*world.getTileLenght(), tile[1]*world.getTileLenght())==2)
+				if(world.getGeologicalFeature(tile[0]*world.getTileLength(), tile[1]*world.getTileLength())==2)
 					return true;
 			}catch(InvalidKeyException e){
 				System.out.println(tile[0] +","+ tile[1]);
@@ -247,7 +247,7 @@ public abstract class GameObject {
 		int [][] occupied_tiles = world.getTilePositionsIn((int)(perimeters[0]*100), (int)(perimeters[1]*100), (int)(perimeters[2]*100),(int)(perimeters[3]*100));
 		for(int[] tile:occupied_tiles){
 			try{
-				if(world.getGeologicalFeature(tile[0]*world.getTileLenght(), tile[1]*world.getTileLenght())==3)
+				if(world.getGeologicalFeature(tile[0]*world.getTileLength(), tile[1]*world.getTileLength())==3)
 					return true;
 			}catch(InvalidKeyException e){
 				System.out.println(tile[0] +","+ tile[1]);
@@ -262,7 +262,7 @@ public abstract class GameObject {
 		int [][] occupied_tiles = world.getTilePositionsIn((int)(perimeters[0]*100), (int)(perimeters[1]*100), (int)(perimeters[2]*100),(int)(perimeters[3]*100));
 		for(int[] tile:occupied_tiles){
 			try{
-				if(world.getGeologicalFeature(tile[0]*world.getTileLenght(), tile[1]*world.getTileLenght())==0)
+				if(world.getGeologicalFeature(tile[0]*world.getTileLength(), tile[1]*world.getTileLength())==0)
 					return true;
 			}catch(InvalidKeyException e){
 				System.out.println(tile[0] +","+ tile[1]);
