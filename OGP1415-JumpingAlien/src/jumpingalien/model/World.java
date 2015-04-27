@@ -16,7 +16,8 @@ import jumpingalien.model.gameObject.GeologicalFeature;
 
 /**
  * World is a class representing the gameworld in which a game shall be played.
- * 
+ * @author Meerten Wouter & Michiels Thomas (both 2de fase ingenieurswetenschappen)
+ * @version 1.0
  * @Invar 	the world shall only contain objects that are alive.
  * 			|for(GameObject gameObject:getAllGameObjects())
  * 			|		gameObject.isDead() == false

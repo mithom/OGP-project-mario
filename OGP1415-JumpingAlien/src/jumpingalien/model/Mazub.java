@@ -13,7 +13,7 @@ import jumpingalien.state.GroundState;
 import jumpingalien.util.Sprite;
 /**
  * Mazub is a class representing a character/GameObject of the game. 
- * @author Meerten Wouter & Michiels Thomas
+ * @author Meerten Wouter & Michiels Thomas (both 2de fase ingenieurswetenschappen)
  * @version 1.0
  * @Invar 	the position of the lower left pixel will always be valid. 
  * 			This means it will never be outside of the boundaries of the game.

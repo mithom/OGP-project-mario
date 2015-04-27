@@ -8,7 +8,7 @@ import jumpingalien.util.Sprite;
 import jumpingalien.model.World;
 /**
  * Plant is a class representing a GameObject of the world
- * @author Meerten Wouter & Michiels Thomas
+ * @author Meerten Wouter & Michiels Thomas (both 2de fase ingenieurswetenschappen)
  * @version 1.0
  * @Invar 	the position of a plant will always be valid. 
  * 			This means it will never be outside of the boundaries of the world or overlap with impassable terrain
