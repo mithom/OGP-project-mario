@@ -111,7 +111,8 @@ public class World {
 		ArrayList<int[]> tilePositions = new ArrayList<int[]>();
 		for(int rowPos = (pixelBottom/tileSize)*tileSize; rowPos <= pixelTop; rowPos+=tileSize){
 			for(int colPos = (pixelLeft/tileSize)*tileSize;colPos <= pixelRight;colPos+=tileSize){
-				tilePositions.add(new int[]{colPos/tileSize,rowPos/tileSize});
+				if(getHeight()-getTileLenght()>=rowPos && getWidth()-getTileLenght()>=colPos)
+					tilePositions.add(new int[]{colPos/tileSize,rowPos/tileSize});
 			}
 		}
 		return tilePositions.toArray(new int[tilePositions.size()][]);
@@ -194,7 +195,8 @@ public class World {
 	
 	public void advanceTime(double dt)throws IllegalMovementException,IllegalMazubStateException,IllegalTimeException,PositionOutOfBoundsException, NullPointerException, IllegalSizeException{
 		ArrayList<GameObject> worldObjects = new ArrayList<GameObject>();
-		worldObjects.add(mazub);
+		if(isValidMazub())
+			worldObjects.add(mazub);
 		worldObjects.addAll(plants);
 		worldObjects.addAll(getSlimes());
 		worldObjects.addAll(sharks);
@@ -202,6 +204,10 @@ public class World {
 		for(GameObject worldObject:worldObjects){
 			worldObject.advanceTime(dt);
 		}
+	}
+	
+	public boolean isValidMazub(){
+		return mazub != null && !mazub.isTerminated();
 	}
 	
 	public int[] getWorldSizeInPixels(){

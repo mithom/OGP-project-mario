@@ -90,20 +90,18 @@ public class Shark extends GameObject{
 				gameObject.EffectOnCollisionWith(this);
 			}
 			if(isInLava()){
-				if(lastLavaHit < 0){
+				lastLavaHit -= smallDt;
+				if(lastLavaHit <= 0){
 					loseHp(50);
 					lastLavaHit = 0.2d;
-				}else{
-					lastLavaHit -= smallDt;
 				}
 			}else
 				lastLavaHit=0.0d;
 			if(isInAir()){
-				if(lastWaterHit < 0){
+				lastWaterHit -= smallDt;
+				if(lastWaterHit <= 0){
 					loseHp(2);
 					lastWaterHit = 0.2d;
-				}else{
-					lastWaterHit -= smallDt;
 				}
 			}else{
 				lastWaterHit =0.2d;
@@ -115,7 +113,7 @@ public class Shark extends GameObject{
 		if(randomAcceleration==0){
 			endJump();
 		}
-		endMove(direction);
+		endMove();
 		Random rand = new Random();
 		actionDuration = rand.nextDouble()*3.0d+1.0d;
 		actionTime = 0.0d;
@@ -157,7 +155,7 @@ public class Shark extends GameObject{
 			randomAcceleration = 0.0d;
 	}
 	
-	public void endMove(Direction dir){
+	public void endMove(){
 		randomAcceleration = 0.0d;
 		setHorizontalVelocity(0.0d);
 	}
@@ -242,10 +240,10 @@ public class Shark extends GameObject{
 			throw new IllegalMovementException("positionX overflowed");
 		}
 		//correct position if out of window
-		if(getPositionX() <0){
+		if(getPositionX()+s <0){
 			return 0.0d;
 		}
-		if(getPositionX()>(world.getWidth()-1)/100d)
+		if(getPositionX()+s>(world.getWidth()-1)/100d)
 			return (world.getWidth()-1)/100.0d;
 		return getPositionX()+s;
 	}

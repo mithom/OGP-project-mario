@@ -185,20 +185,18 @@ public class Mazub extends GameObject{
 			}
 			this.moveWindow();
 			if(isInLava()){
-				if(lastLavaHit < 0){
+				lastLavaHit -= correctDt;
+				if(lastLavaHit <= 0){
 					loseHp(50);
 					lastLavaHit = 0.2d;
-				}else{
-					lastLavaHit -= correctDt;
 				}
 			}else
 				lastLavaHit=0.0d;
 			if(isInWater()){
-				if(lastWaterHit < 0){
+				lastWaterHit -= correctDt;
+				if(lastWaterHit <= 0){
 					loseHp(2);
 					lastWaterHit = 0.2d;
-				}else{
-					lastWaterHit -= correctDt;
 				}
 			}else{
 				lastWaterHit =0.2d;
@@ -272,11 +270,11 @@ public class Mazub extends GameObject{
 			
 		}
 		//correct position if out of window
-		if(getPositionX() <0){
+		if(getPositionX()+s <0){
 			return 0.0d;
 			//setPositionX(0); //ELKE SITUATIE VERANDEREN HE
 		}
-		if(getPositionX()>(world.getWidth()-1)/100d)
+		if(getPositionX()+s>(world.getWidth()-1)/100d)
 			return (world.getWidth()-1)/100.0d;
 		return getPositionX()+s;
 	} 

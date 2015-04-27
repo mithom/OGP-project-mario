@@ -68,20 +68,18 @@ public class Slime extends GameObject{
 				gameObject.EffectOnCollisionWith(this);
 			}
 			if(isInLava()){
-				if(lastLavaHit < 0){
+				lastLavaHit -= smallDt;
+				if(lastLavaHit <= 0){
 					loseHp(50);
 					lastLavaHit = 0.2d;
-				}else{
-					lastLavaHit -= smallDt;
 				}
 			}else
 				lastLavaHit=0.0d;
 			if(isInWater()){
-				if(lastWaterHit < 0){
+				lastWaterHit -= smallDt;
+				if(lastWaterHit <= 0){
 					loseHp(2);
 					lastWaterHit = 0.2d;
-				}else{
-					lastWaterHit -= smallDt;
 				}
 			}else{
 				lastWaterHit =0.2d;
@@ -91,7 +89,7 @@ public class Slime extends GameObject{
 	
 	private void decideAction(){
 		if(actionTime == actionDuration){
-			endMove(direction);
+			endMove();
 			Random rand = new Random();
 			actionDuration = rand.nextDouble()*4.0d+2.0d;
 			actionTime = 0.0d;
@@ -112,7 +110,7 @@ public class Slime extends GameObject{
 		//Extendible in case slimes should get initial velocity or something else on movement.
 	}
 	
-	public void endMove(Direction dir){
+	public void endMove(){
 		setHorizontalVelocity(0.0d);
 	}
 	
@@ -164,10 +162,10 @@ public class Slime extends GameObject{
 			throw new IllegalMovementException("positionX overflowed");
 		}
 		//correct position if out of window
-		if(getPositionX() <0){
+		if(getPositionX()+s <0){
 			return 0.0d;
 		}
-		if(getPositionX()>(world.getWidth()-1)/100d)
+		if(getPositionX()+s>(world.getWidth()-1)/100d)
 			return (world.getWidth()-1)/100.0d;
 		return getPositionX()+s;
 	}
@@ -178,8 +176,32 @@ public class Slime extends GameObject{
 	}
 	
 	public double calculateCorrectDt(double dt){
-		return Math.min(0.1d, dt);
-		//TODO implement this function
+		double min1;double min2;double min3;double min4; // de 4 mogelijke situaties
+		if (getVerticalVelocity()==0 && getHorizontalVelocity()==0
+				&& getVerticalAcceleration()==0 && getHorizontalAcceleration()==0)
+			return dt;
+		else{
+			if(getHorizontalVelocity()!=0.0d)//mogelijkheid 1
+				min1 = 0.01d/Math.abs(getHorizontalVelocity());
+			else
+				min1 = Float.POSITIVE_INFINITY;
+			
+			if (getVerticalVelocity()!=0.0d)
+				min2 = 0.01d/Math.abs(getVerticalVelocity());
+			else 
+				min2=Float.POSITIVE_INFINITY;
+			
+			if (this.getHorizontalAcceleration()!=0.0d){//mogelijkheid 3
+				min3 = Math.abs((-getHorizontalVelocity() + Math.sqrt(Math.pow(getHorizontalVelocity(), 2)+2*Math.abs(getHorizontalAcceleration())/100))/getHorizontalAcceleration());
+			}else
+				min3=Float.POSITIVE_INFINITY;
+			
+			if (this.getVerticalAcceleration()!=0.0d)
+				min4 = Math.abs((-getVerticalVelocity() + Math.sqrt(Math.pow(getVerticalVelocity(), 2)+2*Math.abs(getVerticalAcceleration())/100))/getVerticalAcceleration());
+			else 
+				min4=Float.POSITIVE_INFINITY;
+			return Math.min(Math.min(Math.min(Math.min(min1,min2), min3),min4),dt); // mag geen NaN bevatten
+		}
 	}
 	
 	private double travelledHorizontalDistance(double dt){

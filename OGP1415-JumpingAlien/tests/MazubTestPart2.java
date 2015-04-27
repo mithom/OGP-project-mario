@@ -2,11 +2,13 @@
 import static org.junit.Assert.*;
 
 import java.security.InvalidKeyException;
+import java.util.Arrays;
 
 import jumpingalien.part2.facade.Facade;
 import jumpingalien.part2.facade.IFacadePart2;
 import jumpingalien.exception.PositionOutOfBoundsException;
 import jumpingalien.model.*;
+import jumpingalien.state.Direction;
 import jumpingalien.util.Sprite;
 import jumpingalien.util.Util;
 
@@ -153,27 +155,49 @@ public class MazubTestPart2 {
 		
 		//tests for Slimes
 		School school = facade.createSchool();
-		Slime slimeForWater = facade.createSlime(70*3, 69, spriteArrayForSize(70, 40, 2), school);
-		Slime slimeForLava = facade.createSlime(70*3, 69, spriteArrayForSize(70, 40, 2), school);
+		Slime slimeForWater = facade.createSlime(280, 75, spriteArrayForSize(70, 40, 2), school);
+		Slime slimeForLava = facade.createSlime(0, 75, spriteArrayForSize(70, 40, 2), school);
 		facade.addSlime(world, slimeForLava);
-		facade.addSlime(world, slimeForWater);
+		assertEquals(100, slimeForLava.getNbHitPoints());
+		facade.advanceTime(world, 0.00005);
+		assertEquals(50, slimeForLava.getNbHitPoints());
+		facade.advanceTime(world, 0.1d);
+		assertEquals(50, slimeForLava.getNbHitPoints());
+		facade.advanceTime(world, 0.2d);
+		assertEquals(0, slimeForLava.getNbHitPoints());
+		assertFalse(world.getSlimes().contains(slimeForLava));
+		//slimeForLava is death
 		
+		facade.addSlime(world, slimeForWater);
+		facade.advanceTime(world, 0.00005d);
+		assertEquals(100, slimeForWater.getNbHitPoints());
+		facade.advanceTime(world, 0.1d);
+		assertTrue(slimeForWater.isInWater());
+		assertEquals(100, slimeForWater.getNbHitPoints());
+		assertTrue(world.getSlimes().contains(slimeForWater));
+		for(int i=0;i<50;i++){
+			facade.advanceTime(world, 0.2000000005d);
+			assertEquals(100-(1+i)*2, slimeForWater.getNbHitPoints());
+		}
+		assertFalse(world.getSlimes().contains(slimeForWater));
+		
+		//TODO hier verder werken
 		//tests for Mazub
-		Mazub mazubForWater = facade.createMazub(70*3, 69, spriteArrayForSize(70, 40, 20));
-		Mazub mazubForLava = facade.createMazub(70*3, 69, spriteArrayForSize(70, 40, 20));
+		Mazub mazubForWater = facade.createMazub(70*2, 69, spriteArrayForSize(70, 40, 20));
+		Mazub mazubForLava = facade.createMazub(70*2, 69, spriteArrayForSize(70, 40, 20));
 		facade.setMazub(world, mazubForLava);
 		facade.setMazub(world, mazubForWater);
 		
 		//tests for Sharks
-		Shark sharkForLava = facade.createShark(70*3, 69, spriteArrayForSize(70, 40, 2));
-		Shark sharkForWater = facade.createShark(70*3, 69, spriteArrayForSize(70, 40, 2));
+		Shark sharkForLava = facade.createShark(70*2, 69, spriteArrayForSize(70, 40, 2));
+		Shark sharkForWater = facade.createShark(70*2, 69, spriteArrayForSize(70, 40, 2));
 		facade.addShark(world, sharkForWater);
 		facade.addShark(world, sharkForLava);
 		
 		//tests for Plants
 		Plant plantInLava = facade.createPlant(0, 0, spriteArrayForSize(70, 40, 2));
-		Plant plantInAir = facade.createPlant(70*3, 69, spriteArrayForSize(70, 40, 2));
-		Plant plantInWater = facade.createPlant(70*5-35, 0, spriteArrayForSize(70, 40, 2));
+		Plant plantInAir = facade.createPlant(70*2, 69, spriteArrayForSize(70, 40, 2));
+		Plant plantInWater = facade.createPlant(70*4-35, 0, spriteArrayForSize(70, 40, 2));
 		facade.addPlant(world, plantInWater);
 		facade.addPlant(world, plantInAir);
 		facade.addPlant(world, plantInLava);
