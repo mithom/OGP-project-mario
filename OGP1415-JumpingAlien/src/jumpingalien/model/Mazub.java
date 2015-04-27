@@ -126,9 +126,10 @@ public class Mazub extends GameObject{
 	 * 			|moveVertical()
 	 * @effect	the shown Sprite is updated according to the changed state of mazub.
 	 * 			|animate()
-	 */
-	
+	 */	
 	public void advanceTime(double dt)throws PositionOutOfBoundsException, IllegalTimeException,IllegalMovementException{
+
+	//moveHor publiek maken of @effect vervangen door doc.
 		double dt2 = dt;
 		while(dt>0 && !isTerminated()){
 			double correctDt=this.calculateCorrectDt(dt);
@@ -587,6 +588,7 @@ public class Mazub extends GameObject{
 	 * 			|new.getDuckState() == DuckState.TRY_STRAIGHT
 	 */
 	public void endDuck(){
+		//dit moet blijven
 		duckState = DuckState.TRY_STRAIGHT;
 		executeEndDuck();
 	}

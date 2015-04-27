@@ -287,7 +287,7 @@ public abstract class GameObject {
 	public abstract void EffectOnCollisionWith(GameObject gameObject);
 	
 	//left,bottom,right,top, need to be checked after position has been resetted
-		public boolean[] sideOverlappingBetween(GameObject bounceAgainst){
+	public boolean[] sideOverlappingBetween(GameObject bounceAgainst){
 		double[] own = getPerimeters();
 		double[] other = bounceAgainst.getPerimeters();
 		boolean[] overlap=new boolean[4];
