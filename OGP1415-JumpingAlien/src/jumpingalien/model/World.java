@@ -419,7 +419,6 @@ public class World {
 	public ArrayList<Slime> getSlimes(){
 		return new ArrayList<Slime>(slimes);
 	}
-<<<<<<< HEAD
 	/**
 	 * Returns the length of a square tile side in the world.
 	 * 
