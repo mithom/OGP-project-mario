@@ -26,12 +26,12 @@ import jumpingalien.util.Sprite;
  * 			|spriteList.length()>=1 
  */
 public abstract class GameObject {
-	protected Position position;
-	protected final Sprite[] spriteList;
-	protected int currentSpriteNumber=0;
-	protected World world;
-	protected boolean terminated = false;
-	protected HitPoint hitPoint;
+	private Position position;
+	private final Sprite[] spriteList;
+	private int currentSpriteNumber=0;
+	private World world;
+	private boolean terminated = false;
+	private final HitPoint hitPoint;
 	protected int m;
 	protected double imunityTime;
 	protected double lastWaterHit;
@@ -65,6 +65,35 @@ public abstract class GameObject {
 		lastLavaHit=0.0d;
 	};
 	
+	
+	/**
+	 * 
+	 * @param pixelLeftX    |the most left position that is part from the currently showing Sprite.
+	 * @param pixelBottomY	|the lowest position that is part of the currently showing Sprite.
+	 * @param sprites		|a list of Sprites that a gameobject will use to rotate trough, to make
+	 * 						|animations.
+	 * @throws PositionOutOfBoundsException
+	 * 			the gameobject has an illegal position
+	 * 			| ! hasValidPosition()
+	 * @Post the initial position of the Mazub,shark, plant or slime instance instance will be (pixelLeftX,pixelBottomY)
+	 * 			|new.getPosition()== (pixelLeftX,pixelBottomY) 
+	 * @Post the list of Sprites the mazub, shark, plant or slime instance will use, will be stored in spriteList
+	 * 			|new.spriteList == sprites;
+	 * @Pre		sprites must at least have 1 sprite
+	 * 			|sprites.lenght>=1
+	 * 
+	 */
+	@Raw @Model
+	protected GameObject(int pixelLeftX, int pixelBottomY, Sprite[] sprites,int minHp,int maxHp,int currentHp) throws PositionOutOfBoundsException{
+		assert sprites.length>=1;
+		position = new Position(new double[]{pixelLeftX/100.0d,pixelBottomY/100.0d});
+		this.spriteList = sprites;
+		this.m = (spriteList.length-8)/2;
+		hitPoint = new HitPoint(minHp,maxHp,currentHp);
+		imunityTime=0.0d;
+		lastWaterHit =0.2d;
+		lastLavaHit=0.0d;
+	};
 	/**
 	 * removes the given amount of Hp
 	 * @param amount | the amount of Hp the gameobject has to lose
@@ -73,7 +102,6 @@ public abstract class GameObject {
 	 * 			| world.removeGameObject(this)
 	 * 			| terminated = true
 	 */
-	
 	public void loseHp(int amount){
 		hitPoint.loseHP(amount);
 		if(isDead() && !isTerminated()){
@@ -125,6 +153,11 @@ public abstract class GameObject {
 		return hitPoint.getCurrent();
 	}
 	
+	@Basic 
+	public int getMaxNbHitPoints(){
+		return hitPoint.getMaximum();
+	}
+	
 	/**
 	 * returns the current world
 	 * @return | this.world
@@ -133,6 +166,15 @@ public abstract class GameObject {
 	@Basic
 	public World getWorld(){
 		return this.world;
+	}
+	
+	public void setWorld(World world){
+		if(canHaveAsWorld(world))
+			this.world = world;
+	}
+	
+	public Sprite[] getSpriteList(){
+		return spriteList.clone();
 	}
 	
 	public abstract void addToWorld(World world);
@@ -234,13 +276,16 @@ public abstract class GameObject {
 	 * @return	returns the Sprite that is currently showing.
 	 * 			|spriteList[currentSpriteNumber]
 	 */
-	
 	@Basic
 	public Sprite getCurrentSprite() {
 		return spriteList[currentSpriteNumber];
 	}
 	
-	/*
+	public int getCurrentSpriteNumber(){
+		return currentSpriteNumber;
+	}
+	
+	/**
 	 * @Param	number| the number that has to be set as currentSpriteNumber
 	 * @Pre		this.currentSpriteNumber must be a valid index from the spriteList
 	 * 			| isValidSpriteNumber(currentSpriteNumber)
