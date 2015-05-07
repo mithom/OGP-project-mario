@@ -7,101 +7,17 @@ import jumpingalien.exception.IllegalMovementException;
 import jumpingalien.exception.IllegalSizeException;
 import jumpingalien.exception.IllegalTimeException;
 import jumpingalien.exception.PositionOutOfBoundsException;
+import jumpingalien.model.Mazub;
 import jumpingalien.model.Plant;
 import jumpingalien.model.School;
 import jumpingalien.model.Shark;
 import jumpingalien.model.Slime;
 import jumpingalien.model.World;
-import jumpingalien.model.gameObject.GameObject;
 import jumpingalien.util.ModelException;
 import jumpingalien.util.Sprite;
 
 //zou zonder implements werken mss, niet in opgave, valt noch te bezien
 public class Facade extends jumpingalien.part1.facade.Facade implements IFacadePart2 {
-	
-	/*//al het volgende zit in de extends part1.facade.Facade
-	@Override
-	public Mazub createMazub(int pixelLeftX, int pixelBottomY, Sprite[] sprites) {
-		// TODO check old version
-		return null;
-	}
-
-	@Override
-	public int[] getLocation(Mazub alien) {
-		// TODO check old version
-		return null;
-	}
-
-	@Override
-	public double[] getVelocity(Mazub alien) {
-		// TODO check old version
-		return null;
-	}
-
-	@Override
-	public double[] getAcceleration(Mazub alien) {
-		// TODO check old version
-		return null;
-	}
-
-	@Override
-	public int[] getSize(GameObject alien) {
-		// TODO check old version
-		return null;
-	}
-
-	@Override
-	public Sprite getCurrentSprite(GameObject alien) {
-		// TODO check old version
-		return null;
-	}
-
-	@Override
-	public void startJump(Mazub alien) {
-		// TODO check old version
-
-	}
-
-	@Override
-	public void endJump(Mazub alien) {
-		// TODO check old version
-
-	}
-
-	@Override
-	public void startMoveLeft(Mazub alien) {
-		// TODO check old version
-
-	}
-
-	@Override
-	public void endMoveLeft(Mazub alien) {
-		// TODO check old version
-
-	}
-
-	@Override
-	public void startMoveRight(Mazub alien) {
-		// TODO check old version
-	}
-
-	@Override
-	public void endMoveRight(Mazub alien) {
-		// TODO check old version
-
-	}
-
-	@Override
-	public void startDuck(Mazub alien) {
-		// TODO check old version
-
-	}
-
-	@Override
-	public void endDuck(Mazub alien) {
-		// TODO check old version
-
-	}*/
 
 	@Override
 	public void advanceTime(World world, double dt)throws ModelException {
@@ -122,12 +38,12 @@ public class Facade extends jumpingalien.part1.facade.Facade implements IFacadeP
 	}
 
 	@Override
-	public int getNbHitPoints(GameObject alien) {
+	public int getNbHitPoints(Mazub alien) {
 		return alien.getNbHitPoints();
 	}
 
 	@Override
-	public boolean isImmune(GameObject alien) {
+	public boolean isImmune(Mazub alien) {
 		return alien.isImmune();
 	}
 	
@@ -202,7 +118,7 @@ public class Facade extends jumpingalien.part1.facade.Facade implements IFacadeP
 	};
 	
 	@Override
-	public void setMazub(World world, GameObject alien){
+	public void setMazub(World world, Mazub alien){
 		alien.addToWorld(world);
 	};
 	

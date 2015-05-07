@@ -6,7 +6,6 @@ import jumpingalien.exception.IllegalSizeException;
 import jumpingalien.exception.IllegalTimeException;
 import jumpingalien.exception.PositionOutOfBoundsException;
 import jumpingalien.model.Mazub;
-import jumpingalien.model.gameObject.GameObject;
 import jumpingalien.state.Direction;
 import jumpingalien.util.ModelException;
 import jumpingalien.util.Sprite;
@@ -47,7 +46,7 @@ public class Facade implements IFacade{
 	};
 
 	@Override
-	public int[] getSize(GameObject alien) throws ModelException{
+	public int[] getSize(Mazub alien) throws ModelException{
 		try{
 			return alien.getSize();
 		}catch(NullPointerException e){
@@ -58,7 +57,7 @@ public class Facade implements IFacade{
 	};
 
 	@Override
-	public Sprite getCurrentSprite(GameObject alien){
+	public Sprite getCurrentSprite(Mazub alien){
 		return alien.getCurrentSprite();
 	};
 
