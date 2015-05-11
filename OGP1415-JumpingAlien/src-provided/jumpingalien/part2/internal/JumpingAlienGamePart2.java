@@ -225,14 +225,19 @@ public class JumpingAlienGamePart2 extends JumpingAlienGame {
 	}
 
 	@Override
-	public AlienInfoProvider2 getAlienInfoProvider() {
-		return (AlienInfoProvider2) super.getAlienInfoProvider();
+	public AlienInfoProvider2<Mazub> getAlienInfoProvider() {
+		return (AlienInfoProvider2<Mazub>) super.getAlienInfoProvider();
 	}
 
 	@Override
-	protected AlienInfoProvider2 createAlienInfoProvider() {
-		return new AlienInfoProvider2() {
+	protected AlienInfoProvider2<Mazub> createAlienInfoProvider() {
+		return new AlienInfoProvider2<Mazub>() {
 
+			@Override
+			public Mazub getAlien() {
+				return alien;
+			}
+			
 			@Override
 			public Optional<int[]> getAlienXY() {
 				return catchErrorGet(() -> getFacade().getLocation(getAlien()));

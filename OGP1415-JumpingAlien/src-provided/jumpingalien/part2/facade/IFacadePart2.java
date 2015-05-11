@@ -8,7 +8,6 @@ import jumpingalien.model.Mazub;
 import jumpingalien.model.Slime;
 import jumpingalien.model.School;
 import jumpingalien.model.World;
-import jumpingalien.model.gameObject.GameObject;
 import jumpingalien.part1.facade.IFacade;
 import jumpingalien.util.ModelException;
 import jumpingalien.util.Sprite;
@@ -98,7 +97,7 @@ public interface IFacadePart2 extends jumpingalien.part1.facade.IFacade {
 	/**
 	 * Returns the current number of hitpoints of the given alien.
 	 */
-	int getNbHitPoints(GameObject alien);
+	int getNbHitPoints(Mazub alien);
 
 	/**
 	 * Create a new game world with the given parameters.
@@ -153,8 +152,8 @@ public interface IFacadePart2 extends jumpingalien.part1.facade.IFacade {
 	 * will be changed via
 	 * {@link IFacadePart2#setGeologicalFeature(World, int, int, int)}.
 	 * 
-	 * @param world
-	 *            The world for which to start the game.
+	 * @param The
+	 *            world for which to start the game.
 	 */
 	void startGame(World world);
 
@@ -317,7 +316,7 @@ public interface IFacadePart2 extends jumpingalien.part1.facade.IFacade {
 	 * @param mazub
 	 *            The alien to be set as the player's character.
 	 */
-	void setMazub(World world, GameObject alien);
+	void setMazub(World world, Mazub alien);
 
 	/**
 	 * Returns whether the given alien is currently immune against enemies (see
@@ -328,7 +327,7 @@ public interface IFacadePart2 extends jumpingalien.part1.facade.IFacade {
 	 * @return True if the given alien is immune against other enemies (i.e.,
 	 *         there are no interactions between the alien and enemy objects).
 	 */
-	boolean isImmune(GameObject alien);
+	boolean isImmune(Mazub alien);
 
 	/**
 	 * Creates a new plant, located at the provided pixel location (x, y).

@@ -1,7 +1,6 @@
 package jumpingalien.part1.facade;
 
 import jumpingalien.model.Mazub;
-import jumpingalien.model.gameObject.GameObject;
 import jumpingalien.util.Sprite;
 
 /**
@@ -129,7 +128,7 @@ public interface IFacade {
 	 * @return An array, consisting of 2 integers {w, h}, that represents the
 	 *         current width and height of the given alien, in number of pixels.
 	 */
-	int[] getSize(GameObject alien);
+	int[] getSize(Mazub alien);
 
 	/**
 	 * Return the current sprite image for the given alien.
@@ -140,7 +139,7 @@ public interface IFacade {
 	 * @return The current sprite image for the given alien, determined by its
 	 *         state as defined in the assignment.
 	 */
-	Sprite getCurrentSprite(GameObject alien);
+	Sprite getCurrentSprite(Mazub alien);
 
 	/**
 	 * Make the given alien jump.

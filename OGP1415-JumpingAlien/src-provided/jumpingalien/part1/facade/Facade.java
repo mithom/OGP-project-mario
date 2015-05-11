@@ -47,22 +47,6 @@ public class Facade implements IFacade{
 	};
 
 	@Override
-	public int[] getSize(GameObject alien) throws ModelException{
-		try{
-			return alien.getSize();
-		}catch(NullPointerException e){
-			throw new ModelException(e.getMessage());
-		}catch(IllegalSizeException ex){
-			throw new ModelException("illegal size of currentSprite: "+ ex.getSize().toString());
-		}
-	};
-
-	@Override
-	public Sprite getCurrentSprite(GameObject alien){
-		return alien.getCurrentSprite();
-	};
-
-	@Override
 	public void startJump(Mazub alien) throws ModelException{
 		try{
 			alien.startJump();
@@ -119,5 +103,21 @@ public class Facade implements IFacade{
 		}catch(PositionOutOfBoundsException exce){
 			throw new ModelException("failed");
 		}
+	}
+
+	@Override
+	public int[] getSize(Mazub alien) throws ModelException {
+		try{
+			return alien.getSize();
+		}catch(NullPointerException e){
+			throw new ModelException(e.getMessage());
+		}catch(IllegalSizeException ex){
+			throw new ModelException("illegal size of currentSprite: "+ ex.getSize().toString());
+		}
+	};
+
+	@Override
+	public Sprite getCurrentSprite(Mazub alien) {
+		return alien.getCurrentSprite();
 	}
 }

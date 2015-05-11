@@ -7,6 +7,7 @@ import jumpingalien.exception.IllegalMovementException;
 import jumpingalien.exception.IllegalSizeException;
 import jumpingalien.exception.IllegalTimeException;
 import jumpingalien.exception.PositionOutOfBoundsException;
+import jumpingalien.model.Mazub;
 import jumpingalien.model.Plant;
 import jumpingalien.model.School;
 import jumpingalien.model.Shark;
@@ -122,16 +123,6 @@ public class Facade extends jumpingalien.part1.facade.Facade implements IFacadeP
 	}
 
 	@Override
-	public int getNbHitPoints(GameObject alien) {
-		return alien.getNbHitPoints();
-	}
-
-	@Override
-	public boolean isImmune(GameObject alien) {
-		return alien.isImmune();
-	}
-	
-	@Override
 	public World createWorld(int tileSize, int nbTilesX, int nbTilesY,
 			int visibleWindowWidth, int visibleWindowHeight, int targetTileX,
 			int targetTileY){
@@ -200,11 +191,7 @@ public class Facade extends jumpingalien.part1.facade.Facade implements IFacadeP
 			throw new ModelException(e.getMessage());
 		}
 	};
-	
-	@Override
-	public void setMazub(World world, GameObject alien){
-		alien.addToWorld(world);
-	};
+
 	
 	@Override
 	public Plant createPlant(int x, int y, Sprite[] sprites){
@@ -298,5 +285,20 @@ public class Facade extends jumpingalien.part1.facade.Facade implements IFacadeP
 	@Override
 	public School getSchool(Slime slime){
 		return slime.getSchool();
+	}
+
+	@Override
+	public int getNbHitPoints(Mazub alien) {
+		return alien.getNbHitPoints();
+	}
+
+	@Override
+	public void setMazub(World world, Mazub alien) {
+		alien.addToWorld(world);
+	}
+
+	@Override
+	public boolean isImmune(Mazub alien) {
+		return alien.isImmune();
 	};
 }
