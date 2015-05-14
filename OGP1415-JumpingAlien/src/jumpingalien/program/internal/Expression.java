@@ -5,12 +5,12 @@ import jumpingalien.program.util.ActionFor2;
 
 //<R> is the returnType of the expression
 //G the given value type
-public class Expression<R,G extends Value<R>> extends Value<R> {
+public class Expression<R,G extends Value<?>> extends Value<R> {
 	private final Object[] expressions;
 	private final Object action;
 	
 	//used for variable reading (and constants->straight at value)//TODO: this function has to be done otherwise (check program factory)
-	public Expression(G value){
+	public Expression(Value<R> value){
 		super(value.evaluate());
 		//this.value = value;
 		this.expressions = new Object[]{value};
@@ -36,7 +36,7 @@ public class Expression<R,G extends Value<R>> extends Value<R> {
 	public R evaluate(){
 		if(expressions.length==1){
 			if(action == null){
-				return ((G)expressions[0]).evaluate();
+				return (R)((G)expressions[0]).evaluate();
 			}else{
 				return (R)((ActionFor1)action).evaluate((G)expressions[0]).evaluate();
 			}

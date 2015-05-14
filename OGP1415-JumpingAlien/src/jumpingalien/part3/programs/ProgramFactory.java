@@ -3,12 +3,17 @@ package jumpingalien.part3.programs;
 import java.util.List;
 import java.util.Map;
 
+import ogp.framework.game.Game;
 import jumpingalien.program.internal.Expression;
 import jumpingalien.program.internal.Type;
 import jumpingalien.program.internal.Value;
 import jumpingalien.program.util.ActionFor1;
 import jumpingalien.program.util.ActionFor2;
+import jumpingalien.model.Mazub;
+import jumpingalien.model.Plant;
 import jumpingalien.model.Program;
+import jumpingalien.model.Shark;
+import jumpingalien.model.Slime;
 import jumpingalien.model.gameObject.GameObject;
 
 public class ProgramFactory<S> implements IProgramFactory<Value<?>, S, Type, Program> {
@@ -93,166 +98,139 @@ public class ProgramFactory<S> implements IProgramFactory<Value<?>, S, Type, Pro
 
 	@Override
 	public Value<?> createNot(Value<?> expr, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Expression<Boolean, Value<Boolean>>((Value<Boolean>)expr, ActionFor1.NEGATION);
 	}
 
 	@Override
 	public Value<?> createLessThan(Value<?> left, Value<?> right, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Expression<Boolean, Value<Double>>((Value<Double>)left, (Value<Double>)right, ActionFor2.LT);
 	}
 
 	@Override
 	public Value<?> createLessThanOrEqualTo(Value<?> left, Value<?> right,
 			SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Expression<Boolean, Value<Double>>((Value<Double>)left, (Value<Double>)right, ActionFor2.LE);
 	}
 
 	@Override
 	public Value<?> createGreaterThan(Value<?> left, Value<?> right, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Expression<Boolean, Value<Double>>((Value<Double>)left, (Value<Double>)right, ActionFor2.GT);
 	}
 
 	@Override
 	public Value<?> createGreaterThanOrEqualTo(Value<?> left, Value<?> right,
 			SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Expression<Boolean, Value<Double>>((Value<Double>)left, (Value<Double>)right, ActionFor2.GE);
 	}
 
 	@Override
 	public Value<?> createEquals(Value<?> left, Value<?> right, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Expression<Boolean, Value<Double>>((Value<Double>)left, (Value<Double>)right, ActionFor2.EQ);
 	}
 
 	@Override
 	public Value<?> createNotEquals(Value<?> left, Value<?> right, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Expression<Boolean, Value<Double>>((Value<Double>)left, (Value<Double>)right, ActionFor2.NE);
 	}
 
 	@Override
 	public Value<?> createGetX(Value<?> expr, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Expression<Integer, Value<GameObject>>((Value<GameObject>)expr, ActionFor1.GETX);
 	}
 
 	@Override
 	public Value<?> createGetY(Value<?> expr, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Expression<Integer, Value<GameObject>>((Value<GameObject>)expr, ActionFor1.GETY);
 	}
 
 	@Override
 	public Value<?> createGetWidth(Value<?> expr, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Expression<Integer, Value<GameObject>>((Value<GameObject>)expr, ActionFor1.GETWIDTH);
 	}
 
 	@Override
 	public Value<?> createGetHeight(Value<?> expr, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Expression<Integer, Value<GameObject>>((Value<GameObject>)expr, ActionFor1.GETHEIGHT);
 	}
 
 	@Override
 	public Value<?> createGetHitPoints(Value<?> expr, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Expression<Integer, Value<GameObject>>((Value<GameObject>)expr, ActionFor1.GETHP);
 	}
 
 	@Override
 	public Value<?> createGetTile(Value<?> x, Value<?> y, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Expression<Game, Value<Double>>((Value<Double>)x,(Value<Double>)y, ActionFor2.GETTILE);
 	}
 
 	@Override
 	public Value<?> createSearchObject(Value<?> direction, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Expression<GameObject, Value<Direction>>((Value<Direction>)direction, ActionFor1.SEARCHOBJ);
 	}
 
 	@Override
 	public Value<?> createIsMazub(Value<?> expr, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Expression<Boolean, Value<?>>((Value<GameObject>)expr,new Value<Class<?>>(Mazub.class), ActionFor2.ISINSTANCE);
 	}
 
 	@Override
 	public Value<?> createIsShark(Value<?> expr, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Expression<Boolean, Value<?>>((Value<GameObject>)expr,new Value<Class<?>>(Shark.class), ActionFor2.ISINSTANCE);
 	}
 
 	@Override
 	public Value<?> createIsSlime(Value<?> expr, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Expression<Boolean, Value<?>>((Value<GameObject>)expr,new Value<Class<?>>(Slime.class), ActionFor2.ISINSTANCE);
 	}
 
 	@Override
 	public Value<?> createIsPlant(Value<?> expr, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Expression<Boolean, Value<?>>((Value<GameObject>)expr,new Value<Class<?>>(Plant.class), ActionFor2.ISINSTANCE);
 	}
 
 	@Override
 	public Value<?> createIsDead(Value<?> expr, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Expression<Boolean, Value<?>>((Value<GameObject>)expr, ActionFor1.ISDEAD);
 	}
 
 	@Override
-	public Value<?> createIsTerrain(Value<?> expr, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+	public Value<?> createIsTerrain(Value<?> expr, SourceLocation sourceLocation) {//TODO: change to terrain when object is ready
+		return new Expression<Boolean, Value<?>>((Value<GameObject>)expr,new Value<Class<?>>(Mazub.class), ActionFor2.ISINSTANCE);
 	}
 
 	@Override
 	public Value<?> createIsPassable(Value<?> expr, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Expression<Boolean, Value<?>>((Value<GameObject>)expr, ActionFor1.ISPASSABLE);
 	}
 
 	@Override
 	public Value<?> createIsWater(Value<?> expr, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Expression<Boolean, Value<?>>((Value<GameObject>)expr, ActionFor1.ISWATER);
 	}
 
 	@Override
 	public Value<?> createIsMagma(Value<?> expr, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Expression<Boolean, Value<?>>((Value<GameObject>)expr, ActionFor1.ISMAGMA);
 	}
 
 	@Override
 	public Value<?> createIsAir(Value<?> expr, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Expression<Boolean, Value<?>>((Value<GameObject>)expr, ActionFor1.ISAIR);
 	}
 
 	@Override
 	public Value<?> createIsMoving(Value<?> expr, Value<?> direction, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Expression<Boolean, Value<?>>((Value<GameObject>)expr,(Value<Direction>)direction, ActionFor2.ISMOVING);
 	}
 
 	@Override
 	public Value<?> createIsDucking(Value<?> expr, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Expression<Boolean, Value<?>>((Value<GameObject>)expr, ActionFor1.ISDUCKING);
 	}
 
 	@Override
 	public Value<?> createIsJumping(Value<?> expr, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Expression<Boolean, Value<?>>((Value<GameObject>)expr, ActionFor1.ISJUMPING);
 	}
 
 	@Override
