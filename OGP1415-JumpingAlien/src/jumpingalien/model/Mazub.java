@@ -1,5 +1,7 @@
 package jumpingalien.model;
 
+//klassendiagram meebrengen!!!!
+
 import be.kuleuven.cs.som.annotate.*; 
 import jumpingalien.exception.IllegalMazubStateException;
 import jumpingalien.exception.IllegalMovementException;
@@ -95,7 +97,7 @@ public class Mazub extends GameObject{
 	 */
 	public Mazub(int pixelLeftX, int pixelBottomY,double initHorVel,double maxHorVel, Sprite[] sprites)throws PositionOutOfBoundsException{
 		super(pixelLeftX, pixelBottomY, sprites);
-		this.m = (spriteList.length-8)/2;
+		this.m = (getSpriteList().length-8)/2;
 		this.maxHorizontalVelocity = maxHorVel;
 		this.initialHorizontalVelocity = initHorVel;
 		duckState  = DuckState.STRAIGHT;
@@ -348,8 +350,8 @@ public class Mazub extends GameObject{
 			return 0.0d;
 			//setPositionX(0); //ELKE SITUATIE VERANDEREN HE
 		}
-		if(getPositionX()+s>(world.getWidth()-1)/100d)
-			return (world.getWidth()-1)/100.0d;
+		if(getPositionX()+s>(getWorld().getWidth()-1)/100d)
+			return (getWorld().getWidth()-1)/100.0d;
 		return getPositionX()+s;
 	} 
 	
@@ -383,10 +385,10 @@ public class Mazub extends GameObject{
 				}
 			return 0.0d;
 		}else{
-			if(newPositiony>(world.getHeight()-1)/100.0d){
+			if(newPositiony>(getWorld().getHeight()-1)/100.0d){
 				//System.out.println("bovenkant wereld");
 				this.setVerticalVelocity(newSpeed);
-				return ((world.getHeight()-1)/100.0d);
+				return ((getWorld().getHeight()-1)/100.0d);
 			}//else{
 				//throw new PositionOutOfBoundsException(getPositionX(), getPositionY());
 			//}
@@ -427,31 +429,31 @@ public class Mazub extends GameObject{
 		if(getOriëntation() == Direction.STALLED){
 			if(timeSinceLastMovement>=1){
 				if(duckState == DuckState.STRAIGHT){
-					currentSpriteNumber = 0;
+					setCurrentSprite(0);
 				}else{
-					currentSpriteNumber = 1;
+					setCurrentSprite(1);
 				}
 			}else{
 				if(duckState == DuckState.STRAIGHT){
-					currentSpriteNumber = 2- (lastMovingDirection.getMultiplier()-1)/2;
+					setCurrentSprite(2- (lastMovingDirection.getMultiplier()-1)/2);
 				}else{
-					currentSpriteNumber = 6 - (lastMovingDirection.getMultiplier()-1)/2;
+					setCurrentSprite(6 - (lastMovingDirection.getMultiplier()-1)/2);
 				}
 			}
 		}else{
 			if(groundState == GroundState.AIR && duckState == DuckState.STRAIGHT){
-				currentSpriteNumber = 4- (getOriëntation().getMultiplier()-1)/2;
+				setCurrentSprite(4- (getOriëntation().getMultiplier()-1)/2);
 			}else{
 				if(duckState == DuckState.DUCKED || duckState == DuckState.TRY_STRAIGHT){
-					currentSpriteNumber = 6- (getOriëntation().getMultiplier()-1)/2;
+					setCurrentSprite(6- (getOriëntation().getMultiplier()-1)/2);
 				}else{
-					if((currentSpriteNumber<8) || (getOriëntation() == Direction.LEFT && currentSpriteNumber <8+m) || (getOriëntation()==Direction.RIGHT && currentSpriteNumber >= 8+m)){
+					if((getCurrentSpriteNumber()<8) || (getOriëntation() == Direction.LEFT && getCurrentSpriteNumber() <8+m) || (getOriëntation()==Direction.RIGHT && getCurrentSpriteNumber() >= 8+m)){
 						timeSinceLastAnimation =0;
-						currentSpriteNumber = 8 - (getOriëntation().getMultiplier()-1)*m/2;
+						setCurrentSprite(8 - (getOriëntation().getMultiplier()-1)*m/2);
 					}else{
 						if(timeSinceLastAnimation >= 0.075){
 							timeSinceLastAnimation =0;
-							currentSpriteNumber = (currentSpriteNumber-(8 - (getOriëntation().getMultiplier()-1)*m/2) + 1)%m+8 - (getOriëntation().getMultiplier()-1)*m/2;
+							setCurrentSprite((getCurrentSpriteNumber()-(8 - (getOriëntation().getMultiplier()-1)*m/2) + 1)%m+8 - (getOriëntation().getMultiplier()-1)*m/2);
 						}
 					}
 				}
@@ -674,11 +676,11 @@ public class Mazub extends GameObject{
 	 */
 	public void executeEndDuck(){
 		if(duckState == DuckState.TRY_STRAIGHT){
-			int oldSprite = currentSpriteNumber;
-			currentSpriteNumber = 0;
+			int oldSprite = getCurrentSpriteNumber();
+			setCurrentSprite(0);
 			if(overlapsWithWall()[2]==false)
 				duckState = DuckState.STRAIGHT;
-			currentSpriteNumber=oldSprite;
+			setCurrentSprite(oldSprite);
 		}
 	}
 	
@@ -703,8 +705,8 @@ public class Mazub extends GameObject{
 	 */
 	
 	public boolean hasValidPosition(){
-		return ! (getPositionX()<0 || getPositionX() >= (world.getWidth())/100.0d) ||
-				(getPositionY()<0 || getPositionY() >= world.getHeight()/100.0d);
+		return ! (getPositionX()<0 || getPositionX() >= (getWorld().getWidth())/100.0d) ||
+				(getPositionY()<0 || getPositionY() >= getWorld().getHeight()/100.0d);
 	}
 	/**
 	 * returns the index of the lowest pixel used by mazub. Each pixel represents 0.01m
@@ -754,7 +756,7 @@ public class Mazub extends GameObject{
 	@Override
 	public void addToWorld(World world){
 		if(canHaveAsWorld(world)){
-			this.world = world;
+			setWorld(world);
 			world.addMazub(this);
 			if(overlapsWithWall()[0]){
 				groundState =GroundState.GROUNDED;
@@ -782,14 +784,14 @@ public class Mazub extends GameObject{
 	 */
 	public void moveWindow() throws PositionOutOfBoundsException{
 		double[] perimeters = getPerimeters(); // in meters
-		if(world.getVisibleWindow()[0]/100.0d+2>perimeters[0]){
-			world.moveWindowTo(perimeters[0]-2.0d, world.getVisibleWindow()[1]/100.0d);
-		}if(world.getVisibleWindow()[1]/100.0d+2>perimeters[1]){
-			world.moveWindowTo(world.getVisibleWindow()[0]/100.0d,(perimeters[1]-2.0d));
-		}if(world.getVisibleWindow()[2]/100.0d-2<perimeters[2]){
-			world.moveWindowTo((perimeters[2]+2.0d)-world.viewWidth/100.0d, world.getVisibleWindow()[1]/100.0d);
-		}if(world.getVisibleWindow()[3]/100.0d-2<perimeters[3]){
-			world.moveWindowTo(world.getVisibleWindow()[0]/100.0d,(perimeters[3]+2.0d)-world.viewHeight/100.0d);
+		if(getWorld().getVisibleWindow()[0]/100.0d+2>perimeters[0]){
+			getWorld().moveWindowTo(perimeters[0]-2.0d, getWorld().getVisibleWindow()[1]/100.0d);
+		}if(getWorld().getVisibleWindow()[1]/100.0d+2>perimeters[1]){
+			getWorld().moveWindowTo(getWorld().getVisibleWindow()[0]/100.0d,(perimeters[1]-2.0d));
+		}if(getWorld().getVisibleWindow()[2]/100.0d-2<perimeters[2]){
+			getWorld().moveWindowTo((perimeters[2]+2.0d)-getWorld().viewWidth/100.0d, getWorld().getVisibleWindow()[1]/100.0d);
+		}if(getWorld().getVisibleWindow()[3]/100.0d-2<perimeters[3]){
+			getWorld().moveWindowTo(getWorld().getVisibleWindow()[0]/100.0d,(perimeters[3]+2.0d)-getWorld().viewHeight/100.0d);
 		}
 	}
 	

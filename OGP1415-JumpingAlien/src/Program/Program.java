@@ -1,12 +1,14 @@
 package Program;
 
+import jumpingalien.model.gameObject.GameObject;
+
 public class Program {
 
 	public Program(){
 		
 	}
 	
-	public Program getGameObject(){
+	public GameObject getGameObject(){
 		return null;
 	}
 }

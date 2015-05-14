@@ -41,13 +41,14 @@ public class Buzam extends GameObject {
 	
 	public Buzam(int pixelLeftX, int pixelBottomY,double initHorVel,double maxHorVel, Sprite[] sprites)throws PositionOutOfBoundsException{
 		super(pixelLeftX, pixelBottomY, sprites);
-		this.m = (spriteList.length-8)/2;
+		this.m = (sprites.length-8)/2;
 		this.maxHorizontalVelocity = maxHorVel;
 		this.initialHorizontalVelocity = initHorVel;
 		duckState  = DuckState.STRAIGHT;
 		direction= Direction.STALLED;
 	}
 	
+
 	@Override
 	public void addToWorld(World world) {
 		// TODO Auto-generated method stub

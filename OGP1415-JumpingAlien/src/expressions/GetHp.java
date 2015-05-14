@@ -4,18 +4,19 @@ import jumpingalien.model.gameObject.GameObject;
 import jumpingalien.part3.programs.SourceLocation;
 
 public class GetHp extends Expression {
-	public GameObject object;
 	
-	public GetHp(GameObject object, SourceLocation sourceLocation ){
+	public Object object;
+	
+	public GetHp(Object object, SourceLocation sourceLocation ){
 		super(sourceLocation);
 		this.object= object;
 	}
 	
-	public GameObject getObject(){
+	public Object getObject(){
 		return object;
 	}
 	
 	public double evaluateGetHp(){
-		return getObject().getNbHitPoints();
+		return ((GameObject)getObject()).getNbHitPoints();
 	}
 }

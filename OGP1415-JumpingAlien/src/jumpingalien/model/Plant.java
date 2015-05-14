@@ -2,7 +2,6 @@ package jumpingalien.model;
 
 import jumpingalien.exception.PositionOutOfBoundsException;
 import jumpingalien.model.gameObject.GameObject;
-import jumpingalien.model.gameObject.HitPoint;
 import jumpingalien.state.Direction;
 import jumpingalien.util.Sprite;
 import jumpingalien.model.World;
@@ -33,8 +32,7 @@ public class Plant extends GameObject{
 	 */
 	
 	public Plant(int x, int y, Sprite[] sprites) throws PositionOutOfBoundsException{
-		super(x,y,sprites);
-		hitPoint = new HitPoint(0, 1, 1);
+		super(x,y,sprites,0,1,1);
 		actionTimer=0.0d;
 		direction = Direction.RIGHT;
 	}
@@ -77,9 +75,9 @@ public class Plant extends GameObject{
 	
 	public void animate(){
 		if(direction == Direction.RIGHT)
-			currentSpriteNumber=1;
+			setCurrentSprite(1);
 		else
-			currentSpriteNumber=0;
+			setCurrentSprite(0);
 	}
 	
 	/**
@@ -149,7 +147,7 @@ public class Plant extends GameObject{
 
 	 */
 	public void consume(Mazub alien){
-		if(alien.hasMaxHp()==false && terminated == false){
+		if(alien.hasMaxHp()==false && isTerminated() == false){
 			alien.addHp(50);
 			loseHp(1);
 		}
@@ -164,8 +162,8 @@ public class Plant extends GameObject{
 	 */
 	@Override
 	public void addToWorld(World world){
-		if(this.world == null && canHaveAsWorld(world)){
-			this.world = world;
+		if(getWorld() == null && canHaveAsWorld(world)){
+			setWorld(world);
 			world.addPlant(this);
 		}
 	}

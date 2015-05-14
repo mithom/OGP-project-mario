@@ -3,7 +3,6 @@ package jumpingalien.model;
 import java.util.Random;
 
 import be.kuleuven.cs.som.annotate.Basic;
-import jumpingalien.exception.IllegalMazubStateException;
 import jumpingalien.exception.IllegalMovementException;
 import jumpingalien.exception.IllegalSizeException;
 import jumpingalien.exception.PositionOutOfBoundsException;
@@ -61,7 +60,7 @@ public class Shark extends GameObject{
 	 * 			| new.direction = Direction.STALLED
 	 */
 	public Shark(int x, int y, Sprite[] sprites)throws PositionOutOfBoundsException{
-		super(x,y,sprites); 
+		super(x,y,sprites,0,100,100); 
 		actionTime = 0.0d;actionDuration = 0.0d;
 		direction = Direction.STALLED;
 		}
@@ -307,12 +306,12 @@ public class Shark extends GameObject{
 	public boolean isBottomInWater() {
 		double [] perimeters = this.getPerimeters();//order: left,bottom,right,top
 		for(int i=0;i<perimeters.length;i++)perimeters[i]*=100;
-		int [][] occupied_tiles = world.getTilePositionsIn((int) (perimeters[0]),(int)(perimeters[1]),(int)(perimeters[2]),(int)(perimeters[3]));
+		int [][] occupied_tiles = getWorld().getTilePositionsIn((int) (perimeters[0]),(int)(perimeters[1]),(int)(perimeters[2]),(int)(perimeters[3]));
 		for (int i=0 ; i < occupied_tiles.length ; i++){
 
-			if (world.getGeologicalFeature(new int[]{occupied_tiles[i][0]*world.getTileLength(),occupied_tiles[i][1]*world.getTileLength()})==2){
+			if (getWorld().getGeologicalFeature(new int[]{occupied_tiles[i][0]*getWorld().getTileLength(),occupied_tiles[i][1]*getWorld().getTileLength()})==2){
 				//check if tile is beneath character
-				if (world.getBottomLeftPixelOfTile(occupied_tiles[i][0],occupied_tiles[i][1])[1] <= perimeters[1])
+				if (getWorld().getBottomLeftPixelOfTile(occupied_tiles[i][0],occupied_tiles[i][1])[1] <= perimeters[1])
 					 return true;
 			}
 		}
@@ -354,9 +353,9 @@ public class Shark extends GameObject{
 
 	public void animate(double dt){
 		if(direction == Direction.RIGHT)
-			currentSpriteNumber=1;
+			setCurrentSprite(1);
 		else
-			currentSpriteNumber = 0;
+			setCurrentSprite(0);
 	}
 	
 	/**
@@ -397,9 +396,9 @@ public class Shark extends GameObject{
 			}
 			return 0.0d;
 		}else{
-			if(newPositiony>(world.getHeight()-1)/100.0d){
+			if(newPositiony>(getWorld().getHeight()-1)/100.0d){
 				this.setVerticalVelocity(newSpeed);
-				return ((world.getHeight()-1)/100.0d);
+				return ((getWorld().getHeight()-1)/100.0d);
 			}
 		}
 		this.setVerticalVelocity(newSpeed);
@@ -448,8 +447,8 @@ public class Shark extends GameObject{
 		if(getPositionX()+s <0){
 			return 0.0d;
 		}
-		if(getPositionX()+s>(world.getWidth()-1)/100d)
-			return (world.getWidth()-1)/100.0d;
+		if(getPositionX()+s>(getWorld().getWidth()-1)/100d)
+			return (getWorld().getWidth()-1)/100.0d;
 		return getPositionX()+s;
 	}
 	
@@ -613,7 +612,7 @@ public class Shark extends GameObject{
 	@Override
 	public void addToWorld(World world){
 		if(canHaveAsWorld(world)){
-			this.world = world;
+			setWorld(world);
 			world.addShark(this);
 			if(overlapsWithWall()[0]){
 				groundState = GroundState.GROUNDED;

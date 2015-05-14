@@ -3,7 +3,6 @@ package jumpingalien.model;
 import java.util.Random;
 
 import be.kuleuven.cs.som.annotate.Basic;
-import jumpingalien.exception.IllegalMazubStateException;
 import jumpingalien.exception.IllegalMovementException;
 import jumpingalien.exception.PositionOutOfBoundsException;
 import jumpingalien.model.gameObject.GameObject;
@@ -224,9 +223,9 @@ public class Slime extends GameObject{
 	 */
 	private void animate(double dt){
 		if(direction == Direction.RIGHT)
-			currentSpriteNumber=1;
+			setCurrentSprite(1);
 		else
-			currentSpriteNumber=0;
+			setCurrentSprite(0);
 	}
 	
 	/**
@@ -257,9 +256,9 @@ public class Slime extends GameObject{
 			}
 			return 0.0d;
 		}else{
-			if(newPositiony>(world.getHeight()-1)/100.0d){
+			if(newPositiony>(getWorld().getHeight()-1)/100.0d){
 				this.setVerticalVelocity(newSpeed);
-				return ((world.getHeight()-1)/100.0d);
+				return ((getWorld().getHeight()-1)/100.0d);
 			}
 		}
 		this.setVerticalVelocity(newSpeed);
@@ -306,8 +305,8 @@ public class Slime extends GameObject{
 		if(getPositionX()+s <0){
 			return 0.0d;
 		}
-		if(getPositionX()+s>(world.getWidth()-1)/100d)
-			return (world.getWidth()-1)/100.0d;
+		if(getPositionX()+s>(getWorld().getWidth()-1)/100d)
+			return (getWorld().getWidth()-1)/100.0d;
 		return getPositionX()+s;
 	}
 	
@@ -477,7 +476,7 @@ public class Slime extends GameObject{
 					}
 				}
 				for(Slime slime:school.getSlimes()){
-					if(difference<(hitPoint.getMaximum()-hitPoint.getCurrent())){
+					if(difference<(getMaxNbHitPoints()-getNbHitPoints())){
 						slime.loseHp(1);
 						difference+=1;
 					}
@@ -512,7 +511,7 @@ public class Slime extends GameObject{
 	@Override
 	public void addToWorld(World world){
 		if(canHaveAsWorld(world)){
-			this.world = world;
+			setWorld(world);
 			world.addSchool(getSchool());
 			world.addSlime(this);
 			if(overlapsWithWall()[0]){
@@ -523,23 +522,23 @@ public class Slime extends GameObject{
 		}
 	}
 	
-	/**
+	/*
 	 * 
 	 * @return | if !world.isTerminated() && !this.isTerminated() && this.world==null
 	 * 		   | 		then true
 	 * 		   | else        false
-	 */
+	 *//*
 	@Override
 	protected boolean canHaveAsWorld(World world){
-		if(!world.isTerminated() && !this.isTerminated() && this.world==null
+		if(!world.isTerminated() && !this.isTerminated() && this.getWorld()==null
 				//&& world.getSchools().contains(school)
 				)
 			return true;
 		return false;
-	}
+	}*/
 	
 	public String toString(){
-		return "slime of( " + getSchool() + ") with hp: " + hitPoint.getCurrent();
+		return "slime of( " + getSchool() + ") with hp: " + getNbHitPoints();
 	}
 	
 	/**
