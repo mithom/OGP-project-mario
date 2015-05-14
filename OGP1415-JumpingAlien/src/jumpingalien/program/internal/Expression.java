@@ -33,7 +33,7 @@ public class Expression<R,G extends Value<?>> extends Value<R> {
 	@SuppressWarnings("unchecked")
 	@Override
 	//TODO: only works if correct program, still need to catch errors
-	public R evaluate(){
+	public R evaluate(){//TODO: aanpassen voor previousStatement en dt!
 		if(expressions.length==1){
 			if(action == null){
 				return (R)((G)expressions[0]).evaluate();

@@ -4,14 +4,12 @@ import java.util.Optional;
 
 import jumpingalien.exception.PositionOutOfBoundsException;
 import jumpingalien.model.Buzam;
-import jumpingalien.model.Mazub;
 import jumpingalien.model.Plant;
 import jumpingalien.model.Program;
 import jumpingalien.model.School;
 import jumpingalien.model.Shark;
 import jumpingalien.model.Slime;
 import jumpingalien.model.World;
-import jumpingalien.part3.programs.IProgramFactory;
 import jumpingalien.part3.programs.ParseOutcome;
 import jumpingalien.part3.programs.ProgramFactory;
 import jumpingalien.part3.programs.ProgramParser;

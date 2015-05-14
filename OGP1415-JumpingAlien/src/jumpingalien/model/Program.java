@@ -8,9 +8,16 @@ import jumpingalien.program.internal.Statement;
 import jumpingalien.program.internal.Type;
 
 public class Program {
-	
 	private GameObject gameObject;
 	private Statement statement;
+	public enum Direction {
+		UP,LEFT,DOWN,RIGHT;
+	}
+	
+	private HashMap<String, Boolean> booleans = new HashMap<String,Boolean>();
+	private HashMap<String,GameObject> Objects = new HashMap<>();
+	private HashMap<String,Double> directions = new HashMap<>();
+	private HashMap<String,Direction> doubles = new HashMap<>();
 	
 	public Program(){
 		
@@ -38,15 +45,6 @@ public class Program {
 		this.statement = statement;
 		statement.addProgram(this);
 	}
-	
-	public enum Direction {
-		UP,LEFT,DOWN,RIGHT;
-	}
-	
-	private HashMap<String, Boolean> booleans = new HashMap<String,Boolean>();
-	private HashMap<String,GameObject> Objects = new HashMap<>();
-	private HashMap<String,Double> directions = new HashMap<>();
-	private HashMap<String,Direction> doubles = new HashMap<>();
 
 	public void addGlobal(String text, Type type){
 		Type.type kind = type.getType();
