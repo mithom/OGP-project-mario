@@ -7,8 +7,9 @@ public class GreaterThan extends Comparison {
 	public GreaterThan(DoubleConstant left, DoubleConstant right, SourceLocation sourceLocation){
 		super(left,right,sourceLocation);
 	}
-	
-	public boolean evaluateGreaterThan(){
+
+	@Override
+	public Object evaluate() {
 		return (left.getValue() > right.getValue());
 	}
 

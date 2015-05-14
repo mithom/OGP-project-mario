@@ -6,7 +6,7 @@ import jumpingalien.part3.programs.SourceLocation;
 
 
 
-public class Expression {
+public abstract class Expression {
 	
 	public SourceLocation sourceLocation;
 	public Program program = null;
@@ -26,5 +26,7 @@ public class Expression {
 	public Program getProgram(){
 		return program;
 	}
+	
+	public abstract Object evaluate();
 
 }

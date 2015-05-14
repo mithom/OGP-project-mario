@@ -2,7 +2,7 @@ package expressions;
 
 import jumpingalien.part3.programs.SourceLocation;
 
-public class Comparison extends Expression {
+public abstract class Comparison extends Expression {
 	public DoubleConstant left;
 	public DoubleConstant right;
 	

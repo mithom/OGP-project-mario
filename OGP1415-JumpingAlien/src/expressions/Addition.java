@@ -20,8 +20,9 @@ public class Addition extends Expression {
 	public DoubleConstant getRightValue(){
 		return rightValue;
 	}
-	
-	public double evaluateAddition(){
+
+	@Override
+	public Object evaluate() {
 		return (leftValue.getValue() + rightValue.getValue()) ;
 	}
 }

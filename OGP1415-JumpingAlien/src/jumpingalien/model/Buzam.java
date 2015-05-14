@@ -11,6 +11,7 @@ import jumpingalien.state.DuckState;
 import jumpingalien.state.GroundState;
 import jumpingalien.util.Sprite;
 
+
 public class Buzam extends GameObject {
 	private double horizontalVelocity;
 	private final static double horizontalAcceleration = 0.9d;

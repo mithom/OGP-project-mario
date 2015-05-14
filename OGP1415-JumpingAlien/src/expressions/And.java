@@ -18,8 +18,9 @@ public class And extends Expression {
 	public BooleanExpression getRightExpression(){
 		return rightExpression;
 	}
-	
-	public boolean evaluateAnd(){
+
+	@Override
+	public Object evaluate() {
 		return (leftExpression.getValue() && rightExpression.getValue());
 	}
 	

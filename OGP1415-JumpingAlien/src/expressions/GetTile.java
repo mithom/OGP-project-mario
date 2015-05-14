@@ -33,6 +33,7 @@ public class GetTile extends Expression {
 		return position;
 	}
 	
+	//TODO deze static dingen moeten nog eens later bekeken worden tegoei
 	public int[] evaluateGetTile(){
 		return World.getTileOfPosition((this.getProgram().getGameObject()).getPosition());
 	}
