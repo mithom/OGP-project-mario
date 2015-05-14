@@ -814,4 +814,14 @@ public class Mazub extends GameObject{
 			}
 		}
 	}
+	
+	@Override
+	public boolean isDucking(){
+		return duckState == DuckState.DUCKED || duckState == DuckState.TRY_STRAIGHT;
+	}
+	
+	@Override
+	public boolean isJumping(){
+		return groundState != GroundState.GROUNDED && getVerticalVelocity()>0;
+	}
 }

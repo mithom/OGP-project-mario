@@ -25,7 +25,7 @@ import jumpingalien.util.Sprite;
  * @Invar	each gameObject has at least 1 sprite
  * 			|spriteList.length()>=1 
  */
-public abstract class GameObject {
+public abstract class GameObject {//TODO: make TileObject
 	private Position position;
 	private final Sprite[] spriteList;
 	private int currentSpriteNumber=0;
@@ -307,7 +307,7 @@ public abstract class GameObject {
 	 * @return 	|[getCurrentSprite().getWidth(),getCurrentSprite().getHeight()]
 	 */
 	@Basic
-	public int[] getSize() throws NullPointerException, IllegalSizeException {
+	public int[] getSize() throws NullPointerException, IllegalSizeException {//TODO: check spriteSize on creation, not in getter!
 		Sprite currentSprite = getCurrentSprite();
 		if(currentSprite == null) throw new NullPointerException("currentSprite isn't pointing toward any Sprite");
 		if(currentSprite.getWidth() <= 0 || currentSprite.getHeight() <= 0) throw new IllegalSizeException(currentSprite.getWidth(),currentSprite.getHeight());
@@ -509,5 +509,13 @@ public abstract class GameObject {
 		if(own[3]<other[1])
 			overlap[3]=true;
 		return overlap;
+	}
+	
+	public boolean isDucking(){
+		return false;
+	}
+	
+	public boolean isJumping(){
+		return false;
 	}
 }

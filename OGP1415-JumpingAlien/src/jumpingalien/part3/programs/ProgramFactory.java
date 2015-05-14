@@ -2,278 +2,268 @@ package jumpingalien.part3.programs;
 
 import java.util.List;
 import java.util.Map;
+
+import jumpingalien.program.internal.Expression;
 import jumpingalien.program.internal.Type;
-
+import jumpingalien.program.internal.Value;
+import jumpingalien.program.util.ActionFor1;
+import jumpingalien.program.util.ActionFor2;
 import jumpingalien.model.Program;
+import jumpingalien.model.gameObject.GameObject;
 
-public class ProgramFactory<E, S> implements IProgramFactory<E, S, Type, Program> {
+public class ProgramFactory<S> implements IProgramFactory<Value<?>, S, Type, Program> {
 
 	@Override
-	public E createReadVariable(String variableName, Type variableType,
+	public Value<?> createReadVariable(String variableName, Type variableType,
 			SourceLocation sourceLocation) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public E createDoubleConstant(double value, SourceLocation sourceLocation) {
+	public Value<?> createDoubleConstant(double value, SourceLocation sourceLocation) {
+		return new Value<Double>(value);
+	}
+
+	@Override
+	public Value<?> createTrue(SourceLocation sourceLocation) {
+		return new Value<Boolean>(true);
+	}
+
+	@Override
+	public Value<?> createFalse(SourceLocation sourceLocation) {
+		return new Value<Boolean>(false);
+	}
+
+	@Override
+	public Value<?> createNull(SourceLocation sourceLocation) {
+		return new Value<GameObject>(null);
+	}
+
+	@Override
+	public Value<?> createSelf(SourceLocation sourceLocation) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public E createTrue(SourceLocation sourceLocation) {
+	public Value<?> createDirectionConstant(Direction value,SourceLocation sourceLocation) {
+		return new Value<Direction>(value);
+	}
+
+	@Override
+	public Value<?> createAddition(Value<?> left, Value<?> right, SourceLocation sourceLocation) {
+		return new Expression<Double, Value<Double>>((Value<Double>)left, (Value<Double>)right, ActionFor2.ADDITION);
+	}
+
+	@Override
+	public Value<?> createSubtraction(Value<?> left, Value<?> right, SourceLocation sourceLocation) {
+		return new Expression<Double, Value<Double>>((Value<Double>)left, (Value<Double>)right, ActionFor2.SUBSTRACTION);
+	}
+
+	@Override
+	public Value<?> createMultiplication(Value<?> left, Value<?> right, SourceLocation sourceLocation) {
+		return new Expression<Double, Value<Double>>((Value<Double>)left, (Value<Double>)right, ActionFor2.MULTIPLICATION);
+	}
+
+	@Override
+	public Value<?> createDivision(Value<?> left, Value<?> right, SourceLocation sourceLocation) {
+		return new Expression<Double, Value<Double>>((Value<Double>)left, (Value<Double>)right, ActionFor2.DIVISION);
+	}
+
+	@Override
+	public Value<?> createSqrt(Value<?> expr, SourceLocation sourceLocation) {
+		return new Expression<Double, Value<Double>>((Value<Double>)expr, ActionFor1.SQRT);
+	}
+
+	@Override
+	public Value<?> createRandom(Value<?> maxValue, SourceLocation sourceLocation) {
+		return new Expression<Double, Value<Double>>((Value<Double>)maxValue, ActionFor1.RANDOM);
+	}
+
+	@Override
+	public Value<?> createAnd(Value<?> left, Value<?> right, SourceLocation sourceLocation) {
+		return new Expression<Boolean, Value<Boolean>>((Value<Boolean>)left, (Value<Boolean>)right, ActionFor2.CONJUNCTION);
+	}
+
+	@Override
+	public Value<?> createOr(Value<?> left, Value<?> right, SourceLocation sourceLocation) {
+		return new Expression<Boolean, Value<Boolean>>((Value<Boolean>)left, (Value<Boolean>)right, ActionFor2.DISJUNCTION);
+	}
+
+	@Override
+	public Value<?> createNot(Value<?> expr, SourceLocation sourceLocation) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public E createFalse(SourceLocation sourceLocation) {
+	public Value<?> createLessThan(Value<?> left, Value<?> right, SourceLocation sourceLocation) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public E createNull(SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public E createSelf(SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public E createDirectionConstant(
-			jumpingalien.part3.programs.IProgramFactory.Direction value,
+	public Value<?> createLessThanOrEqualTo(Value<?> left, Value<?> right,
 			SourceLocation sourceLocation) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public E createAddition(E left, E right, SourceLocation sourceLocation) {
+	public Value<?> createGreaterThan(Value<?> left, Value<?> right, SourceLocation sourceLocation) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public E createSubtraction(E left, E right, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public E createMultiplication(E left, E right, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public E createDivision(E left, E right, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public E createSqrt(E expr, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public E createRandom(E maxValue, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public E createAnd(E left, E right, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public E createOr(E left, E right, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public E createNot(E expr, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public E createLessThan(E left, E right, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public E createLessThanOrEqualTo(E left, E right,
+	public Value<?> createGreaterThanOrEqualTo(Value<?> left, Value<?> right,
 			SourceLocation sourceLocation) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public E createGreaterThan(E left, E right, SourceLocation sourceLocation) {
+	public Value<?> createEquals(Value<?> left, Value<?> right, SourceLocation sourceLocation) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public E createGreaterThanOrEqualTo(E left, E right,
+	public Value<?> createNotEquals(Value<?> left, Value<?> right, SourceLocation sourceLocation) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Value<?> createGetX(Value<?> expr, SourceLocation sourceLocation) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Value<?> createGetY(Value<?> expr, SourceLocation sourceLocation) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Value<?> createGetWidth(Value<?> expr, SourceLocation sourceLocation) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Value<?> createGetHeight(Value<?> expr, SourceLocation sourceLocation) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Value<?> createGetHitPoints(Value<?> expr, SourceLocation sourceLocation) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Value<?> createGetTile(Value<?> x, Value<?> y, SourceLocation sourceLocation) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Value<?> createSearchObject(Value<?> direction, SourceLocation sourceLocation) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Value<?> createIsMazub(Value<?> expr, SourceLocation sourceLocation) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Value<?> createIsShark(Value<?> expr, SourceLocation sourceLocation) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Value<?> createIsSlime(Value<?> expr, SourceLocation sourceLocation) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Value<?> createIsPlant(Value<?> expr, SourceLocation sourceLocation) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Value<?> createIsDead(Value<?> expr, SourceLocation sourceLocation) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Value<?> createIsTerrain(Value<?> expr, SourceLocation sourceLocation) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Value<?> createIsPassable(Value<?> expr, SourceLocation sourceLocation) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Value<?> createIsWater(Value<?> expr, SourceLocation sourceLocation) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Value<?> createIsMagma(Value<?> expr, SourceLocation sourceLocation) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Value<?> createIsAir(Value<?> expr, SourceLocation sourceLocation) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Value<?> createIsMoving(Value<?> expr, Value<?> direction, SourceLocation sourceLocation) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Value<?> createIsDucking(Value<?> expr, SourceLocation sourceLocation) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Value<?> createIsJumping(Value<?> expr, SourceLocation sourceLocation) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public S createAssignment(String variableName, Type variableType, Value<?> value,
 			SourceLocation sourceLocation) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public E createEquals(E left, E right, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public E createNotEquals(E left, E right, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public E createGetX(E expr, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public E createGetY(E expr, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public E createGetWidth(E expr, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public E createGetHeight(E expr, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public E createGetHitPoints(E expr, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public E createGetTile(E x, E y, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public E createSearchObject(E direction, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public E createIsMazub(E expr, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public E createIsShark(E expr, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public E createIsSlime(E expr, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public E createIsPlant(E expr, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public E createIsDead(E expr, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public E createIsTerrain(E expr, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public E createIsPassable(E expr, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public E createIsWater(E expr, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public E createIsMagma(E expr, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public E createIsAir(E expr, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public E createIsMoving(E expr, E direction, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public E createIsDucking(E expr, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public E createIsJumping(E expr, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public S createAssignment(String variableName, Type variableType, E value,
-			SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public S createWhile(E condition, S body, SourceLocation sourceLocation) {
+	public S createWhile(Value<?> condition, S body, SourceLocation sourceLocation) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -282,8 +272,8 @@ public class ProgramFactory<E, S> implements IProgramFactory<E, S, Type, Program
 	public S createForEach(
 			String variableName,
 			jumpingalien.part3.programs.IProgramFactory.Kind variableKind,
-			E where,
-			E sort,
+			Value<?> where,
+			Value<?> sort,
 			jumpingalien.part3.programs.IProgramFactory.SortDirection sortDirection,
 			S body, SourceLocation sourceLocation) {
 		// TODO Auto-generated method stub
@@ -297,26 +287,26 @@ public class ProgramFactory<E, S> implements IProgramFactory<E, S, Type, Program
 	}
 
 	@Override
-	public S createIf(E condition, S ifBody, S elseBody,
+	public S createIf(Value<?> condition, S ifBody, S elseBody,
 			SourceLocation sourceLocation) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public S createPrint(E value, SourceLocation sourceLocation) {
+	public S createPrint(Value<?> value, SourceLocation sourceLocation) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public S createStartRun(E direction, SourceLocation sourceLocation) {
+	public S createStartRun(Value<?> direction, SourceLocation sourceLocation) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public S createStopRun(E direction, SourceLocation sourceLocation) {
+	public S createStopRun(Value<?> direction, SourceLocation sourceLocation) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -346,7 +336,7 @@ public class ProgramFactory<E, S> implements IProgramFactory<E, S, Type, Program
 	}
 
 	@Override
-	public S createWait(E duration, SourceLocation sourceLocation) {
+	public S createWait(Value<?> duration, SourceLocation sourceLocation) {
 		// TODO Auto-generated method stub
 		return null;
 	}
