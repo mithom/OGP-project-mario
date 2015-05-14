@@ -1,21 +1,28 @@
 package jumpingalien.part3.facade;
 
 import java.util.Collection;
-
-import jumpingalien.model.Buzam;
+import jumpingalien.exception.IllegalMazubStateException;
+import jumpingalien.exception.IllegalMovementException;
+import jumpingalien.exception.IllegalSizeException;
+import jumpingalien.exception.IllegalTimeException;
+import jumpingalien.exception.PositionOutOfBoundsException;
 import jumpingalien.model.Mazub;
 import jumpingalien.model.Plant;
-import jumpingalien.model.Program;
 import jumpingalien.model.School;
 import jumpingalien.model.Shark;
 import jumpingalien.model.Slime;
 import jumpingalien.model.World;
+import jumpingalien.model.Buzam;
+import jumpingalien.model.Program;
 import jumpingalien.part3.programs.ParseOutcome;
 import jumpingalien.util.ModelException;
 import jumpingalien.util.Sprite;
 
-public class Facade extends jumpingalien.part2.facade.Facade implements IFacadePart3 {
 
+public class Facade extends jumpingalien.part2.facade.Facade implements IFacadePart3{
+
+	
+	/*//al het volgende zit in de extends part1.facade.Facade
 	@Override
 	public int getNbHitPoints(Mazub alien) {
 		// TODO Auto-generated method stub
@@ -45,7 +52,7 @@ public class Facade extends jumpingalien.part2.facade.Facade implements IFacadeP
 	@Override
 	public void startGame(World world) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
@@ -62,8 +69,7 @@ public class Facade extends jumpingalien.part2.facade.Facade implements IFacadeP
 
 	@Override
 	public void advanceTime(World world, double dt) {
-		// TODO Auto-generated method stub
-
+		world.advanceTime(dt);
 	}
 
 	@Override
@@ -96,13 +102,13 @@ public class Facade extends jumpingalien.part2.facade.Facade implements IFacadeP
 	public void setGeologicalFeature(World world, int tileX, int tileY,
 			int tileType) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
 	public void setMazub(World world, Mazub alien) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
@@ -120,7 +126,7 @@ public class Facade extends jumpingalien.part2.facade.Facade implements IFacadeP
 	@Override
 	public void addPlant(World world, Plant plant) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
@@ -150,7 +156,7 @@ public class Facade extends jumpingalien.part2.facade.Facade implements IFacadeP
 	@Override
 	public void addShark(World world, Shark shark) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
@@ -186,7 +192,7 @@ public class Facade extends jumpingalien.part2.facade.Facade implements IFacadeP
 	@Override
 	public void addSlime(World world, Slime slime) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
@@ -252,56 +258,57 @@ public class Facade extends jumpingalien.part2.facade.Facade implements IFacadeP
 	@Override
 	public void startJump(Mazub alien) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
 	public void endJump(Mazub alien) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
 	public void startMoveLeft(Mazub alien) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
 	public void endMoveLeft(Mazub alien) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
 	public void startMoveRight(Mazub alien) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
 	public void endMoveRight(Mazub alien) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
 	public void startDuck(Mazub alien) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
 	public void endDuck(Mazub alien) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
 	public void advanceTime(Mazub alien, double dt) {
 		// TODO Auto-generated method stub
-
+		
 	}
+	*/
 
 	@Override
 	public Buzam createBuzam(int pixelLeftX, int pixelBottomY, Sprite[] sprites) {
@@ -352,7 +359,7 @@ public class Facade extends jumpingalien.part2.facade.Facade implements IFacadeP
 	@Override
 	public void addBuzam(World world, Buzam buzam) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
