@@ -2,11 +2,14 @@ package jumpingalien.part3.programs;
 
 import java.util.List;
 import java.util.Map;
+import jumpingalien.program.internal.Type;
 
-public class ProgramFactory<E, S, T, P> implements IProgramFactory<E, S, T, P> {
+import jumpingalien.model.Program;
+
+public class ProgramFactory<E, S> implements IProgramFactory<E, S, Type, Program> {
 
 	@Override
-	public E createReadVariable(String variableName, T variableType,
+	public E createReadVariable(String variableName, Type variableType,
 			SourceLocation sourceLocation) {
 		// TODO Auto-generated method stub
 		return null;
@@ -263,7 +266,7 @@ public class ProgramFactory<E, S, T, P> implements IProgramFactory<E, S, T, P> {
 	}
 
 	@Override
-	public S createAssignment(String variableName, T variableType, E value,
+	public S createAssignment(String variableName, Type variableType, E value,
 			SourceLocation sourceLocation) {
 		// TODO Auto-generated method stub
 		return null;
@@ -361,32 +364,31 @@ public class ProgramFactory<E, S, T, P> implements IProgramFactory<E, S, T, P> {
 	}
 
 	@Override
-	public T getDoubleType() {
-		// TODO Auto-generated method stub
-		return null;
+	public Type getDoubleType() {
+		return new Type(Type.type.DOUBLE);
 	}
 
 	@Override
-	public T getBoolType() {
-		// TODO Auto-generated method stub
-		return null;
+	public Type getBoolType() {
+		return new Type(Type.type.BOOL);
 	}
 
 	@Override
-	public T getGameObjectType() {
-		// TODO Auto-generated method stub
-		return null;
+	public Type getGameObjectType() {
+		return new Type(Type.type.OBJECT);
 	}
 
 	@Override
-	public T getDirectionType() {
-		// TODO Auto-generated method stub
-		return null;
+	public Type getDirectionType() {
+		return new Type(Type.type.DIRECTION);
 	}
 
 	@Override
-	public P createProgram(S mainStatement, Map<String, T> globalVariables) {
-		// TODO Auto-generated method stub
+	public Program createProgram(S mainStatement, Map<String, Type> globalVariables) {
+		// TODO complete
+		Program program = new Program();
+		program.addAllGlobals(globalVariables);
+		//addStatements after they are created
 		return null;
 	}
 
