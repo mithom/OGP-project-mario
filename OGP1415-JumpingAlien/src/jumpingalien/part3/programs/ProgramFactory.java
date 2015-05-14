@@ -5,6 +5,7 @@ import java.util.Map;
 
 import ogp.framework.game.Game;
 import jumpingalien.program.internal.Expression;
+import jumpingalien.program.internal.Statement;
 import jumpingalien.program.internal.Type;
 import jumpingalien.program.internal.Value;
 import jumpingalien.program.util.ActionFor1;
@@ -16,13 +17,13 @@ import jumpingalien.model.Shark;
 import jumpingalien.model.Slime;
 import jumpingalien.model.gameObject.GameObject;
 
-public class ProgramFactory<S> implements IProgramFactory<Value<?>, S, Type, Program> {
+public class ProgramFactory implements IProgramFactory<Value<?>, Statement, Type, Program> {
 
 	@Override
 	public Value<?> createReadVariable(String variableName, Type variableType,
 			SourceLocation sourceLocation) {
 		// TODO Auto-generated method stub
-		return null;
+		return new Value<Double>(0.0d);
 	}
 
 	@Override
@@ -234,101 +235,101 @@ public class ProgramFactory<S> implements IProgramFactory<Value<?>, S, Type, Pro
 	}
 
 	@Override
-	public S createAssignment(String variableName, Type variableType, Value<?> value,
+	public Statement createAssignment(String variableName, Type variableType, Value<?> value,
 			SourceLocation sourceLocation) {
 		// TODO Auto-generated method stub
-		return null;
+		return new Statement();
 	}
 
 	@Override
-	public S createWhile(Value<?> condition, S body, SourceLocation sourceLocation) {
+	public Statement createWhile(Value<?> condition, Statement body, SourceLocation sourceLocation) {
 		// TODO Auto-generated method stub
-		return null;
+		return new Statement();
 	}
 
 	@Override
-	public S createForEach(
+	public Statement createForEach(
 			String variableName,
 			jumpingalien.part3.programs.IProgramFactory.Kind variableKind,
 			Value<?> where,
 			Value<?> sort,
 			jumpingalien.part3.programs.IProgramFactory.SortDirection sortDirection,
-			S body, SourceLocation sourceLocation) {
+			Statement body, SourceLocation sourceLocation) {
 		// TODO Auto-generated method stub
-		return null;
+		return new Statement();
 	}
 
 	@Override
-	public S createBreak(SourceLocation sourceLocation) {
+	public Statement createBreak(SourceLocation sourceLocation) {
 		// TODO Auto-generated method stub
-		return null;
+		return new Statement();
 	}
 
 	@Override
-	public S createIf(Value<?> condition, S ifBody, S elseBody,
+	public Statement createIf(Value<?> condition, Statement ifBody, Statement elseBody,
 			SourceLocation sourceLocation) {
 		// TODO Auto-generated method stub
-		return null;
+		return new Statement();
 	}
 
 	@Override
-	public S createPrint(Value<?> value, SourceLocation sourceLocation) {
+	public Statement createPrint(Value<?> value, SourceLocation sourceLocation) {
 		// TODO Auto-generated method stub
-		return null;
+		return new Statement();
 	}
 
 	@Override
-	public S createStartRun(Value<?> direction, SourceLocation sourceLocation) {
+	public Statement createStartRun(Value<?> direction, SourceLocation sourceLocation) {
 		// TODO Auto-generated method stub
-		return null;
+		return new Statement();
 	}
 
 	@Override
-	public S createStopRun(Value<?> direction, SourceLocation sourceLocation) {
+	public Statement createStopRun(Value<?> direction, SourceLocation sourceLocation) {
 		// TODO Auto-generated method stub
-		return null;
+		return new Statement();
 	}
 
 	@Override
-	public S createStartJump(SourceLocation sourceLocation) {
+	public Statement createStartJump(SourceLocation sourceLocation) {
 		// TODO Auto-generated method stub
-		return null;
+		return new Statement();
 	}
 
 	@Override
-	public S createStopJump(SourceLocation sourceLocation) {
+	public Statement createStopJump(SourceLocation sourceLocation) {
 		// TODO Auto-generated method stub
-		return null;
+		return new Statement();
 	}
 
 	@Override
-	public S createStartDuck(SourceLocation sourceLocation) {
+	public Statement createStartDuck(SourceLocation sourceLocation) {
 		// TODO Auto-generated method stub
-		return null;
+		return new Statement();
 	}
 
 	@Override
-	public S createStopDuck(SourceLocation sourceLocation) {
+	public Statement createStopDuck(SourceLocation sourceLocation) {
 		// TODO Auto-generated method stub
-		return null;
+		return new Statement();
 	}
 
 	@Override
-	public S createWait(Value<?> duration, SourceLocation sourceLocation) {
+	public Statement createWait(Value<?> duration, SourceLocation sourceLocation) {
 		// TODO Auto-generated method stub
-		return null;
+		return new Statement();
 	}
 
 	@Override
-	public S createSkip(SourceLocation sourceLocation) {
+	public Statement createSkip(SourceLocation sourceLocation) {
 		// TODO Auto-generated method stub
-		return null;
+		return new Statement();
 	}
 
 	@Override
-	public S createSequence(List<S> statements, SourceLocation sourceLocation) {
+	public Statement createSequence(List<Statement> statements, SourceLocation sourceLocation) {
 		// TODO Auto-generated method stub
-		return null;
+		return new Statement();
 	}
 
 	@Override
@@ -352,12 +353,12 @@ public class ProgramFactory<S> implements IProgramFactory<Value<?>, S, Type, Pro
 	}
 
 	@Override
-	public Program createProgram(S mainStatement, Map<String, Type> globalVariables) {
+	public Program createProgram(Statement mainStatement, Map<String, Type> globalVariables) {
 		// TODO complete
 		Program program = new Program();
 		program.addAllGlobals(globalVariables);
 		//addStatements after they are created
-		return null;
+		return program;
 	}
 
 }

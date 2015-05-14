@@ -32,7 +32,6 @@ public class Program {
 		while(dt>0){
 			dt = executeNext(dt);
 		}
-		//TODO: implement this function
 	}
 	
 	public void addStatement(Statement statement){//TODO add checkers
