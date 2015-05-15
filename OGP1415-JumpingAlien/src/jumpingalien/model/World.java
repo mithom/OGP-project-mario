@@ -36,7 +36,7 @@ public class World {
 	final int viewWidth;//in pixels
 	private Position cameraLocation;//position is in m
 	private final Position targetTile;//position is in m
-	private GeologicalFeature[][] tileTypes;
+	private  GeologicalFeature[][] tileTypes;
 	private final int tileSize;//in pixels
 	private ArrayList<Shark> sharks = new ArrayList<Shark>();
 	private ArrayList<Plant> plants = new ArrayList<Plant>();

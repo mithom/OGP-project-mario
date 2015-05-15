@@ -1,6 +1,8 @@
 package expressions;
 
 
+import java.security.InvalidKeyException;
+
 import Program.Program;
 import jumpingalien.exception.IllegalSizeException;
 import jumpingalien.part3.programs.SourceLocation;
@@ -28,6 +30,6 @@ public abstract class Expression {
 		return program;
 	}
 	
-	public abstract Object evaluate() throws NullPointerException, IllegalSizeException;
+	public abstract Object evaluate() throws NullPointerException, IllegalSizeException, InvalidKeyException;
 
 }
