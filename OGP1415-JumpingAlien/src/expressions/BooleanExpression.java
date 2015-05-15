@@ -15,4 +15,9 @@ public class BooleanExpression extends Expression {
 		return value;
 	}
 	
+	@Override
+	public Object evaluate() {
+		return value;
+	}
+	
 }

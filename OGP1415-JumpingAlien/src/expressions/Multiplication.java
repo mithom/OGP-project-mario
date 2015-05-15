@@ -1,28 +1,30 @@
 package expressions;
 
+import jumpingalien.exception.IllegalSizeException;
 import jumpingalien.part3.programs.SourceLocation;
 
 public class Multiplication extends Expression {
 	
-	public DoubleConstant leftValue;
-	public DoubleConstant rightValue;
+	public Object leftValue;
+	public Object rightValue;
 	
-	public Multiplication(DoubleConstant left, DoubleConstant right, SourceLocation sourceLocation){
+	public Multiplication(Object left, Object right, SourceLocation sourceLocation){
 		super(sourceLocation);
 		this.leftValue = left;
 		this.rightValue = right;
 	}
 	
-	public DoubleConstant getLeftValue(){
+	public Object getLeftValue(){
 		return leftValue;
 	}
 	
-	public DoubleConstant getRightValue(){
+	public Object getRightValue(){
 		return rightValue;
 	}
 	
-	public double evaluateMultiplication(){
-		return (leftValue.getValue() * rightValue.getValue()) ;
+	@Override
+	public Object evaluate() {
+		return (((DoubleConstant)getRightValue()).getValue() * ((DoubleConstant)getRightValue()).getValue()) ;
 	}
 
 }

@@ -8,7 +8,7 @@ public class GetHeight extends Expression {
 	
 	public Object object;
 	
-	public GetHeight(GameObject object, SourceLocation sourceLocation ){
+	public GetHeight(Object object, SourceLocation sourceLocation ){
 		super(sourceLocation);
 		this.object= object;
 	}
@@ -16,8 +16,9 @@ public class GetHeight extends Expression {
 	public Object getObject(){
 		return object;
 	}
-	
-	public double evaluateGetHeight() throws NullPointerException, IllegalSizeException{
+
+	@Override
+	public Object evaluate() throws NullPointerException, IllegalSizeException {
 		return ((GameObject)getObject()).getSize()[1];
 	}
 }

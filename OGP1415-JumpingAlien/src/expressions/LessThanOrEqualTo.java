@@ -1,5 +1,6 @@
 package expressions;
 
+import jumpingalien.exception.IllegalSizeException;
 import jumpingalien.part3.programs.SourceLocation;
 
 public class LessThanOrEqualTo extends Comparison {
@@ -8,9 +9,9 @@ public class LessThanOrEqualTo extends Comparison {
 		super(left,right,sourceLocation);
 	}
 	
-	
-	public boolean evaluateLessThanOrEqualTo(){
-		return (left.getValue() <= right.getValue());
+	@Override
+	public Object evaluate() {
+		return (getLeftValue() <= getRightValue());
 	}
 
 	

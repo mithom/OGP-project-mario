@@ -1,5 +1,6 @@
 package expressions;
 
+import jumpingalien.exception.IllegalSizeException;
 import jumpingalien.part3.programs.SourceLocation;
 
 public class NullExpression extends Expression {
@@ -7,8 +8,9 @@ public class NullExpression extends Expression {
 	public NullExpression(SourceLocation sourceLocation){
 		super(sourceLocation);
 	}
-	
-	public NullExpression getValue(){
+
+	@Override
+	public Object evaluate() {
 		return null;
 	}
 }

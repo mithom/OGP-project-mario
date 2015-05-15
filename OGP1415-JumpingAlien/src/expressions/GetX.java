@@ -1,5 +1,6 @@
 package expressions;
 
+import jumpingalien.exception.IllegalSizeException;
 import jumpingalien.model.gameObject.GameObject;
 import jumpingalien.part3.programs.SourceLocation;
 
@@ -16,7 +17,8 @@ public class GetX extends Expression {
 		return object;
 	}
 	
-	public double GetXCoordinate(){
+	@Override
+	public Object evaluate() {
 		return ((GameObject) getObject()).getPositionX();
 	}
 

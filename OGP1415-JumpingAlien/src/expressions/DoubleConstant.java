@@ -14,5 +14,10 @@ public class DoubleConstant extends Expression {
 	public double getValue(){
 		return value;
 	}
+
+	@Override
+	public Object evaluate() {
+		return value;
+	}
 	
 }

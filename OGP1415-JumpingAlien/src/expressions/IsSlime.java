@@ -1,25 +1,22 @@
 package expressions;
 
 import jumpingalien.exception.IllegalSizeException;
+import jumpingalien.model.Slime;
 import jumpingalien.model.gameObject.GameObject;
 import jumpingalien.part3.programs.SourceLocation;
 
-public class GetY extends Expression {
-	
+public class IsSlime extends Expression {
+
 	public Object object;
 	
-	public GetY(Object object, SourceLocation sourceLocation ){
+	public IsSlime(Object object, SourceLocation sourceLocation) {
 		super(sourceLocation);
-		this.object= object;
-	}
-	
-	public Object getObject(){
-		return object;
+		this.object = object;
 	}
 	
 	@Override
 	public Object evaluate() {
-		return ((GameObject)getObject()).getPositionY();
+		return (((GameObject)object) instanceof Slime);
 	}
-	
+
 }

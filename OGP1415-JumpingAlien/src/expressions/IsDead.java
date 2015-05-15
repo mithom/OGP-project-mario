@@ -4,22 +4,17 @@ import jumpingalien.exception.IllegalSizeException;
 import jumpingalien.model.gameObject.GameObject;
 import jumpingalien.part3.programs.SourceLocation;
 
-public class GetY extends Expression {
-	
+public class IsDead extends Expression {
+
 	public Object object;
 	
-	public GetY(Object object, SourceLocation sourceLocation ){
+	public IsDead(Object object, SourceLocation sourceLocation) {
 		super(sourceLocation);
-		this.object= object;
-	}
-	
-	public Object getObject(){
-		return object;
+		this.object = object;
 	}
 	
 	@Override
 	public Object evaluate() {
-		return ((GameObject)getObject()).getPositionY();
+		return (((GameObject)object).isDead());
 	}
-	
 }

@@ -1,21 +1,23 @@
 package expressions;
 
+import jumpingalien.exception.IllegalSizeException;
 import jumpingalien.part3.programs.SourceLocation;
 
 public class SquareRoot extends Expression {
 	
-	public DoubleConstant value;
+	public Object value;
 	
-	public SquareRoot(DoubleConstant value, SourceLocation sourceLocation){
+	public SquareRoot(Object value, SourceLocation sourceLocation){
 		super(sourceLocation);
 		this.value = value;
 	}
 
-	public DoubleConstant getValue(){
+	public Object getValue(){
 		return value;
 	}
-	
-	public double evaluateSquareRoot(){
-		return Math.sqrt(value.getValue());
+
+	@Override
+	public Object evaluate()  {
+		return Math.sqrt(((DoubleConstant)getValue()).getValue());
 	}
 }

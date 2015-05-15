@@ -2,6 +2,7 @@ package expressions;
 
 
 import Program.Program;
+import jumpingalien.exception.IllegalSizeException;
 import jumpingalien.part3.programs.SourceLocation;
 
 
@@ -27,6 +28,6 @@ public abstract class Expression {
 		return program;
 	}
 	
-	public abstract Object evaluate();
+	public abstract Object evaluate() throws NullPointerException, IllegalSizeException;
 
 }

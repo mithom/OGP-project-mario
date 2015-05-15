@@ -1,28 +1,30 @@
 package expressions;
 
+import jumpingalien.exception.IllegalSizeException;
 import jumpingalien.part3.programs.SourceLocation;
 
 public class Substraction extends Expression {
 	
-	public DoubleConstant leftValue;
-	public DoubleConstant rightValue;
+	public Object leftValue;
+	public Object rightValue;
 	
-	public Substraction(DoubleConstant left, DoubleConstant right, SourceLocation sourceLocation){
+	public Substraction(Object left, Object right, SourceLocation sourceLocation){
 		super(sourceLocation);
 		this.leftValue = left;
 		this.rightValue = right;
 	}
 	
-	public DoubleConstant getLeftValue(){
+	public Object getLeftValue(){
 		return leftValue;
 	}
 	
-	public DoubleConstant getRightValue(){
+	public Object getRightValue(){
 		return rightValue;
 	}
-	
-	public double evaluateSubstraction(){
-		return (leftValue.getValue() - rightValue.getValue()) ;
+
+	@Override
+	public Object evaluate() throws NullPointerException, IllegalSizeException {
+		return (((DoubleConstant)getLeftValue()).getValue() - ((DoubleConstant)getRightValue()).getValue()) ;
 	}
 
 }

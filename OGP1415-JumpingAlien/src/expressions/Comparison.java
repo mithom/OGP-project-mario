@@ -3,21 +3,21 @@ package expressions;
 import jumpingalien.part3.programs.SourceLocation;
 
 public abstract class Comparison extends Expression {
-	public DoubleConstant left;
-	public DoubleConstant right;
+	public Object left;
+	public Object right;
 	
-	public Comparison(DoubleConstant left, DoubleConstant right, SourceLocation sourceLocation){
+	public Comparison(Object left, Object right, SourceLocation sourceLocation){
 		super(sourceLocation);
 		this.left = left ;
 		this.right = right ;
 	}
 	
-	public DoubleConstant getLeftValue(){
-		return left;
+	public double getLeftValue(){
+		return (double)left;
 	}
 	
-	public DoubleConstant getRightValue(){
-		return right;
+	public double getRightValue(){
+		return (double)right;
 	}
 
 }

@@ -4,25 +4,27 @@ import jumpingalien.part3.programs.SourceLocation;
 
 public class Division extends Expression {
 	
-	public DoubleConstant leftValue;
-	public DoubleConstant rightValue;
+	public Object leftValue;
+	public Object rightValue;
 	
-	public Division(DoubleConstant left, DoubleConstant right, SourceLocation sourceLocation){
+	public Division(Object left, Object right, SourceLocation sourceLocation){
 		super(sourceLocation);
 		this.leftValue = left;
 		this.rightValue = right;
 	}
 	
-	public DoubleConstant getLeftValue(){
+	public Object getLeftValue(){
 		return leftValue;
 	}
 	
-	public DoubleConstant getRightValue(){
+	public Object getRightValue(){
 		return rightValue;
 	}
-	
-	public double evaluateDivision(){
-		return (leftValue.getValue() + rightValue.getValue()) ;
+
+	@Override
+	public Object evaluate() {
+		return (((DoubleConstant)getLeftValue()).getValue() / ((DoubleConstant)getRightValue()).getValue()) ;
+		
 	}
 	
 }

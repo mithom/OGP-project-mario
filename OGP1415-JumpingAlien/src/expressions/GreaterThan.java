@@ -10,7 +10,7 @@ public class GreaterThan extends Comparison {
 
 	@Override
 	public Object evaluate() {
-		return (left.getValue() > right.getValue());
+		return (getLeftValue() > getRightValue());
 	}
 
 }

@@ -4,25 +4,25 @@ import jumpingalien.part3.programs.SourceLocation;
 
 public class Addition extends Expression {
 	
-	public DoubleConstant leftValue;
-	public DoubleConstant rightValue;
+	public Object leftValue;
+	public Object rightValue;
 	
-	public Addition(DoubleConstant left, DoubleConstant right, SourceLocation sourceLocation){
+	public Addition(Object left, Object right, SourceLocation sourceLocation){
 		super(sourceLocation);
 		this.leftValue = left;
 		this.rightValue = right;
 	}
 	
-	public DoubleConstant getLeftValue(){
+	public Object getLeftValue(){
 		return leftValue;
 	}
 	
-	public DoubleConstant getRightValue(){
+	public Object getRightValue(){
 		return rightValue;
 	}
 
 	@Override
 	public Object evaluate() {
-		return (leftValue.getValue() + rightValue.getValue()) ;
+		return (((DoubleConstant)getRightValue()).getValue() + ((DoubleConstant)getLeftValue()).getValue()) ;
 	}
 }

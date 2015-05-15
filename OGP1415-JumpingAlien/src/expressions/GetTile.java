@@ -8,33 +8,35 @@ import jumpingalien.part3.programs.SourceLocation;
 
 public class GetTile extends Expression {
 	
-	public DoubleConstant x;
-	public DoubleConstant y;
+	public Object x;
+	public Object y;
 	public double[] position;
 	
-	public GetTile(DoubleConstant x, DoubleConstant y, SourceLocation sourceLocation ){
+	public GetTile(Object x, Object y, SourceLocation sourceLocation ){
 		super(sourceLocation);
 		this.x= x;
 		this.y= y;
 	}
 	
 	
-	public DoubleConstant getX(){
+	public Object getX(){
 		return x;
 	}
 	
-	public DoubleConstant getY(){
+	public Object getY(){
 		return y;
 	}
 	
 	public double[] getPosition(){
-		position[0]=getX().getValue();
-		position[1]=getY().getValue();
+		position[0]=((DoubleConstant)getX()).getValue();
+		position[1]=((DoubleConstant)getY()).getValue();
 		return position;
 	}
 	
 	//TODO deze static dingen moeten nog eens later bekeken worden tegoei
-	public int[] evaluateGetTile(){
+
+	@Override
+	public Object evaluate(){
 		return World.getTileOfPosition((this.getProgram().getGameObject()).getPosition());
 	}
 }

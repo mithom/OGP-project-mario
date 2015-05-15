@@ -17,7 +17,8 @@ public class GetWidth extends Expression {
 		return object;
 	}
 	
-	public double evaluateGetWidth() throws NullPointerException, IllegalSizeException{
+	@Override
+	public Object evaluate() throws NullPointerException, IllegalSizeException {
 		return ((GameObject)getObject()).getSize()[0];
 	}
 

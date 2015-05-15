@@ -4,12 +4,13 @@ import jumpingalien.part3.programs.SourceLocation;
 
 public class EqualTo extends Comparison {
 
-	public EqualTo(DoubleConstant left, DoubleConstant right, SourceLocation sourceLocation){
+	public EqualTo(Object left, Object right, SourceLocation sourceLocation){
 		super(left,right,sourceLocation);
 	}
-	
-	public boolean evaluateEqualTo(){
-		return (left.getValue() == right.getValue());
+
+	@Override
+	public Object evaluate() {
+		return (getLeftValue() == getRightValue());
 	}
 
 }

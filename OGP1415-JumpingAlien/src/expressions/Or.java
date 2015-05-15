@@ -1,26 +1,28 @@
 package expressions;
 
+import jumpingalien.exception.IllegalSizeException;
 import jumpingalien.part3.programs.SourceLocation;
 
 public class Or extends Expression {
 	
-	public BooleanExpression leftExpression;
-	public BooleanExpression rightExpression;
+	public Object leftExpression;
+	public Object rightExpression;
 	
-	public Or(BooleanExpression left, BooleanExpression right, SourceLocation sourceLocation){
+	public Or(Object left, Object right, SourceLocation sourceLocation){
 		super(sourceLocation);
 	}
 	
-	public BooleanExpression getLeftExpression(){
+	public Object getLeftExpression(){
 		return leftExpression;
 	}
 	
-	public BooleanExpression getRightExpression(){
+	public Object getRightExpression(){
 		return rightExpression;
 	}
-	
-	public boolean evaluateOr(){
-		return (leftExpression.getValue() || rightExpression.getValue());
+
+	@Override
+	public Object evaluate()  {
+		return (((BooleanExpression)getLeftExpression()).getValue() || ((BooleanExpression)getRightExpression()).getValue());
 	}
 	
 	

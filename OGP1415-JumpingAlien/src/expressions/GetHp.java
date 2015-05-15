@@ -1,5 +1,6 @@
 package expressions;
 
+import jumpingalien.exception.IllegalSizeException;
 import jumpingalien.model.gameObject.GameObject;
 import jumpingalien.part3.programs.SourceLocation;
 
@@ -15,8 +16,9 @@ public class GetHp extends Expression {
 	public Object getObject(){
 		return object;
 	}
-	
-	public double evaluateGetHp(){
+
+	@Override
+	public Object evaluate() throws NullPointerException, IllegalSizeException {
 		return ((GameObject)getObject()).getNbHitPoints();
 	}
 }

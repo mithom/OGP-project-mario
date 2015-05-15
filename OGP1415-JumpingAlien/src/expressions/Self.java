@@ -1,5 +1,6 @@
 package expressions;
 
+import jumpingalien.exception.IllegalSizeException;
 import jumpingalien.part3.programs.SourceLocation; 
 
 public class Self extends Expression {
@@ -9,8 +10,8 @@ public class Self extends Expression {
 		super(sourceLocation);
 	}
 	
-	
-	public Object getSelf(){
+	@Override
+	public Object evaluate() {
 		if (getProgram() != null)
 			return this.getProgram().getGameObject();
 		return null;

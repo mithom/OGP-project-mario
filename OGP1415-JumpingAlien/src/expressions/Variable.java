@@ -1,5 +1,6 @@
 package expressions;
 
+import jumpingalien.exception.IllegalSizeException;
 import jumpingalien.part3.programs.SourceLocation;
 
 public class Variable extends Expression {
@@ -19,6 +20,11 @@ public class Variable extends Expression {
 	
 	public Object getType(){
 		return type;
+	}
+
+	@Override
+	public Object evaluate() {
+		return null;
 	}
 	
 	

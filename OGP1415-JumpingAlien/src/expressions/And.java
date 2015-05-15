@@ -4,24 +4,24 @@ import jumpingalien.part3.programs.SourceLocation;
 
 public class And extends Expression {
 
-	public BooleanExpression leftExpression;
-	public BooleanExpression rightExpression;
+	public Object leftExpression;
+	public Object rightExpression;
 	
-	public And(BooleanExpression left, BooleanExpression right, SourceLocation sourceLocation){
+	public And(Object left, Object right, SourceLocation sourceLocation){
 		super(sourceLocation);
 	}
 	
-	public BooleanExpression getLeftExpression(){
+	public Object getLeftExpression(){
 		return leftExpression;
 	}
 	
-	public BooleanExpression getRightExpression(){
+	public Object getRightExpression(){
 		return rightExpression;
 	}
 
 	@Override
 	public Object evaluate() {
-		return (leftExpression.getValue() && rightExpression.getValue());
+		return (((BooleanExpression)getLeftExpression()).getValue() && ((BooleanExpression)getRightExpression()).getValue());
 	}
 	
 }

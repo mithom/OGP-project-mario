@@ -11,8 +11,9 @@ public class DirectionConstant extends Expression {
 		super(sourceLocation);
 		this.direction=direction;
 	}
-	
-	public Direction getDirection(){
+
+	@Override
+	public Object evaluate() {
 		return direction;
 	}
 }
