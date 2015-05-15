@@ -179,4 +179,9 @@ public class Plant extends GameObject{
 			consume((Mazub)gameObject);
 		}
 	}
+
+	public int getHorizontalVelocity() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }
