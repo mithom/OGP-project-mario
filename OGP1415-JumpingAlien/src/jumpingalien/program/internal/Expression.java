@@ -42,20 +42,29 @@ public class Expression<R,G extends Value<?>> extends Value<R> {
 				if(action == null){
 					lastState = ((Value<R>)((G)expressions[0])).Copy();
 					if(lastState!=null)
-						setDoneTrue();
+						setDone(true);
 					return lastState.evaluate(dt);
 				}else{
 					lastState=((Value<R>)((ActionFor1)action).evaluate((G)expressions[0], dt)).Copy();
 					if(lastState!=null)
-						setDoneTrue();
+						setDone(true);
 					return lastState.evaluate(dt);
 				}
 			}else{
 				lastState=((Value<R>)((ActionFor2)action).evaluate((G)expressions[0],(Value<?>)expressions[1], dt)).Copy();
 				if(lastState!=null)
-					setDoneTrue();
+					setDone(true);
 				return lastState.evaluate(dt);
 			}
+		}
+	}
+	
+	@Override
+	public void reset(){
+		setDone(false);
+		for(Object expressionObject:expressions){
+			Expression<R, Value<?>> expression= (Expression<R, Value<?>>)expressionObject;
+			expression.setDone(false);
 		}
 	}
 	

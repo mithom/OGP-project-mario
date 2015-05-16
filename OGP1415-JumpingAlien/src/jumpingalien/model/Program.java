@@ -16,9 +16,9 @@ public class Program {
 	
 	private HashMap<String, Boolean> booleans = new HashMap<String,Boolean>();
 	private HashMap<String,GameObject> Objects = new HashMap<>();
-	private HashMap<String,Double> directions = new HashMap<>();
-	private HashMap<String,Direction> doubles = new HashMap<>();
-	
+	private HashMap<String,Direction> directions = new HashMap<>();
+	private HashMap<String,Double> doubles = new HashMap<>();
+
 	public Program(){
 		
 	}
@@ -69,6 +69,37 @@ public class Program {
 	}
 	
 	public void resetGlobals(){
-		
+		//TODO: implement this function
+	}
+	
+	
+	public Boolean getBoolean(String key) {
+		return booleans.get(key);
+	}
+
+	public void setBoolean(String key,Boolean value) {
+		this.booleans.put(key, value);
+	}
+
+	public GameObject getObject(String key) {
+		return Objects.get(key);
+	}
+
+	public void setObject(String key,GameObject value) {
+		this.Objects.put(key, value);
+	}
+	public Direction getDirection(String key) {
+		return directions.get(key);
+	}
+
+	public void setDirection(String key,Direction value) {
+		this.directions.put(key, value);
+	}
+	public Double getDouble(String key) {
+		return doubles.get(key);
+	}
+
+	public void setDouble(String key,Double value) {
+		this.doubles.put(key, value);
 	}
 }

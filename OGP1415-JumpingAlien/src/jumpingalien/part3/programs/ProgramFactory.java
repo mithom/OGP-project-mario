@@ -8,6 +8,7 @@ import jumpingalien.program.internal.Expression;
 import jumpingalien.program.internal.Statement;
 import jumpingalien.program.internal.Type;
 import jumpingalien.program.internal.Value;
+import jumpingalien.program.statement.util.Category;
 import jumpingalien.program.util.ActionFor1;
 import jumpingalien.program.util.ActionFor2;
 import jumpingalien.model.Mazub;
@@ -237,14 +238,19 @@ public class ProgramFactory implements IProgramFactory<Value<?>, Statement, Type
 	@Override
 	public Statement createAssignment(String variableName, Type variableType, Value<?> value,
 			SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return new Statement();
+		Statement assignment = new Statement(Category.ASSIGNMENT);
+		assignment.addConditiond(new Value<String>(variableName));
+		assignment.addConditiond(value);
+		assignment.setType(variableType);
+		return assignment;
 	}
 
 	@Override
 	public Statement createWhile(Value<?> condition, Statement body, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return new Statement();
+		Statement whileStatement = new Statement(Category.WHILE);
+		whileStatement.addConditiond(condition);
+		whileStatement.addNextStatement(body);
+		return whileStatement;
 	}
 
 	@Override

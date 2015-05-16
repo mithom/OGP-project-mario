@@ -6,7 +6,7 @@ public class Value<R> {
 	private Program program;
 	private boolean done;
 	private R value;
-	private Statement previousStatement;
+	/*private Statement previousStatement;
 	private Value<?> previousExpression;
 	private enum next{
 		STATEMENT,EXPRESSION;
@@ -14,7 +14,7 @@ public class Value<R> {
 	private next firstNext;
 	private final Statement[] nextStatement = new Statement[2];
 	private final Value<?>[] nextExpression = new Expression[2];
-	
+	*/
 	
 	public Value(R value){
 		done=false;
@@ -26,13 +26,13 @@ public class Value<R> {
 	};
 	
 	public R evaluate(double dt){//TODO: aanpassen voor previousStatement en dt!
-		setDoneTrue();
+		setDone(true);
 		return value;
 	}
 	
-	final void reset(){
+	public void reset(){
 		done = false;
-		if(previousStatement != null){
+		/*if(previousStatement != null){
 			previousStatement.reset();
 			previousStatement=null;
 		}else{
@@ -41,15 +41,12 @@ public class Value<R> {
 				previousExpression = null;
 			}else
 				program.resetGlobals();
-		}	
+		}*/
 	}
 	
+	/*
 	public final void addPreviousStatement(Statement statement){//TODO: check if you're next statement from prev one.
 		previousStatement = statement;
-	}
-	
-	public boolean isDone(){
-		return done;
 	}
 	
 	public void addNextStatement(Statement statement){//TODO: add checkers
@@ -75,7 +72,7 @@ public class Value<R> {
 				nextExpression[0] = expression;
 				
 		}
-	}
+	}*/
 	
 	public void addProgram(Program program){
 		this.program = program;
@@ -89,16 +86,20 @@ public class Value<R> {
 		Value<R> copy = new Value<R>(value);
 		copy.addProgram(getProgram());
 		copy.done = done;
-		copy.previousStatement = previousStatement;
+		/*copy.previousStatement = previousStatement;
 		copy.previousExpression = previousExpression;
 		copy.firstNext =firstNext;
 		copy.nextStatement[0] = nextStatement[0];copy.nextStatement[1]=nextStatement[1];
 		copy.nextExpression[0]= nextExpression[0];copy.nextExpression[1] = nextExpression[1];
-		
+		*/
 		return copy;
 	}
 	
-	protected void setDoneTrue(){
-		
+	protected void setDone(boolean bool){
+		done = bool;
+	}
+	
+	public boolean isDone(){
+		return done;
 	}
 }

@@ -8,22 +8,42 @@ import jumpingalien.program.statement.util.Kind;
 public class Statement {
 	private Program program;
 	private boolean done;
-	private final Statement[] nextStatement = new Statement[2];
-	private final Value<?>[] nextExpression = new Expression[2];
+	private final Statement[] nextStatements = new Statement[2];
+	private final Value<?>[] expressions = new Value<?>[2]; 
+	//private final Value<?>[] nextExpression = new Expression[2];
 	private Statement previousStatement;
-	private Value<?> previousExpression;
-	private enum next{
-		STATEMENT,EXPRESSION;
-	}
-	private next firstNext;
+	//private Value<?> previousExpression;
+	//private enum next{
+	//	STATEMENT,EXPRESSION;
+	//}
+	//private next firstNext;
 	
 	private Category category;
 	private Action action;
 	private Kind kind;
+	private Type type;
 	
+	public Type getType() {
+		return type;
+	}
+
+	public void setType(Type type) {
+		this.type = type;
+	}
+
 	public void addConditiond(Value<?> expression){
 		if(getCategory()==Category.WHILE || getCategory()==Category.FOREACH || getCategory()==Category.IF){
-			addNextExpression(expression);
+			if(expressions[0]==null)
+				expressions[0] = expression;
+			else{
+				if(getCategory()==Category.FOREACH){
+					if(expressions[1]==null)
+						expressions[1]=expression;
+					else
+						System.out.println("error, binnenste addCond");
+				}else
+					System.out.println("error 2de if addCond");
+			}
 		}
 	}
 	
@@ -54,7 +74,7 @@ public class Statement {
 	public Statement(){}//TODO: remove when ready
 	
 	public void addNextStatement(Statement statement){//TODO: add checkers
-		if(firstNext==null){
+		/*if(firstNext==null){
 			firstNext = next.STATEMENT;
 			nextStatement[0]= statement;
 		}else{
@@ -62,9 +82,18 @@ public class Statement {
 				nextStatement[1] = statement;
 			else
 				nextStatement[0] = statement;
+		}*/
+		if(nextStatements[0]==null){
+			nextStatements[0] = statement;
+		}else{
+			if(nextStatements[1]==null){
+				nextStatements[1] = statement;
+			}else{
+				System.out.println("error, zou niet mogen voorkomen");
+			}
 		}
 	}
-	
+	/*
 	public void addNextExpression(Value<?> expression){
 		if(firstNext==null){
 			firstNext = next.EXPRESSION;
@@ -76,7 +105,7 @@ public class Statement {
 				nextExpression[0] = expression;
 				
 		}
-	}
+	}*/
 	
 	public boolean isDone(){
 		return done;
@@ -89,11 +118,16 @@ public class Statement {
 			execute(dt);
 			dt-= 0.001;
 		}
-		if(nextStatement != null){
-			nextStatement[0].addPreviousStatement(this);
-			return nextStatement[0].executeNext(dt);
+		int nextNb;
+		if(getCategory()==Category.WHILE || getCategory()==Category.FOREACH || getCategory()==Category.IF)
+			nextNb=1;
+		else
+			nextNb=0;
+		if(nextStatements[nextNb] != null){
+			nextStatements[nextNb].addPreviousStatement(this);
+			return nextStatements[nextNb].executeNext(dt);
 		}
-		reset();
+		reset(dt);
 		return dt;
 	}
 	
@@ -101,33 +135,32 @@ public class Statement {
 		previousStatement = statement;
 	}
 	
-	public void addPreviousExpression(Value<?> expression){
+	/*public void addPreviousExpression(Value<?> expression){
 		previousExpression = expression;
-	}
+	}*/
 	
 	private void execute(double dt){
-		if(getCategory()==Category.ACTION){
-			//getAction.execute();
-			
-		}else{
-			if(getCategory()==Category.WHILE){
-				getCategory().execute(this, dt);
-			}
-		}
-		//TODO: implement this function
+		category.execute(this, dt);
 	}
 	
-	void reset(){
-		done = false;
-		if(previousStatement != null){
-			previousStatement.reset();
-			previousStatement=null;
+	void reset(double dt){
+		if(isDone()){
+			done = false;
+			for(Value<?> expression:expressions)
+				expression.reset();
+			if(previousStatement != null){
+				previousStatement.reset(dt);
+				previousStatement=null;
+			}else{
+					program.resetGlobals();
+			}
 		}else{
-			if(previousExpression != null){
-				previousExpression.reset();
-				previousExpression = null;
-			}else
-				program.resetGlobals();
+			if((getCategory()==Category.WHILE || getCategory()==Category.FOREACH || getCategory()==Category.IF))
+				for(Value<?> expression:expressions)
+					expression.reset();
+			else
+				System.out.println("had nooit mogen gebeuren in reset.");
+			//else: gaat verder in while/foreach/if lus (zou anders al op isDone hebben gestaan)
 		}
 	}
 
@@ -160,4 +193,13 @@ public class Statement {
 	private void setKind(Kind kind) {
 		this.kind = kind;
 	}
+	
+	public Value<?>[] getExpressions() {//TODO: check if stil works
+		return expressions.clone();
+	}
+	
+	public Statement[] getNextStatements(){
+		return nextStatements.clone();
+	}
+
 }
