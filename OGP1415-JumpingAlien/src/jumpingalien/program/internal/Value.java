@@ -17,12 +17,16 @@ public class Value<R> {
 	
 	
 	public Value(R value){
+		done=false;
 		this.value = value;
 	}
 	
-	public Value(){};
+	public Value(){
+		done=false;
+	};
 	
-	public R evaluate(){//TODO: aanpassen voor previousStatement en dt!
+	public R evaluate(double dt){//TODO: aanpassen voor previousStatement en dt!
+		setDoneTrue();
 		return value;
 	}
 	
@@ -40,7 +44,7 @@ public class Value<R> {
 		}	
 	}
 	
-	private final void addPreviousStatement(Statement statement){
+	public final void addPreviousStatement(Statement statement){//TODO: check if you're next statement from prev one.
 		previousStatement = statement;
 	}
 	
@@ -71,5 +75,30 @@ public class Value<R> {
 				nextExpression[0] = expression;
 				
 		}
+	}
+	
+	public void addProgram(Program program){
+		this.program = program;
+	}
+	
+	public Program getProgram(){
+		return program;
+	}
+	
+	protected Value<R> Copy(){
+		Value<R> copy = new Value<R>(value);
+		copy.addProgram(getProgram());
+		copy.done = done;
+		copy.previousStatement = previousStatement;
+		copy.previousExpression = previousExpression;
+		copy.firstNext =firstNext;
+		copy.nextStatement[0] = nextStatement[0];copy.nextStatement[1]=nextStatement[1];
+		copy.nextExpression[0]= nextExpression[0];copy.nextExpression[1] = nextExpression[1];
+		
+		return copy;
+	}
+	
+	protected void setDoneTrue(){
+		
 	}
 }

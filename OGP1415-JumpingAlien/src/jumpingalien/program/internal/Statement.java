@@ -1,6 +1,9 @@
 package jumpingalien.program.internal;
 
 import jumpingalien.model.Program;
+import jumpingalien.program.statement.util.Action;
+import jumpingalien.program.statement.util.Category;
+import jumpingalien.program.statement.util.Kind;
 
 public class Statement {
 	private Program program;
@@ -14,17 +17,41 @@ public class Statement {
 	}
 	private next firstNext;
 	
+	private Category category;
+	private Action action;
+	private Kind kind;
+	
+	public void addConditiond(Value<?> expression){
+		if(getCategory()==Category.WHILE || getCategory()==Category.FOREACH || getCategory()==Category.IF){
+			addNextExpression(expression);
+		}
+	}
+	
 	public void addProgram(Program program){
 		this.program = program;
 	}
+	
 	
 	public Program getProgram(){
 		done = false;
 		return program;
 	}
 	
-	public Statement(){
+	public Statement(Category category){
+		this.setCategory(category);
 	}
+	
+	public Statement(Action action){//when category is Action
+		this.setCategory(Category.ACTION);
+		this.setAction(action);
+	}
+	
+	public Statement(Kind kind){//when foreach
+		this.setKind(kind);
+		this.setCategory(Category.FOREACH);
+	}
+	
+	public Statement(){}//TODO: remove when ready
 	
 	public void addNextStatement(Statement statement){//TODO: add checkers
 		if(firstNext==null){
@@ -59,7 +86,7 @@ public class Statement {
 		if(dt<=0)
 			return 0;
 		if(!isDone()){
-			execute();
+			execute(dt);
 			dt-= 0.001;
 		}
 		if(nextStatement != null){
@@ -70,11 +97,23 @@ public class Statement {
 		return dt;
 	}
 	
-	private void addPreviousStatement(Statement statement){
+	public void addPreviousStatement(Statement statement){
 		previousStatement = statement;
 	}
 	
-	private void execute(){
+	public void addPreviousExpression(Value<?> expression){
+		previousExpression = expression;
+	}
+	
+	private void execute(double dt){
+		if(getCategory()==Category.ACTION){
+			//getAction.execute();
+			
+		}else{
+			if(getCategory()==Category.WHILE){
+				getCategory().execute(this, dt);
+			}
+		}
 		//TODO: implement this function
 	}
 	
@@ -90,5 +129,35 @@ public class Statement {
 			}else
 				program.resetGlobals();
 		}
+	}
+
+
+	public Category getCategory() {
+		return category;
+	}
+
+
+	private void setCategory(Category category) {
+		this.category = category;
+	}
+
+
+	public Action getAction() {
+		return action;
+	}
+
+
+	private void setAction(Action action) {
+		this.action = action;
+	}
+
+
+	public Kind getKind() {
+		return kind;
+	}
+
+
+	private void setKind(Kind kind) {
+		this.kind = kind;
 	}
 }

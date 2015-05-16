@@ -7,11 +7,12 @@ import jumpingalien.program.util.ActionFor2;
 //G the given value type
 public class Expression<R,G extends Value<?>> extends Value<R> {
 	private final Object[] expressions;
-	private final Object action;
+	private Object action;
+	private Value<R> lastState; 
 	
 	//used for variable reading (and constants->straight at value)//TODO: this function has to be done otherwise (check program factory)
 	public Expression(Value<R> value){
-		super(value.evaluate());
+		super();
 		//this.value = value;
 		this.expressions = new Object[]{value};
 		action=null;
@@ -33,16 +34,44 @@ public class Expression<R,G extends Value<?>> extends Value<R> {
 	@SuppressWarnings("unchecked")
 	@Override
 	//TODO: only works if correct program, still need to catch errors
-	public R evaluate(){//TODO: aanpassen voor previousStatement en dt!
-		if(expressions.length==1){
-			if(action == null){
-				return (R)((G)expressions[0]).evaluate();
+	public R evaluate(double dt){//TODO: aanpassen voor previousStatement en dt!
+		if(isDone())
+			return lastState.evaluate(dt);
+		else{
+			if(expressions.length==1){
+				if(action == null){
+					lastState = ((Value<R>)((G)expressions[0])).Copy();
+					if(lastState!=null)
+						setDoneTrue();
+					return lastState.evaluate(dt);
+				}else{
+					lastState=((Value<R>)((ActionFor1)action).evaluate((G)expressions[0], dt)).Copy();
+					if(lastState!=null)
+						setDoneTrue();
+					return lastState.evaluate(dt);
+				}
 			}else{
-				return (R)((ActionFor1)action).evaluate((G)expressions[0]).evaluate();
+				lastState=((Value<R>)((ActionFor2)action).evaluate((G)expressions[0],(Value<?>)expressions[1], dt)).Copy();
+				if(lastState!=null)
+					setDoneTrue();
+				return lastState.evaluate(dt);
 			}
-		}else{
-			return (R)((ActionFor2)action).evaluate((G)expressions[0],(Value<?>)expressions[1]).evaluate();
 		}
 	}
-
+	
+	
+	@Override
+	protected Expression<R,G> Copy(){
+		/*
+		Expression<R, G> copy = (Expression<R,G>)((Value<R>)this).Copy();
+		copy.expressions[0]= expressions[0];
+		if(action instanceof ActionFor2){
+			copy.expressions[1] = expressions[1];
+		}
+		copy.action = action;
+		copy.lastState = lastState.Copy();
+		return copy;*/
+		System.out.println("zou nooit zijn mogen gebeuren, .Copy() in expression");
+		return this;
+	}
 }
