@@ -64,6 +64,12 @@ public class Shark extends GameObject{
 		actionTime = 0.0d;actionDuration = 0.0d;
 		direction = Direction.STALLED;
 		}
+	
+	public Shark(int x, int y, Sprite[] sprites,Program program)throws PositionOutOfBoundsException{
+		super(x,y,sprites,0,100,100,program); 
+		actionTime = 0.0d;actionDuration = 0.0d;
+		direction = Direction.STALLED;
+		}
 	//TODO Nullpointer?????
 	/**
 	 * @param dt	|the time passed since the last frame.

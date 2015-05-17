@@ -9,6 +9,7 @@ import jumpingalien.exception.IllegalMovementException;
 import jumpingalien.exception.IllegalSizeException;
 import jumpingalien.exception.IllegalTimeException;
 import jumpingalien.exception.PositionOutOfBoundsException;
+import jumpingalien.model.Program;
 import jumpingalien.model.World;
 import jumpingalien.util.ModelException;
 import jumpingalien.util.Sprite;
@@ -36,6 +37,8 @@ public abstract class GameObject {//TODO: make TileObject
 	protected double imunityTime;
 	protected double lastWaterHit;
 	protected double lastLavaHit;
+	private Program program;
+	
 	/**
 	 * 
 	 * @param pixelLeftX    |the most left position that is part from the currently showing Sprite.
@@ -94,6 +97,21 @@ public abstract class GameObject {//TODO: make TileObject
 		lastWaterHit =0.2d;
 		lastLavaHit=0.0d;
 	};
+	
+	
+	@Raw @Model
+	protected GameObject(int pixelLeftX, int pixelBottomY, Sprite[] sprites,int minHp,int maxHp,int currentHp,Program program) throws PositionOutOfBoundsException{
+		assert sprites.length>=1;
+		position = new Position(new double[]{pixelLeftX/100.0d,pixelBottomY/100.0d});
+		this.spriteList = sprites;
+		this.m = (spriteList.length-8)/2;
+		hitPoint = new HitPoint(minHp,maxHp,currentHp);
+		imunityTime=0.0d;
+		lastWaterHit =0.2d;
+		lastLavaHit=0.0d;
+		this.program=program;
+	};
+	
 	/**
 	 * removes the given amount of Hp
 	 * @param amount | the amount of Hp the gameobject has to lose
@@ -328,7 +346,6 @@ public abstract class GameObject {//TODO: make TileObject
 
 	public abstract void advanceTime(double dt) throws NullPointerException,IllegalMovementException,IllegalMazubStateException,IllegalTimeException,PositionOutOfBoundsException, IllegalSizeException;
 	
-	
 	/**
 	 * checks if the gameobject overlaps with a wall and where it overlaps
 	 * @return an array with 4 booleans. First slot describes if gameobject overlaps to the left, the second at the bottom, third to the right and last at the top.
@@ -517,5 +534,9 @@ public abstract class GameObject {//TODO: make TileObject
 	
 	public boolean isJumping(){
 		return false;
+	}
+	
+	public Program getProgram() {
+		return program;
 	}
 }

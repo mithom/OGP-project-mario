@@ -25,13 +25,20 @@ public class Value<R> {
 		done=false;
 	};
 	
-	public R evaluate(double dt){//TODO: aanpassen voor previousStatement en dt!
+	public R evaluate(double[] dt){//TODO: aanpassen voor previousStatement en dt!
+		if(!isDone()){
+			dt[0]-=0.001d;
+		}
+			/*System.out.println("tijd eraf");
+		else
+			System.out.println("geen tijd eraf");*/
 		setDone(true);
 		return value;
 	}
 	
 	public void reset(){
 		done = false;
+		//System.out.println("value resetted");
 		/*if(previousStatement != null){
 			previousStatement.reset();
 			previousStatement=null;

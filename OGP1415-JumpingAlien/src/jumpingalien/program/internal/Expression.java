@@ -1,5 +1,6 @@
 package jumpingalien.program.internal;
 
+import jumpingalien.model.Program;
 import jumpingalien.program.util.ActionFor1;
 import jumpingalien.program.util.ActionFor2;
 
@@ -31,13 +32,22 @@ public class Expression<R,G extends Value<?>> extends Value<R> {
 		this.action = action;
 	}
 	
+	@Override
+	public void addProgram(Program program){
+		for(Object expressionObject:expressions)
+			if(expressionObject != null)
+				((Value<?>)expressionObject).addProgram(program);
+	}
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	//TODO: only works if correct program, still need to catch errors
-	public R evaluate(double dt){//TODO: aanpassen voor previousStatement en dt!
+	public R evaluate(double[] dt){//TODO: aanpassen voor previousStatement en dt!
 		if(isDone())
 			return lastState.evaluate(dt);
 		else{
+			dt[0] -= 0.001d;
+			System.out.println("tijd eraf");
 			if(expressions.length==1){
 				if(action == null){
 					lastState = ((Value<R>)((G)expressions[0])).Copy();

@@ -8,6 +8,7 @@ import jumpingalien.program.internal.Expression;
 import jumpingalien.program.internal.Statement;
 import jumpingalien.program.internal.Type;
 import jumpingalien.program.internal.Value;
+import jumpingalien.program.statement.util.Action;
 import jumpingalien.program.statement.util.Category;
 import jumpingalien.program.util.ActionFor1;
 import jumpingalien.program.util.ActionFor2;
@@ -262,80 +263,80 @@ public class ProgramFactory implements IProgramFactory<Value<?>, Statement, Type
 			jumpingalien.part3.programs.IProgramFactory.SortDirection sortDirection,
 			Statement body, SourceLocation sourceLocation) {
 		// TODO Auto-generated method stub
-		return new Statement();
+		return new Statement(Action.WAIT);
 	}
 
 	@Override
 	public Statement createBreak(SourceLocation sourceLocation) {
 		// TODO Auto-generated method stub
-		return new Statement();
+		return new Statement(Category.BREAK);
 	}
 
 	@Override
 	public Statement createIf(Value<?> condition, Statement ifBody, Statement elseBody,
 			SourceLocation sourceLocation) {
 		// TODO Auto-generated method stub
-		return new Statement();
+		return new Statement(Category.IF);
 	}
 
 	@Override
 	public Statement createPrint(Value<?> value, SourceLocation sourceLocation) {
 		// TODO Auto-generated method stub
-		return new Statement();
+		return new Statement(Category.PRINT);
 	}
 
 	@Override
 	public Statement createStartRun(Value<?> direction, SourceLocation sourceLocation) {
 		// TODO Auto-generated method stub
-		return new Statement();
+		return new Statement(Action.STARTRUN);
 	}
 
 	@Override
 	public Statement createStopRun(Value<?> direction, SourceLocation sourceLocation) {
 		// TODO Auto-generated method stub
-		return new Statement();
+		return new Statement(Action.STOPRUN);
 	}
 
 	@Override
 	public Statement createStartJump(SourceLocation sourceLocation) {
 		// TODO Auto-generated method stub
-		return new Statement();
+		return new Statement(Action.STARTJUMP);
 	}
 
 	@Override
 	public Statement createStopJump(SourceLocation sourceLocation) {
 		// TODO Auto-generated method stub
-		return new Statement();
+		return new Statement(Action.STOPJUMP);
 	}
 
 	@Override
 	public Statement createStartDuck(SourceLocation sourceLocation) {
 		// TODO Auto-generated method stub
-		return new Statement();
+		return new Statement(Action.STARTDUCK);
 	}
 
 	@Override
 	public Statement createStopDuck(SourceLocation sourceLocation) {
 		// TODO Auto-generated method stub
-		return new Statement();
+		return new Statement(Action.STOPDUCK);
 	}
 
 	@Override
 	public Statement createWait(Value<?> duration, SourceLocation sourceLocation) {
 		// TODO Auto-generated method stub
-		return new Statement();
+		return new Statement(Action.WAIT);
 	}
 
 	@Override
 	public Statement createSkip(SourceLocation sourceLocation) {
 		// TODO Auto-generated method stub
-		return new Statement();
+		return new Statement(Action.WAIT);
 	}
 
 	@Override
 	public Statement createSequence(List<Statement> statements, SourceLocation sourceLocation) {
 		// TODO Auto-generated method stub
-		return new Statement();
+		return new Statement(Category.SEQUENCE);
 	}
 
 	@Override
@@ -364,6 +365,7 @@ public class ProgramFactory implements IProgramFactory<Value<?>, Statement, Type
 		Program program = new Program();
 		program.addAllGlobals(globalVariables);
 		//addStatements after they are created
+		program.addStatement(mainStatement);
 		return program;
 	}
 

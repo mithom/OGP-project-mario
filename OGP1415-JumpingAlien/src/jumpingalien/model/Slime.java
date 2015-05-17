@@ -52,14 +52,19 @@ public class Slime extends GameObject{
 	 * @Post The slime will be added to the given school
 	 * 			|new.getSchool()=school
 	 */
-	
 	public Slime(int x, int y, Sprite[] sprites,School school) throws PositionOutOfBoundsException{
-		super(x,y,sprites);
+		super(x,y,sprites,0,500,100);
 		setSchool(school);
 		actionTime = 0.0d;actionDuration = 0.0d;
 		direction = Direction.STALLED;
 	}
 	
+	public Slime(int x, int y, Sprite[] sprites,School school,Program program) throws PositionOutOfBoundsException{
+		super(x,y,sprites,0,500,100,program);
+		setSchool(school);
+		actionTime = 0.0d;actionDuration = 0.0d;
+		direction = Direction.STALLED;
+	}
 	/**
 	 * @param dt	|the time passed since the last frame.
 	 * @throws PositionOutOfBoundsExeption
@@ -109,60 +114,64 @@ public class Slime extends GameObject{
 				|if isInWater
 				|	then loseHp(2)
 	 */
-	
 	@Override
 	public void advanceTime(double dt)throws PositionOutOfBoundsException{
-		while(!isTerminated() && dt >0){
-			decideAction();
-			double smallDt = Math.min(calculateCorrectDt(dt),actionDuration-actionTime);
-			actionTime+=smallDt;
-			dt-= smallDt;
-			imunityTime= Math.max(0,imunityTime-smallDt);
-			Position oldPosition = getPosition();
-			setPositionY(moveVertical(smallDt));
-			setPositionX(moveHorizontal(smallDt));
-			if (this.overlapsWithWall()[0]==true && getVerticalVelocity()<0.0d){
-				this.setVerticalVelocity(0.0d);
-				groundState = GroundState.GROUNDED;
-				setPositionY(oldPosition.getPositions()[1]-0.01d);
-			}else{
-				if(this.overlapsWithWall()[0]==false){
-					groundState = GroundState.AIR;
+		if(getProgram() != null){
+			getProgram().executeTime(dt);//nog steeds collision detection nodig met dit!
+		}else
+		{
+			while(!isTerminated() && dt >0){
+				decideAction();
+				double smallDt = Math.min(calculateCorrectDt(dt),actionDuration-actionTime);
+				actionTime+=smallDt;
+				dt-= smallDt;
+				imunityTime= Math.max(0,imunityTime-smallDt);
+				Position oldPosition = getPosition();
+				setPositionY(moveVertical(smallDt));
+				setPositionX(moveHorizontal(smallDt));
+				if (this.overlapsWithWall()[0]==true && getVerticalVelocity()<0.0d){
+					this.setVerticalVelocity(0.0d);
+					groundState = GroundState.GROUNDED;
+					setPositionY(oldPosition.getPositions()[1]-0.01d);
+				}else{
+					if(this.overlapsWithWall()[0]==false){
+						groundState = GroundState.AIR;
+					}
 				}
-			}
-			if(this.overlapsWithWall()[1]==true && getHorizontalVelocity()<0){
-				this.setHorizontalVelocity(0.0d);
-				setPositionX(oldPosition.getPositions()[0]);
-			}
-			if( overlapsWithWall()[3]==true && getHorizontalVelocity()>0){
-				this.setHorizontalVelocity(0.0d);
-				setPositionX(oldPosition.getPositions()[0]);
-			}
-			animate(smallDt);
-			for(GameObject gameObject:getOverlappingGameObjects()){
-				if(gameObject instanceof Slime || gameObject instanceof Mazub || gameObject instanceof Shark){
+				if(this.overlapsWithWall()[1]==true && getHorizontalVelocity()<0){
+					this.setHorizontalVelocity(0.0d);
 					setPositionX(oldPosition.getPositions()[0]);
-					setPositionY(oldPosition.getPositions()[1]);
-				}//don't bounce with plants
-				EffectOnCollisionWith(gameObject);
-				gameObject.EffectOnCollisionWith(this);
-			}
-			if(isInLava()){
-				lastLavaHit -= smallDt;
-				if(lastLavaHit <= 0){
-					loseHp(50);
-					lastLavaHit = 0.2d;
 				}
-			}else
-				lastLavaHit=0.0d;
-			if(isInWater()){
-				lastWaterHit -= smallDt;
-				if(lastWaterHit <= 0){
-					loseHp(2);
-					lastWaterHit = 0.2d;
+				if( overlapsWithWall()[3]==true && getHorizontalVelocity()>0){
+					this.setHorizontalVelocity(0.0d);
+					setPositionX(oldPosition.getPositions()[0]);
 				}
-			}else{
-				lastWaterHit =0.2d;
+				animate(smallDt);
+				for(GameObject gameObject:getOverlappingGameObjects()){
+					if(gameObject instanceof Slime || gameObject instanceof Mazub || gameObject instanceof Shark){
+						setPositionX(oldPosition.getPositions()[0]);
+						setPositionY(oldPosition.getPositions()[1]);
+					}//don't bounce with plants
+					EffectOnCollisionWith(gameObject);
+					gameObject.EffectOnCollisionWith(this);
+				}
+				if(isInLava()){
+					lastLavaHit -= smallDt;
+					if(lastLavaHit <= 0){
+						loseHp(50);
+						lastLavaHit = 0.2d;
+					}
+				}else
+					lastLavaHit=0.0d;
+				if(isInWater()){
+					lastWaterHit -= smallDt;
+					if(lastWaterHit <= 0){
+						loseHp(2);
+						lastWaterHit = 0.2d;
+					}
+				}else{
+					lastWaterHit =0.2d;
+				}
 			}
 		}
 	}
@@ -538,7 +547,7 @@ public class Slime extends GameObject{
 	}*/
 	
 	public String toString(){
-		return "slime of( " + getSchool() + ") with hp: " + getNbHitPoints();
+		return "slime of( " + getSchool() + ") with hp: " + getNbHitPoints() + " ,using program: "+ (getProgram() != null);
 	}
 	
 	/**

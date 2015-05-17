@@ -31,13 +31,20 @@ public class Program {
 		return gameObject;
 	}
 	
-	private double executeNext(double dt){
-		return statement.executeNext(dt);
+	private void executeNext(double[] dt){
+		//System.out.println("tijd bij ingaan"+dt[0]);
+		statement.executeNext(dt);
+		//System.out.println("tijd bij uitgaan:"+dt[0]);
 	}
 	
 	public void executeTime(double dt){
-		while(dt>0){
-			dt = executeNext(dt);
+		double[] dt2 = new double[]{dt};
+		//System.out.println("begin program");
+		while(dt2[0]>0){
+			//System.out.println("tijd niet op");
+			//System.out.println(dt2[0]);
+			executeNext(dt2);
+			//System.out.println("tijd bij buitenkomen"+dt2[0]);
 		}
 	}
 	

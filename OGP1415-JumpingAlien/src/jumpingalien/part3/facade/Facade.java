@@ -41,22 +41,28 @@ public class Facade extends jumpingalien.part2.facade.Facade implements IFacadeP
 	@Override
 	public Plant createPlantWithProgram(int x, int y, Sprite[] sprites,
 			Program program) {
-		// TODO Auto-generated method stub
-		return createPlant(x, y, sprites);
+		try{return new Plant(x,y,sprites,program);}
+		catch(PositionOutOfBoundsException e){
+			throw new ModelException("invalid position");
+		}
 	}
 
 	@Override
 	public Shark createSharkWithProgram(int x, int y, Sprite[] sprites,
 			Program program) {
-		// TODO Auto-generated method stub
-		return createShark(x, y, sprites);
+		try{return new Shark(x,y,sprites,program);}
+		catch(PositionOutOfBoundsException e){
+			throw new ModelException("invalid position");
+		}
 	}
 
 	@Override
 	public Slime createSlimeWithProgram(int x, int y, Sprite[] sprites,
 			School school, Program program) {
-		// TODO Auto-generated method stub
-		return createSlime(x, y, sprites, school);
+		try{return new Slime(x,y,sprites,school,program);}
+		catch(PositionOutOfBoundsException e){
+			throw new ModelException("invalid position");
+		}
 	}
 
 	@Override

@@ -30,6 +30,12 @@ public class Statement {
 	public void setType(Type type) {
 		this.type = type;
 	}
+	
+	public void setDoneTrue(){
+		if(done==true)
+			System.out.println("done was al true");
+		done=true;
+	}
 
 	public void addConditiond(Value<?> expression){
 		if(getCategory()==Category.WHILE || getCategory()==Category.FOREACH || getCategory()==Category.IF){
@@ -49,6 +55,12 @@ public class Statement {
 	
 	public void addProgram(Program program){
 		this.program = program;
+		for(Statement statement:nextStatements)
+			if(statement!=null)
+				statement.addProgram(program);
+		for(Value<?> expression:expressions)
+			if(expression != null)
+				expression.addProgram(program);
 	}
 	
 	
@@ -57,7 +69,7 @@ public class Statement {
 		return program;
 	}
 	
-	public Statement(Category category){
+	public Statement(Category category){//TODO add checkers (niet null, acion of foreach)
 		this.setCategory(category);
 	}
 	
@@ -111,12 +123,11 @@ public class Statement {
 		return done;
 	}
 	
-	public double executeNext(double dt){//TODO only if action is if,foreach or while, 2 next statements, 2cnd used if:end of while, after last of kind, and else clause.
-		if(dt<=0)
-			return 0;
+	public void executeNext(double[] dt){//TODO only if action is if,foreach or while, 2 next statements, 2cnd used if:end of while, after last of kind, and else clause.
+		if(dt[0]<=0)
+			return;
 		if(!isDone()){
 			execute(dt);
-			dt-= 0.001;
 		}
 		int nextNb;
 		if(getCategory()==Category.WHILE || getCategory()==Category.FOREACH || getCategory()==Category.IF)
@@ -125,10 +136,11 @@ public class Statement {
 			nextNb=0;
 		if(nextStatements[nextNb] != null){
 			nextStatements[nextNb].addPreviousStatement(this);
-			return nextStatements[nextNb].executeNext(dt);
+			nextStatements[nextNb].executeNext(dt);
+			return;
 		}
 		reset(dt);
-		return dt;
+		//return dt;
 	}
 	
 	public void addPreviousStatement(Statement statement){
@@ -139,15 +151,19 @@ public class Statement {
 		previousExpression = expression;
 	}*/
 	
-	private void execute(double dt){
+	private void execute(double[] dt){
+		//System.out.println(dt[0]);
+		//System.out.println(category);
 		category.execute(this, dt);
 	}
 	
-	void reset(double dt){
+	void reset(double[] dt){
+		//System.out.println("resetting");
 		if(isDone()){
 			done = false;
 			for(Value<?> expression:expressions)
-				expression.reset();
+				if(expression != null)
+					expression.reset();
 			if(previousStatement != null){
 				previousStatement.reset(dt);
 				previousStatement=null;
@@ -155,11 +171,20 @@ public class Statement {
 					program.resetGlobals();
 			}
 		}else{
-			if((getCategory()==Category.WHILE || getCategory()==Category.FOREACH || getCategory()==Category.IF))
+			if((getCategory()==Category.WHILE || getCategory()==Category.FOREACH || getCategory()==Category.IF)){
+				//System.out.println("opnieuw de while in");
 				for(Value<?> expression:expressions)
-					expression.reset();
-			else
+					if(expression != null)
+						expression.reset();
+			}else
+			{
 				System.out.println("had nooit mogen gebeuren in reset.");
+				System.out.println(category.toString());
+				if(category==Category.ACTION)
+					System.out.println(action.toString());
+				if(category==Category.FOREACH)
+					System.out.println(kind.toString());
+			}
 			//else: gaat verder in while/foreach/if lus (zou anders al op isDone hebben gestaan)
 		}
 	}

@@ -37,6 +37,12 @@ public class Plant extends GameObject{
 		direction = Direction.RIGHT;
 	}
 	
+	public Plant(int x, int y, Sprite[] sprites,Program program) throws PositionOutOfBoundsException{
+		super(x,y,sprites,0,1,1,program);
+		actionTimer=0.0d;
+		direction = Direction.RIGHT;
+	}
+	
 	/**
 	 * 
 	 * @throws PositionOutOfBoundsException
