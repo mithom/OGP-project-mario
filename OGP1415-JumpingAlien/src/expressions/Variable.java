@@ -1,7 +1,9 @@
 package expressions;
 
+import Program.Program;
 import jumpingalien.exception.IllegalSizeException;
 import jumpingalien.part3.programs.SourceLocation;
+import jumpingalien.program.internal.Type;
 
 public class Variable extends Expression {
 	
@@ -24,7 +26,19 @@ public class Variable extends Expression {
 
 	@Override
 	public Object evaluate() {
-		return null;
+		if (getType() == Type.type.DOUBLE){
+			return (Object)(this.getProgram().getAllDoubles().get(getName()));
+		}
+		if (getType() == Type.type.OBJECT){
+			return (Object)(this.getProgram().getAllObjects().get(getName()));
+		}
+		if (getType() == Type.type.DIRECTION){
+			return (Object)(this.getProgram().getAllDirections().get(getName()));
+		}
+		if (getType() == Type.type.BOOL){
+			return (Object)(this.getProgram().getAllBooleans().get(getName()));
+		}
+		return "error: variable isn't a supported type";
 	}
 	
 	
