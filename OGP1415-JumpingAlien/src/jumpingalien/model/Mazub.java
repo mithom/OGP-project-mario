@@ -334,15 +334,20 @@ public class Mazub extends GameObject{
 		//dirsign is used in here to compensate for the current direction of the mazub.
 		if(newSpeed*dirSign > this.getMaxHorizontalVelocity()){//overgangsverschijnsel (1keer bij berijken max speed)
 			if(getHorizontalAcceleration()==0)throw new IllegalMovementException("impossible to divide by zero");
-			double accDt = (this.getMaxHorizontalVelocity()- this.getHorizontalVelocity()*dirSign)/(getHorizontalAcceleration()*dirSign);
+			double accDt = Math.max(0,(this.getMaxHorizontalVelocity()- this.getHorizontalVelocity()*dirSign)/(getHorizontalAcceleration()*dirSign));
 			s= travelledHorizontalDistance(accDt)+getMaxHorizontalVelocity()*(dt-accDt)*dirSign;
+			System.out.println(travelledHorizontalDistance(accDt));
+			System.out.println(getMaxHorizontalVelocity()*(dt-accDt)*dirSign);
+			System.out.println(dt+","+accDt);
 			this.setHorizontalVelocity(this.getMaxHorizontalVelocity()*dirSign);
 		}
 		else{
 			s= travelledHorizontalDistance(dt);
 			this.setHorizontalVelocity(newSpeed);
 		}
-		if(((getPositionX()+s <=0d || s<0)&& dirSign>0 )|| (s>0 && dirSign<0)){
+		if(((getPositionX()+s <=0d || s<0)&& dirSign>0 )|| (s>0 && dirSign<0)){//TODO: bugt wanneer je bukt tijdens het lopen-> komt doordat om een of andere reden de verplaatsing niet klopt als je bukt
+			System.out.println(s +","+ dirSign+","+getPositionX());
+			System.out.println(dt+","+newSpeed);
 			throw new IllegalMovementException("positionX overflowed");
 		}
 		//correct position if out of window
