@@ -345,7 +345,7 @@ public class Mazub extends GameObject{
 			s= travelledHorizontalDistance(dt);
 			this.setHorizontalVelocity(newSpeed);
 		}
-		if(((getPositionX()+s <=0d || s<0)&& dirSign>0 )|| (s>0 && dirSign<0)){//TODO: bugt wanneer je bukt tijdens het lopen-> komt doordat om een of andere reden de verplaatsing niet klopt als je bukt
+		if(((getPositionX()+s <=0d || s<0)&& dirSign>0 )|| (s>0 && dirSign<0)){
 			System.out.println(s +","+ dirSign+","+getPositionX());
 			System.out.println(dt+","+newSpeed);
 			throw new IllegalMovementException("positionX overflowed");
