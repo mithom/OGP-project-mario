@@ -60,16 +60,14 @@ public enum ActionFor1 {
 		GameObject closestGameObject;
 		
 		public Value<?> evaluate(Value<?> expression, double[] dt){
-			if ( ((Direction)expression.evaluate(dt)) == Direction.LEFT){
+			switch((Direction)expression.evaluate(dt)){
+			case LEFT:
 				closestGameObject = ClosestLeft(expression);
-			}
-			if (((Direction)expression.evaluate(dt)) == Direction.RIGHT){
+			case RIGHT:
 				closestGameObject = ClosestRight(expression);
-			}
-			if (((Direction)expression.evaluate(dt)) == Direction.UP){
+			case UP:
 				closestGameObject = ClosestUp(expression);
-			}
-			if (((Direction)expression.evaluate(dt)) == Direction.DOWN){
+			case DOWN:
 				closestGameObject = ClosestDown(expression);
 			}
 			return new Value<GameObject>(closestGameObject);
