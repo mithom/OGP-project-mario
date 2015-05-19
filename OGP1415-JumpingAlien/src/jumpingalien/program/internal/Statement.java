@@ -10,7 +10,7 @@ import jumpingalien.program.statement.util.Kind;
 public class Statement {
 	private Program program;
 	private boolean done;
-	private final Statement[] nextStatements = new Statement[2];
+	private final Statement[] nextStatements = new Statement[3];
 	private final Value<?>[] expressions = new Value<?>[3]; 
 	//private final Value<?>[] nextExpression = new Expression[2];
 	private Statement previousStatement;
@@ -27,6 +27,7 @@ public class Statement {
 	/*private SortCriteria sortCriteria;
 	private ValidCriteria validCriteria;*/
 	private boolean sortAscending = true;//false is sorting descending
+	private boolean resetOnEnd = true;
 
 	/*interface SortCriteria {
         Double calculateValue(Value<Double> expression);   
@@ -51,29 +52,44 @@ public class Statement {
 	}
 
 	public void addConditiond(Value<?> expression){
-		if(getCategory()==Category.WHILE || getCategory()==Category.FOREACH || getCategory()==Category.IF){
+		if(getCategory()==Category.WHILE || getCategory()==Category.FOREACH || getCategory()==Category.IF || getCategory() == Category.ASSIGNMENT){
 			if(expressions[0]==null)
 				expressions[0] = expression;
 			else{
-				if(getCategory()==Category.FOREACH){
+				if(getCategory()==Category.FOREACH|| getCategory() == Category.ASSIGNMENT){
 					if(expressions[1]==null)
 						expressions[1]=expression;
-					else
-						System.out.println("error, binnenste addCond");
-				}else
+					else{
+						if(expressions[2]==null && getCategory()==Category.FOREACH)
+							expressions[2] = expression;
+						else
+							System.out.println("error, binnenste addCond");
+					}
+				}else{
 					System.out.println("error 2de if addCond");
+					System.out.println(category);
+				}
 			}
-		}
+		}else
+			System.out.println("euhm, error in buitenste idd addCondition");
 	}
 	
 	public void addProgram(Program program){
-		this.program = program;
-		for(Statement statement:nextStatements)
-			if(statement!=null)
-				statement.addProgram(program);
-		for(Value<?> expression:expressions)
-			if(expression != null)
-				expression.addProgram(program);
+		if(this.program == null){
+			this.program = program;
+			for(Statement statement:nextStatements)
+				if(statement!=null){
+					statement.addProgram(program);
+				}
+			for(Value<?> expression:expressions){
+				if(expression != null)
+					expression.addProgram(program);
+			}
+		}else{
+			//System.out.println(this.program);
+			System.out.println("oops had al een program");
+			//System.out.println(category +","+ expressions[0].evaluate(new double[]{100}));
+		}		
 	}
 	
 	
@@ -115,8 +131,6 @@ public class Statement {
 		return sortAscending;
 	}
 	
-	public Statement(){}//TODO: remove when ready
-	
 	public void addNextStatement(Statement statement){//TODO: add checkers
 		/*if(firstNext==null){
 			firstNext = next.STATEMENT;
@@ -133,7 +147,10 @@ public class Statement {
 			if(nextStatements[1]==null){
 				nextStatements[1] = statement;
 			}else{
-				System.out.println("error, zou niet mogen voorkomen");
+				if(nextStatements[2]==null){
+					nextStatements[2] = statement;
+				}else
+					System.out.println("error, zou niet mogen voorkomen");
 			}
 		}
 	}
@@ -162,17 +179,26 @@ public class Statement {
 			execute(dt);
 		}
 		int nextNb;
-		if(getCategory()==Category.WHILE || getCategory()==Category.FOREACH || getCategory()==Category.IF)
+		if(getCategory()==Category.WHILE || getCategory()==Category.FOREACH)
 			nextNb=1;
-		else
-			nextNb=0;
+		else{
+			if(getCategory()==Category.IF)
+				nextNb = 2;
+			else
+				nextNb=0;
+		}
 		if(nextStatements[nextNb] != null){
 			nextStatements[nextNb].addPreviousStatement(this);
 			nextStatements[nextNb].executeNext(dt);
 			return;
 		}
-		reset(dt);
+		if(resetOnEnd)
+			reset(dt);
 		//return dt;
+	}
+	
+	public void noReset(){
+		resetOnEnd = false;
 	}
 	
 	public void addPreviousStatement(Statement statement){

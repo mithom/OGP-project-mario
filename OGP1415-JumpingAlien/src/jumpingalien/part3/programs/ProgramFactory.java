@@ -262,7 +262,6 @@ public class ProgramFactory implements IProgramFactory<Value<?>, Statement, Type
 			Value<?> sort,
 			jumpingalien.part3.programs.IProgramFactory.SortDirection sortDirection,
 			Statement body, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
 		if(where == null)
 			where = new Value<Boolean>(true);
 		if(sort == null){
@@ -282,21 +281,24 @@ public class ProgramFactory implements IProgramFactory<Value<?>, Statement, Type
 
 	@Override
 	public Statement createBreak(SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
 		return new Statement(Category.BREAK);
 	}
 
 	@Override
 	public Statement createIf(Value<?> condition, Statement ifBody, Statement elseBody,
 			SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return new Statement(Category.IF);
+		Statement ifStatement = new Statement(Category.IF);
+		ifStatement.addConditiond(condition);
+		ifStatement.addNextStatement(ifStatement);
+		ifStatement.addNextStatement(elseBody);
+		return ifStatement;
 	}
 
 	@Override
 	public Statement createPrint(Value<?> value, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return new Statement(Category.PRINT);
+		Statement printStatement = new Statement(Category.PRINT);
+		printStatement.addConditiond(value);
+		return printStatement;
 	}
 
 	@Override
@@ -349,8 +351,9 @@ public class ProgramFactory implements IProgramFactory<Value<?>, Statement, Type
 
 	@Override
 	public Statement createSequence(List<Statement> statements, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return new Statement(Category.SEQUENCE);
+		for(int i =0;i<statements.size()-1;i++)
+			statements.get(i).addNextStatement(statements.get(i+1));
+		return statements.get(0);
 	}
 
 	@Override
@@ -380,6 +383,7 @@ public class ProgramFactory implements IProgramFactory<Value<?>, Statement, Type
 		program.addAllGlobals(globalVariables);
 		//addStatements after they are created
 		program.addStatement(mainStatement);
+		//mainStatement.addProgram(program);
 		return program;
 	}
 

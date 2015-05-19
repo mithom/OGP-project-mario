@@ -110,6 +110,7 @@ public abstract class GameObject {//TODO: make TileObject
 		lastWaterHit =0.2d;
 		lastLavaHit=0.0d;
 		this.program=program;
+		program.setGameObject(this);
 	};
 	
 	/**

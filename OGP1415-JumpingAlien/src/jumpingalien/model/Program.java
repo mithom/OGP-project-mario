@@ -109,4 +109,18 @@ public class Program {
 	public void setDouble(String key,Double value) {
 		this.doubles.put(key, value);
 	}
+	
+	@Override
+	public String toString(){
+		String str = "globals... ";
+		for(String bool:booleans.keySet())
+			str+=bool+": " + booleans.get(bool);
+		for(String bool:doubles.keySet())
+			str+=bool+": " +doubles.get(bool);
+		for(String bool:Objects.keySet())
+			str+=bool+": " +Objects.get(bool);
+		for(String bool:directions.keySet())
+			str+=bool+": " +directions.get(bool);
+		return str;
+	}
 }

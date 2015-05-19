@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 
 import jumpingalien.model.Mazub;
+import jumpingalien.model.Program;
 import jumpingalien.model.Program.Direction;
 import jumpingalien.model.World;
 import jumpingalien.model.gameObject.GameObject;
@@ -15,16 +16,16 @@ public enum Category {
 	WHILE{
 		public void execute(Statement statement, double[] dt){
 			//System.out.println("begin van while");
-			while((boolean)statement.getExpressions()[0].evaluate(dt) && dt[0]>0){
+			while((boolean)statement.getExpressions()[0].evaluate(dt) && dt[0]>0 && ! statement.isDone()){
 				statement.getNextStatements()[0].addPreviousStatement(statement);
 				statement.getNextStatements()[0].executeNext(dt);
 			}
 			if(dt[0]>0){
 				statement.setDoneTrue();
 				//System.out.println("uit while, niet door tijd");
-				statement.getNextStatements()[1].addPreviousStatement(statement);
+				/*statement.getNextStatements()[1].addPreviousStatement(statement);//dit gebeurt automatisch in executeNext!
 				statement.getNextStatements()[1].executeNext(dt);
-				
+				*/
 			}/*else{
 				System.out.println("uit de while door tijd");
 			}*/
@@ -38,8 +39,9 @@ public enum Category {
 				statement.getProgram().setDirection((String)statement.getExpressions()[0].evaluate(dt),(Direction)statement.getExpressions()[1].evaluate(dt));
 			if(statement.getType().getType()==Type.type.OBJECT)
 				statement.getProgram().setObject((String)statement.getExpressions()[0].evaluate(dt),(GameObject)statement.getExpressions()[1].evaluate(dt));
-			if(statement.getType().getType()==Type.type.DOUBLE)
+			if(statement.getType().getType()==Type.type.DOUBLE){
 				statement.getProgram().setDouble((String)statement.getExpressions()[0].evaluate(dt),(Double)statement.getExpressions()[1].evaluate(dt));
+			}
 			statement.setDoneTrue();
 			dt[0]-=0.001d;
 			
@@ -85,6 +87,8 @@ public enum Category {
 					assignment.addConditiond(new Value<String>(variable));
 					assignment.addConditiond(new Value<GameObject>(a));
 					assignment.setType(type);
+					assignment.noReset();
+					assignment.addProgram(statement.getProgram());
 					assignment.executeNext(new double[]{Double.POSITIVE_INFINITY});
 					double valueA = (double)statement.getExpressions()[2].evaluate(new double[]{Double.POSITIVE_INFINITY});
 					
@@ -93,6 +97,8 @@ public enum Category {
 					assignment.addConditiond(new Value<String>(variable));
 					assignment.addConditiond(new Value<GameObject>(b));
 					assignment.setType(type);
+					assignment.noReset();
+					assignment.addProgram(statement.getProgram());
 					assignment.executeNext(new double[]{Double.POSITIVE_INFINITY});
 					double valueB = (double)statement.getExpressions()[2].evaluate(new double[]{Double.POSITIVE_INFINITY});
 					if(valueA>valueB)
@@ -104,12 +110,14 @@ public enum Category {
 			});
 			dt[0]-=0.001d;
 			int i = 0;
-			while(i< gameObjects.size() && dt[0]>0.0d){
+			while(i< gameObjects.size() && dt[0]>0.0d && ! statement.isDone()){
+				statement.getNextStatements()[0].addPreviousStatement(statement);
 				statement.getNextStatements()[0].executeNext(dt);
 				if(dt[0]>0)
 					i++;
 			}
-			statement.setDoneTrue();
+			if(dt[0]>0)
+				statement.setDoneTrue();
 			
 		};
 	},
@@ -120,34 +128,41 @@ public enum Category {
 			Statement prev = statement.getPreviousStatement();
 			while(prev.getCategory() != Category.WHILE || prev.getCategory() != Category.FOREACH)
 				prev = prev.getPreviousStatement();
-			prev.setDoneTrue();
+			prev.setDoneTrue();//TODO reset
 			prev.executeNext(dt);
 		};
 	},
 	IF{
 		public void execute(Statement statement, double[] dt){
-			statement.setDoneTrue();
-			dt[0]-=0.001d;
+			if((boolean)statement.getExpressions()[0].evaluate(dt) && dt[0]>0){
+				statement.setDoneTrue();
+				statement.getNextStatements()[0].addPreviousStatement(statement);
+				statement.getNextStatements()[0].executeNext(dt);
+			}else{
+				if(dt[0]>0)
+					statement.setDoneTrue();
+				if(statement.getNextStatements()[1] != null)
+					statement.getNextStatements()[1].executeNext(dt);
+			}
 		};
 	},
 	PRINT{
 		public void execute(Statement statement, double[] dt){
 			statement.setDoneTrue();
+			System.out.println(statement.getExpressions()[0].evaluate(dt));
 			dt[0]-=0.001d;
 		};
 	},
 	ACTION{
 		public void execute(Statement statement, double[] dt){
 			statement.getAction().execute(statement);
-			statement.setDoneTrue();//TODO: in action laten setten
-			dt[0]-=0.001d;
 		};
-	},
+	}/*,
 	SEQUENCE{
 		public void execute(Statement statement, double[] dt){
 			statement.setDoneTrue();
 			dt[0]-=0.001d;
 		};
-	};
+	}*/;
 	public abstract void execute(Statement statement, double[] dt); 
 }

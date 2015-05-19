@@ -47,7 +47,7 @@ public class Expression<R,G extends Value<?>> extends Value<R> {
 			return lastState.evaluate(dt);
 		else{
 			dt[0] -= 0.001d;
-			System.out.println("tijd eraf");
+			//System.out.println("tijd eraf");
 			if(expressions.length==1){
 				if(action == null){
 					lastState = ((Value<R>)((G)expressions[0])).Copy();
@@ -73,7 +73,7 @@ public class Expression<R,G extends Value<?>> extends Value<R> {
 	public void reset(){
 		setDone(false);
 		for(Object expressionObject:expressions){
-			Expression<R, Value<?>> expression= (Expression<R, Value<?>>)expressionObject;
+			Value<?> expression= (Value<?>)expressionObject;
 			expression.setDone(false);
 		}
 	}
