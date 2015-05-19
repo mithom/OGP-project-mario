@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import jumpingalien.exception.IllegalSizeException;
-import jumpingalien.model.World;
 import jumpingalien.model.gameObject.GameObject;
 import jumpingalien.model.gameObject.TileObject;
 import jumpingalien.model.Program.Direction;
@@ -155,14 +154,12 @@ public enum ActionFor1 {
 	}
 
 	},
-	//TODO: controleren of dit direction MOET zijn, of ook ander object, en in richting van dat object
 	ISDEAD{
 		public Value<?> evaluate(Value<?> expression, double[] dt){
 			return new Value<Boolean>(((GameObject)expression.evaluate(dt)).isDead());
 		}
 	},
-	//TODO: ontbreekt er gene van de is<...> ?? terrain?
-	ISPASSABLE{//TODO: implement this function
+	ISPASSABLE{
 		public Value<?> evaluate(Value<?> expression, double[] dt){
 			return new Value<Boolean>(((TileObject)expression.evaluate(dt)).isPassable());
 		}
