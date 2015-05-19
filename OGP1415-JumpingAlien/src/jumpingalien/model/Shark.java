@@ -133,11 +133,12 @@ public class Shark extends GameObject{
 	@Override
 	public void advanceTime(double dt) throws PositionOutOfBoundsException, NullPointerException, IllegalSizeException{
 		while(!isTerminated() && dt >0){
-			if(actionTime == actionDuration){
-				decideAction();
-			}
-			
-			double smallDt = Math.min(calculateCorrectDt(dt),actionDuration-actionTime);
+			decideAction();
+			double smallDt;
+			if(getProgram()==null)
+				smallDt = Math.min(calculateCorrectDt(dt),actionDuration-actionTime);
+			else
+				smallDt= Math.min(calculateCorrectDt(dt), 0.001d);
 			actionTime+=smallDt;
 			dt-= smallDt;
 			imunityTime = Math.max(0, imunityTime - smallDt);
@@ -235,40 +236,49 @@ public class Shark extends GameObject{
 				|	break;}
 	 */
 	private void decideAction(){
-		if(randomAcceleration==0){
-			endJump();
+		if(getProgram() != null){
+			if(actionTime>0){
+				//actionTime = getProgram().executeTime(((double)((int)(actionTime*1000)))/1000.0d);
+				getProgram().executeTime(0.01d);
+			}
+		}else{
+			if(actionTime == actionDuration){
+				if(randomAcceleration==0){
+					endJump();
+				}
+				endMove();
+				Random rand = new Random();
+				actionDuration = rand.nextDouble()*3.0d+1.0d;
+				actionTime = 0.0d;
+				int nextAction;
+				if (actionNb > (lastJumpActionNb+4) && (isBottomInWater()==true || this.overlapsWithWall()[0]==true)){
+					 nextAction = rand.nextInt(4);
+				}
+				else
+					nextAction = rand.nextInt(2);
+				
+				switch(nextAction){
+				case 0:
+					startMove(Direction.RIGHT, true);
+					break;
+				case 1:
+					startMove(Direction.LEFT, true);
+					break;
+				case 2:
+					startMove(Direction.RIGHT, false);
+					startJump();
+					break;
+				case 3:
+					startMove(Direction.LEFT, false);
+					startJump();
+					break;
+				default:
+					System.err.println("unsupported action");
+					break;
+				}
+				actionNb += 1 ;
+			}
 		}
-		endMove();
-		Random rand = new Random();
-		actionDuration = rand.nextDouble()*3.0d+1.0d;
-		actionTime = 0.0d;
-		int nextAction;
-		if (actionNb > (lastJumpActionNb+4) && (isBottomInWater()==true || this.overlapsWithWall()[0]==true)){
-			 nextAction = rand.nextInt(4);
-		}
-		else
-			nextAction = rand.nextInt(2);
-		
-		switch(nextAction){
-		case 0:
-			startMove(Direction.RIGHT, true);
-			break;
-		case 1:
-			startMove(Direction.LEFT, true);
-			break;
-		case 2:
-			startMove(Direction.RIGHT, false);
-			startJump();
-			break;
-		case 3:
-			startMove(Direction.LEFT, false);
-			startJump();
-			break;
-		default:
-			System.err.println("unsupported action");
-			break;
-		}
-		actionNb += 1 ;
 	}
 	
 	/**
@@ -630,7 +640,7 @@ public class Shark extends GameObject{
 	
 	@Override
 	public String toString(){
-		return "hp: " + getNbHitPoints(); 
+		return "hp: " + getNbHitPoints() + " using program: " + (getProgram()!=null); 
 	}
 	
 	/**
@@ -664,13 +674,13 @@ public class Shark extends GameObject{
 
 	@Override
 	public void startMove(Direction direction) {
-		// TODO Auto-generated method stub
+		startMove(direction, true);
 		
 	}
 
 	@Override
 	public void endMove(Direction direction) {
-		// TODO Auto-generated method stub
+		endMove();//TODO: make direction specific for program!
 		
 	}
 }
