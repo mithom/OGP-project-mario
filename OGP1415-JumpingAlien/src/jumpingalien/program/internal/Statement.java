@@ -1,6 +1,8 @@
 package jumpingalien.program.internal;
 
 import jumpingalien.model.Program;
+import jumpingalien.model.gameObject.GameObject;
+import jumpingalien.part3.programs.IProgramFactory.SortDirection;
 import jumpingalien.program.statement.util.Action;
 import jumpingalien.program.statement.util.Category;
 import jumpingalien.program.statement.util.Kind;
@@ -9,7 +11,7 @@ public class Statement {
 	private Program program;
 	private boolean done;
 	private final Statement[] nextStatements = new Statement[2];
-	private final Value<?>[] expressions = new Value<?>[2]; 
+	private final Value<?>[] expressions = new Value<?>[3]; 
 	//private final Value<?>[] nextExpression = new Expression[2];
 	private Statement previousStatement;
 	//private Value<?> previousExpression;
@@ -22,6 +24,17 @@ public class Statement {
 	private Action action;
 	private Kind kind;
 	private Type type;
+	/*private SortCriteria sortCriteria;
+	private ValidCriteria validCriteria;*/
+	private boolean sortAscending = true;//false is sorting descending
+
+	/*interface SortCriteria {
+        Double calculateValue(Value<Double> expression);   
+    }
+	
+	interface ValidCriteria{
+		boolean isValidGameObject(Value<Boolean> expression);
+	}*/
 	
 	public Type getType() {
 		return type;
@@ -78,9 +91,28 @@ public class Statement {
 		this.setAction(action);
 	}
 	
-	public Statement(Kind kind){//when foreach
-		this.setKind(kind);
-		this.setCategory(Category.FOREACH);
+	/*public Statement(Kind kind,SortCriteria sortCriteria,ValidCriteria validCriteria){//when foreach
+		setKind(kind);
+		setCategory(Category.FOREACH);
+		setSortCriteria(sortCriteria);
+		setValidCriteria(validCriteria);
+	}*/
+	
+	public Statement(Kind kind){
+		setKind(kind);
+		setCategory(Category.FOREACH);
+	}
+	
+	public void sortAscending(){
+		sortAscending=true;
+	}
+	
+	public void sortDescending(){
+		sortAscending=false;
+	}
+	
+	public boolean getSortAscending(){
+		return sortAscending;
 	}
 	
 	public Statement(){}//TODO: remove when ready
@@ -226,5 +258,25 @@ public class Statement {
 	public Statement[] getNextStatements(){
 		return nextStatements.clone();
 	}
+	
+	public Statement getPreviousStatement(){
+		return previousStatement;
+	}
+	/*
+	public SortCriteria getSortCriteria() {
+		return sortCriteria;
+	}
+
+	public void setSortCriteria(SortCriteria sortCriteria) {
+		this.sortCriteria = sortCriteria;
+	}
+
+	public ValidCriteria getValidCriteria() {
+		return validCriteria;
+	}
+
+	public void setValidCriteria(ValidCriteria validCriteria) {
+		this.validCriteria = validCriteria;
+	}*/
 
 }

@@ -566,4 +566,8 @@ public class World {
 			schools.remove(school);
 		}
 	}
+	
+	public Mazub getMazub(){
+		return mazub;
+	}
 }

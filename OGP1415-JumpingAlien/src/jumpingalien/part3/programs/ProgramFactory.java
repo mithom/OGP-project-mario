@@ -263,7 +263,21 @@ public class ProgramFactory implements IProgramFactory<Value<?>, Statement, Type
 			jumpingalien.part3.programs.IProgramFactory.SortDirection sortDirection,
 			Statement body, SourceLocation sourceLocation) {
 		// TODO Auto-generated method stub
-		return new Statement(Action.WAIT);
+		if(where == null)
+			where = new Value<Boolean>(true);
+		if(sort == null){
+			sort = new Value<Double>(0.0d);
+		}
+		Statement foreachStatement = new Statement(jumpingalien.program.statement.util.Kind.getCorrespondingKind(variableKind));
+		foreachStatement.addConditiond(new Value<String>(variableName));
+		foreachStatement.addConditiond(where);
+		foreachStatement.addConditiond(sort);
+		if(sortDirection==SortDirection.DESCENDING)
+			foreachStatement.sortDescending();
+		if(sortDirection==SortDirection.ASCENDING)
+			foreachStatement.sortAscending();
+		foreachStatement.addNextStatement(body);
+		return foreachStatement;
 	}
 
 	@Override

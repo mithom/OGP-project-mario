@@ -1,13 +1,19 @@
 package jumpingalien.program.statement.util;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+
+import jumpingalien.model.Mazub;
 import jumpingalien.model.Program.Direction;
+import jumpingalien.model.World;
 import jumpingalien.model.gameObject.GameObject;
 import jumpingalien.program.internal.Statement;
 import jumpingalien.program.internal.Type;
+import jumpingalien.program.internal.Value;
 
 public enum Category {
 	WHILE{
-		public void execute(Statement statement, double[] dt){//TODO onneindige loop atm doordat dt nooit verlaagt
+		public void execute(Statement statement, double[] dt){
 			//System.out.println("begin van while");
 			while((boolean)statement.getExpressions()[0].evaluate(dt) && dt[0]>0){
 				statement.getNextStatements()[0].addPreviousStatement(statement);
@@ -43,15 +49,79 @@ public enum Category {
 		};
 	},
 	FOREACH{
-		public void execute(Statement statement, double[] dt){
-			statement.setDoneTrue();
+		public void execute(Statement statement, double[] dt){//TODO moet met lambda fucnties
+			Kind kind = statement.getKind();
+			Type type = statement.getType();
+			String variable = (String)statement.getExpressions()[0].evaluate(new double[]{Double.POSITIVE_INFINITY});
+			World world = statement.getProgram().getGameObject().getWorld();
+			ArrayList<? extends GameObject> gameObjects;
+			switch(kind){
+			case MAZUB:
+				ArrayList<Mazub> temp = new ArrayList<Mazub>();
+				temp.add(world.getMazub());
+				gameObjects = temp;
+			case BUZAM:
+				//TODO: need to implement buzam first
+				gameObjects = new ArrayList<GameObject>();
+			case SLIME:
+				gameObjects = world.getSlimes();
+			case SHARK:
+				gameObjects = world.getSharks();
+			case PLANT:
+				gameObjects = world.getPlants();
+			case TERRAIN:
+				//TODO need to implement terrain first
+				gameObjects = new ArrayList<GameObject>();
+			case ANY:
+				gameObjects = world.getAllGameObjects();//TODO terrain has to be in here too!!!!!!
+			default:
+				gameObjects = world.getAllGameObjects();//TODO terrain has to be in here too!!!!!!
+			}
+			gameObjects.removeIf(p -> !(Boolean)statement.getExpressions()[1].evaluate(new double[]{Double.POSITIVE_INFINITY}));
+			gameObjects.sort(new Comparator<GameObject>() {
+				public int compare(GameObject a,GameObject b){
+					statement.getExpressions()[1].reset();
+					Statement assignment = new Statement(ASSIGNMENT);
+					assignment.addConditiond(new Value<String>(variable));
+					assignment.addConditiond(new Value<GameObject>(a));
+					assignment.setType(type);
+					assignment.executeNext(new double[]{Double.POSITIVE_INFINITY});
+					double valueA = (double)statement.getExpressions()[2].evaluate(new double[]{Double.POSITIVE_INFINITY});
+					
+					statement.getExpressions()[1].reset();
+					assignment = new Statement(ASSIGNMENT);
+					assignment.addConditiond(new Value<String>(variable));
+					assignment.addConditiond(new Value<GameObject>(b));
+					assignment.setType(type);
+					assignment.executeNext(new double[]{Double.POSITIVE_INFINITY});
+					double valueB = (double)statement.getExpressions()[2].evaluate(new double[]{Double.POSITIVE_INFINITY});
+					if(valueA>valueB)
+						return 1;
+					if(valueB>valueA)
+						return -1;
+					return 0;
+				}
+			});
 			dt[0]-=0.001d;
+			int i = 0;
+			while(i< gameObjects.size() && dt[0]>0.0d){
+				statement.getNextStatements()[0].executeNext(dt);
+				if(dt[0]>0)
+					i++;
+			}
+			statement.setDoneTrue();
+			
 		};
 	},
 	BREAK{
 		public void execute(Statement statement, double[] dt){
 			statement.setDoneTrue();
 			dt[0]-=0.001d;
+			Statement prev = statement.getPreviousStatement();
+			while(prev.getCategory() != Category.WHILE || prev.getCategory() != Category.FOREACH)
+				prev = prev.getPreviousStatement();
+			prev.setDoneTrue();
+			prev.executeNext(dt);
 		};
 	},
 	IF{
