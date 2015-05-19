@@ -165,7 +165,7 @@ public class Statement {
 		if(dt[0]<=0)
 			return;
 		if(!isDone()){
-			System.out.println("category: "+category);
+			//System.out.println("category: "+category);
 			execute(dt);
 		}
 		int nextNb;

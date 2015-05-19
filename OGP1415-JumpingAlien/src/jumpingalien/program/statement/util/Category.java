@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 
 import jumpingalien.model.Mazub;
-import jumpingalien.model.Program;
 import jumpingalien.model.Program.Direction;
 import jumpingalien.model.World;
 import jumpingalien.model.gameObject.GameObject;
@@ -156,7 +155,7 @@ public enum Category {
 	ACTION{
 		public void execute(Statement statement, double[] dt){
 			statement.getAction().execute(statement,dt);
-			System.out.println("action: "+statement.getAction());
+			//System.out.println("action: "+statement.getAction());
 		};
 	}/*,
 	SEQUENCE{
