@@ -8,10 +8,10 @@ import jumpingalien.exception.PositionOutOfBoundsException;
 import jumpingalien.model.World;
 import jumpingalien.util.Sprite;
 
-public class TyleObject extends GameObject {
+public class TileObject extends GameObject {
 	private GeologicalFeature geologicalFeature;
 
-	protected TyleObject(int pixelLeftX, int pixelBottomY,GeologicalFeature geologicalFeature)
+	protected TileObject(int pixelLeftX, int pixelBottomY,GeologicalFeature geologicalFeature)
 			throws PositionOutOfBoundsException {
 		super(pixelLeftX, pixelBottomY, new Sprite[]{});
 		this.geologicalFeature = geologicalFeature;
@@ -40,4 +40,32 @@ public class TyleObject extends GameObject {
 		return geologicalFeature.getEquivalentNumberType();
 	}
 
+	public boolean isPassable(){
+		if (getGeologicalFeature() != GeologicalFeature.solidGround){
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean isWater(){
+		if (getGeologicalFeature() != GeologicalFeature.water){
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean isMagma(){
+		if (getGeologicalFeature() != GeologicalFeature.magma){
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean isAir(){
+		if (getGeologicalFeature() != GeologicalFeature.air){
+			return true;
+		}
+		return false;
+	}
+	
 }

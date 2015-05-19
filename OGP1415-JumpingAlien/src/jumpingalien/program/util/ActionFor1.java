@@ -6,6 +6,7 @@ import java.util.Random;
 import jumpingalien.exception.IllegalSizeException;
 import jumpingalien.model.World;
 import jumpingalien.model.gameObject.GameObject;
+import jumpingalien.model.gameObject.TileObject;
 import jumpingalien.model.Program.Direction;
 import jumpingalien.program.internal.Value;
 
@@ -162,24 +163,25 @@ public enum ActionFor1 {
 			return new Value<Boolean>(((GameObject)expression.evaluate(dt)).isDead());
 		}
 	},
+	//TODO: ontbreekt er gene van de is<...> ?? terrain?
 	ISPASSABLE{//TODO: implement this function
 		public Value<?> evaluate(Value<?> expression, double[] dt){
-			return new Value<Boolean>(!((GameObject)expression.evaluate(dt)).isDead());
+			return new Value<Boolean>(((TileObject)expression.evaluate(dt)).isPassable());
 		}
 	},
 	ISWATER{
 		public Value<?> evaluate(Value<?> expression, double[] dt){
-			return new Value<Boolean>(((GameObject)expression.evaluate(dt)).isDead());
+			return new Value<Boolean>(((TileObject)expression.evaluate(dt)).isWater());
 		}
 	},
 	ISMAGMA{
 		public Value<?> evaluate(Value<?> expression, double[] dt){
-			return new Value<Boolean>(((GameObject)expression.evaluate(dt)).isDead());
+			return new Value<Boolean>(((TileObject)expression.evaluate(dt)).isMagma());
 		}
 	},
 	ISAIR{
 		public Value<?> evaluate(Value<?> expression, double[] dt){
-			return new Value<Boolean>(!((GameObject)expression.evaluate(dt)).isDead());
+			return new Value<Boolean>(((TileObject)expression.evaluate(dt)).isAir());
 		}
 	},
 	ISDUCKING{
