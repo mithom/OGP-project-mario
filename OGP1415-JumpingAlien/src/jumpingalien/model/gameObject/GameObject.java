@@ -11,6 +11,7 @@ import jumpingalien.exception.IllegalTimeException;
 import jumpingalien.exception.PositionOutOfBoundsException;
 import jumpingalien.model.Program;
 import jumpingalien.model.World;
+import jumpingalien.state.Direction;
 import jumpingalien.util.ModelException;
 import jumpingalien.util.Sprite;
 
@@ -540,4 +541,11 @@ public abstract class GameObject {//TODO: make TileObject
 	public Program getProgram() {
 		return program;
 	}
+	
+	public abstract void startJump();
+	public abstract void endJump();
+	public abstract void startDuck();
+	public abstract void endDuck();
+	public abstract void startMove(Direction direction);
+	public abstract void endMove(Direction direction);
 }

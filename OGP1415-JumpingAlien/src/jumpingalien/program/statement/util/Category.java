@@ -155,7 +155,7 @@ public enum Category {
 	},
 	ACTION{
 		public void execute(Statement statement, double[] dt){
-			statement.getAction().execute(statement);
+			statement.getAction().execute(statement,dt);
 		};
 	}/*,
 	SEQUENCE{

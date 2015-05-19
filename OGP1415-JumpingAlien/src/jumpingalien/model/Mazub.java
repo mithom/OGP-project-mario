@@ -336,9 +336,9 @@ public class Mazub extends GameObject{
 			if(getHorizontalAcceleration()==0)throw new IllegalMovementException("impossible to divide by zero");
 			double accDt = Math.max(0,(this.getMaxHorizontalVelocity()- this.getHorizontalVelocity()*dirSign)/(getHorizontalAcceleration()*dirSign));
 			s= travelledHorizontalDistance(accDt)+getMaxHorizontalVelocity()*(dt-accDt)*dirSign;
-			System.out.println(travelledHorizontalDistance(accDt));
-			System.out.println(getMaxHorizontalVelocity()*(dt-accDt)*dirSign);
-			System.out.println(dt+","+accDt);
+			//System.out.println(travelledHorizontalDistance(accDt));
+			//System.out.println(getMaxHorizontalVelocity()*(dt-accDt)*dirSign);
+			//System.out.println(dt+","+accDt);
 			this.setHorizontalVelocity(this.getMaxHorizontalVelocity()*dirSign);
 		}
 		else{
@@ -346,8 +346,8 @@ public class Mazub extends GameObject{
 			this.setHorizontalVelocity(newSpeed);
 		}
 		if(((getPositionX()+s <=0d || s<0)&& dirSign>0 )|| (s>0 && dirSign<0)){
-			System.out.println(s +","+ dirSign+","+getPositionX());
-			System.out.println(dt+","+newSpeed);
+			//System.out.println(s +","+ dirSign+","+getPositionX());
+			//System.out.println(dt+","+newSpeed);
 			throw new IllegalMovementException("positionX overflowed");
 		}
 		//correct position if out of window

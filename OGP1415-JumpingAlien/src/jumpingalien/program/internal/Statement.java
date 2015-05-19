@@ -1,8 +1,6 @@
 package jumpingalien.program.internal;
 
 import jumpingalien.model.Program;
-import jumpingalien.model.gameObject.GameObject;
-import jumpingalien.part3.programs.IProgramFactory.SortDirection;
 import jumpingalien.program.statement.util.Action;
 import jumpingalien.program.statement.util.Category;
 import jumpingalien.program.statement.util.Kind;
@@ -24,18 +22,9 @@ public class Statement {
 	private Action action;
 	private Kind kind;
 	private Type type;
-	/*private SortCriteria sortCriteria;
-	private ValidCriteria validCriteria;*/
 	private boolean sortAscending = true;//false is sorting descending
 	private boolean resetOnEnd = true;
-
-	/*interface SortCriteria {
-        Double calculateValue(Value<Double> expression);   
-    }
-	
-	interface ValidCriteria{
-		boolean isValidGameObject(Value<Boolean> expression);
-	}*/
+	private Double timeToWait;
 	
 	public Type getType() {
 		return type;
@@ -85,7 +74,7 @@ public class Statement {
 				if(expression != null)
 					expression.addProgram(program);
 			}
-		}else{
+		}else{//TODO: uitzoeken hoe dit komt!
 			//System.out.println(this.program);
 			System.out.println("oops had al een program");
 			//System.out.println(category +","+ expressions[0].evaluate(new double[]{100}));
@@ -219,6 +208,7 @@ public class Statement {
 		//System.out.println("resetting");
 		if(isDone()){
 			done = false;
+			timeToWait=null;
 			for(Value<?> expression:expressions)
 				if(expression != null)
 					expression.reset();
@@ -246,7 +236,6 @@ public class Statement {
 			//else: gaat verder in while/foreach/if lus (zou anders al op isDone hebben gestaan)
 		}
 	}
-
 
 	public Category getCategory() {
 		return category;
@@ -288,21 +277,12 @@ public class Statement {
 	public Statement getPreviousStatement(){
 		return previousStatement;
 	}
-	/*
-	public SortCriteria getSortCriteria() {
-		return sortCriteria;
+
+	public double getTimeToWait() {
+		return timeToWait;
 	}
 
-	public void setSortCriteria(SortCriteria sortCriteria) {
-		this.sortCriteria = sortCriteria;
+	public void setTimeToWait(double timeToWait) {
+		this.timeToWait = timeToWait;
 	}
-
-	public ValidCriteria getValidCriteria() {
-		return validCriteria;
-	}
-
-	public void setValidCriteria(ValidCriteria validCriteria) {
-		this.validCriteria = validCriteria;
-	}*/
-
 }

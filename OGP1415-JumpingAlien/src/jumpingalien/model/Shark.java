@@ -649,4 +649,28 @@ public class Shark extends GameObject{
 			}
 		}
 	}
+
+	@Override
+	public void startDuck() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void endDuck() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void startMove(Direction direction) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void endMove(Direction direction) {
+		// TODO Auto-generated method stub
+		
+	}
 }

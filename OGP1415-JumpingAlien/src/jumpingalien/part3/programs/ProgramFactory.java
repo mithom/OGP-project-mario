@@ -289,7 +289,7 @@ public class ProgramFactory implements IProgramFactory<Value<?>, Statement, Type
 			SourceLocation sourceLocation) {
 		Statement ifStatement = new Statement(Category.IF);
 		ifStatement.addConditiond(condition);
-		ifStatement.addNextStatement(ifStatement);
+		ifStatement.addNextStatement(ifBody);
 		ifStatement.addNextStatement(elseBody);
 		return ifStatement;
 	}

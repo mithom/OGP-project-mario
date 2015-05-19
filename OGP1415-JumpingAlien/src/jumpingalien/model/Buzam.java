@@ -6,6 +6,7 @@ import jumpingalien.exception.IllegalSizeException;
 import jumpingalien.exception.IllegalTimeException;
 import jumpingalien.exception.PositionOutOfBoundsException;
 import jumpingalien.model.gameObject.GameObject;
+import jumpingalien.state.Direction;
 import jumpingalien.util.Sprite;
 
 public class Buzam extends GameObject {
@@ -34,6 +35,42 @@ public class Buzam extends GameObject {
 	public void EffectOnCollisionWith(GameObject gameObject) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public void startJump() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void endJump() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void startDuck() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void endDuck() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void startMove(Direction direction) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void endMove(Direction direction) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
