@@ -116,62 +116,61 @@ public class Slime extends GameObject{
 	 */
 	@Override
 	public void advanceTime(double dt)throws PositionOutOfBoundsException{
-		if(getProgram() != null){
-			getProgram().executeTime(dt);//nog steeds collision detection nodig met dit!
-		}else
-		{
-			while(!isTerminated() && dt >0){
-				decideAction();
-				double smallDt = Math.min(calculateCorrectDt(dt),actionDuration-actionTime);
-				actionTime+=smallDt;
-				dt-= smallDt;
-				imunityTime= Math.max(0,imunityTime-smallDt);
-				Position oldPosition = getPosition();
-				setPositionY(moveVertical(smallDt));
-				setPositionX(moveHorizontal(smallDt));
-				if (this.overlapsWithWall()[0]==true && getVerticalVelocity()<0.0d){
-					this.setVerticalVelocity(0.0d);
-					groundState = GroundState.GROUNDED;
-					setPositionY(oldPosition.getPositions()[1]-0.01d);
-				}else{
-					if(this.overlapsWithWall()[0]==false){
-						groundState = GroundState.AIR;
-					}
+		while(!isTerminated() && dt >0){
+			decideAction();
+			double smallDt;
+			if(getProgram()==null)
+				smallDt = Math.min(calculateCorrectDt(dt),actionDuration-actionTime);
+			else
+				smallDt= Math.min(calculateCorrectDt(dt), 0.001d);
+			actionTime+=smallDt;
+			dt-= smallDt;
+			imunityTime= Math.max(0,imunityTime-smallDt);
+			Position oldPosition = getPosition();
+			setPositionY(moveVertical(smallDt));
+			setPositionX(moveHorizontal(smallDt));
+			if (this.overlapsWithWall()[0]==true && getVerticalVelocity()<0.0d){
+				this.setVerticalVelocity(0.0d);
+				groundState = GroundState.GROUNDED;
+				setPositionY(oldPosition.getPositions()[1]-0.01d);
+			}else{
+				if(this.overlapsWithWall()[0]==false){
+					groundState = GroundState.AIR;
 				}
-				if(this.overlapsWithWall()[1]==true && getHorizontalVelocity()<0){
-					this.setHorizontalVelocity(0.0d);
+			}
+			if(this.overlapsWithWall()[1]==true && getHorizontalVelocity()<0){
+				this.setHorizontalVelocity(0.0d);
+				setPositionX(oldPosition.getPositions()[0]);
+			}
+			if( overlapsWithWall()[3]==true && getHorizontalVelocity()>0){
+				this.setHorizontalVelocity(0.0d);
+				setPositionX(oldPosition.getPositions()[0]);
+			}
+			animate(smallDt);
+			for(GameObject gameObject:getOverlappingGameObjects()){
+				if(gameObject instanceof Slime || gameObject instanceof Mazub || gameObject instanceof Shark){
 					setPositionX(oldPosition.getPositions()[0]);
+					setPositionY(oldPosition.getPositions()[1]);
+				}//don't bounce with plants
+				EffectOnCollisionWith(gameObject);
+				gameObject.EffectOnCollisionWith(this);
+			}
+			if(isInLava()){
+				lastLavaHit -= smallDt;
+				if(lastLavaHit <= 0){
+					loseHp(50);
+					lastLavaHit = 0.2d;
 				}
-				if( overlapsWithWall()[3]==true && getHorizontalVelocity()>0){
-					this.setHorizontalVelocity(0.0d);
-					setPositionX(oldPosition.getPositions()[0]);
+			}else
+				lastLavaHit=0.0d;
+			if(isInWater()){
+				lastWaterHit -= smallDt;
+				if(lastWaterHit <= 0){
+					loseHp(2);
+					lastWaterHit = 0.2d;
 				}
-				animate(smallDt);
-				for(GameObject gameObject:getOverlappingGameObjects()){
-					if(gameObject instanceof Slime || gameObject instanceof Mazub || gameObject instanceof Shark){
-						setPositionX(oldPosition.getPositions()[0]);
-						setPositionY(oldPosition.getPositions()[1]);
-					}//don't bounce with plants
-					EffectOnCollisionWith(gameObject);
-					gameObject.EffectOnCollisionWith(this);
-				}
-				if(isInLava()){
-					lastLavaHit -= smallDt;
-					if(lastLavaHit <= 0){
-						loseHp(50);
-						lastLavaHit = 0.2d;
-					}
-				}else
-					lastLavaHit=0.0d;
-				if(isInWater()){
-					lastWaterHit -= smallDt;
-					if(lastWaterHit <= 0){
-						loseHp(2);
-						lastWaterHit = 0.2d;
-					}
-				}else{
-					lastWaterHit =0.2d;
-				}
+			}else{
+				lastWaterHit =0.2d;
 			}
 		}
 	}
@@ -186,20 +185,27 @@ public class Slime extends GameObject{
 	 * 
 	 */
 	public void decideAction(){
-		if(actionTime == actionDuration){
-			endMove();
-			Random rand = new Random();
-			actionDuration = rand.nextDouble()*4.0d+2.0d;
-			actionTime = 0.0d;
-		    int randomNum = rand.nextInt(2);
-		    switch(randomNum){
-		    case 0:
-		    	startMove(Direction.RIGHT);
-		    	break;
-		    case 1:
-		    	startMove(Direction.LEFT);
-		    	break;
-		    }
+		if(getProgram() != null){
+			if(actionTime>0){
+				//actionTime = getProgram().executeTime(((double)((int)(actionTime*1000)))/1000.0d);
+				getProgram().executeTime(0.01d);
+			}
+		}else{
+			if(actionTime == actionDuration){
+				endMove();
+				Random rand = new Random();
+				actionDuration = rand.nextDouble()*4.0d+2.0d;
+				actionTime = 0.0d;
+			    int randomNum = rand.nextInt(2);
+			    switch(randomNum){
+			    case 0:
+			    	startMove(Direction.RIGHT);
+			    	break;
+			    case 1:
+			    	startMove(Direction.LEFT);
+			    	break;
+			    }
+			}
 		}
 	}
 	

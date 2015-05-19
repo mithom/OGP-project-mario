@@ -41,7 +41,7 @@ public class Statement {
 	}
 
 	public void addConditiond(Value<?> expression){
-		if(getCategory()==Category.WHILE || getCategory()==Category.FOREACH || getCategory()==Category.IF || getCategory() == Category.ASSIGNMENT){
+		if(getCategory()==Category.WHILE || getCategory()==Category.FOREACH || getCategory()==Category.IF || getCategory() == Category.ASSIGNMENT || getCategory() == Category.ACTION){
 			if(expressions[0]==null)
 				expressions[0] = expression;
 			else{
@@ -60,7 +60,7 @@ public class Statement {
 				}
 			}
 		}else
-			System.out.println("euhm, error in buitenste idd addCondition");
+			System.out.println("euhm, error in buitenste if addCondition");
 	}
 	
 	public void addProgram(Program program){
@@ -165,6 +165,7 @@ public class Statement {
 		if(dt[0]<=0)
 			return;
 		if(!isDone()){
+			System.out.println("category: "+category);
 			execute(dt);
 		}
 		int nextNb;
@@ -278,7 +279,7 @@ public class Statement {
 		return previousStatement;
 	}
 
-	public double getTimeToWait() {
+	public Double getTimeToWait() {
 		return timeToWait;
 	}
 

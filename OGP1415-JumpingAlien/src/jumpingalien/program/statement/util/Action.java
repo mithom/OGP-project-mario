@@ -1,13 +1,13 @@
 package jumpingalien.program.statement.util;
 
-import jumpingalien.part3.programs.IProgramFactory;
+import jumpingalien.model.Program;
 import jumpingalien.program.internal.Statement;
 import jumpingalien.state.Direction;
 
 public enum Action {
 	STARTRUN{
 		public void execute(Statement statement, double[] dt){
-			if(statement.getExpressions()[0].evaluate(dt)==IProgramFactory.Direction.LEFT && dt[0]>0){
+			if(statement.getExpressions()[0].evaluate(dt)==Program.Direction.LEFT && dt[0]>0){
 				statement.getProgram().getGameObject().startMove(Direction.LEFT);
 				statement.setDoneTrue();
 				dt[0]-=0.001;
@@ -22,7 +22,7 @@ public enum Action {
 	},
 	STOPRUN{
 		public void execute(Statement statement, double[] dt){
-			if(statement.getExpressions()[0].evaluate(dt)==IProgramFactory.Direction.LEFT && dt[0]>0){
+			if(statement.getExpressions()[0].evaluate(dt)==Program.Direction.LEFT && dt[0]>0){
 				statement.getProgram().getGameObject().endMove(Direction.LEFT);
 				statement.setDoneTrue();
 				dt[0]-=0.001;
@@ -39,24 +39,28 @@ public enum Action {
 		public void execute(Statement statement, double[] dt){
 			statement.getProgram().getGameObject().startJump();
 			dt[0]-=0.001;
+			statement.setDoneTrue();
 		};
 	},
 	STOPJUMP{
 		public void execute(Statement statement, double[] dt){
 			statement.getProgram().getGameObject().endJump();
 			dt[0]-=0.001;
+			statement.setDoneTrue();
 		};
 	},
 	STARTDUCK{
 		public void execute(Statement statement, double[] dt){
 			statement.getProgram().getGameObject().startDuck();
 			dt[0]-=0.001;
+			statement.setDoneTrue();
 		};
 	},
 	STOPDUCK{
 		public void execute(Statement statement, double[] dt){
 			statement.getProgram().getGameObject().endDuck();
 			dt[0]-=0.001;
+			statement.setDoneTrue();
 		};
 	},
 	WAIT{

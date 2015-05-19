@@ -25,7 +25,7 @@ public class ProgramFactory implements IProgramFactory<Value<?>, Statement, Type
 	public Value<?> createReadVariable(String variableName, Type variableType,
 			SourceLocation sourceLocation) {
 		// TODO Auto-generated method stub
-		return new Value<Double>(0.0d);
+		return new Value<Double>(2d);
 	}
 
 	@Override
@@ -56,7 +56,7 @@ public class ProgramFactory implements IProgramFactory<Value<?>, Statement, Type
 
 	@Override
 	public Value<?> createDirectionConstant(Direction value,SourceLocation sourceLocation) {
-		return new Value<Direction>(value);
+		return new Value<Program.Direction>(Program.Direction.getEquivalent(value));
 	}
 
 	@Override
@@ -303,50 +303,50 @@ public class ProgramFactory implements IProgramFactory<Value<?>, Statement, Type
 
 	@Override
 	public Statement createStartRun(Value<?> direction, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return new Statement(Action.STARTRUN);
+		Statement startRun = new Statement(Action.STARTRUN);
+		startRun.addConditiond(direction);
+		return startRun;
 	}
 
 	@Override
 	public Statement createStopRun(Value<?> direction, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return new Statement(Action.STOPRUN);
+		Statement stopRun =new Statement(Action.STOPRUN);
+		stopRun.addConditiond(direction);
+		return stopRun;
 	}
 
 	@Override
 	public Statement createStartJump(SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
 		return new Statement(Action.STARTJUMP);
 	}
 
 	@Override
 	public Statement createStopJump(SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
 		return new Statement(Action.STOPJUMP);
 	}
 
 	@Override
 	public Statement createStartDuck(SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
 		return new Statement(Action.STARTDUCK);
 	}
 
 	@Override
 	public Statement createStopDuck(SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
 		return new Statement(Action.STOPDUCK);
 	}
 
 	@Override
 	public Statement createWait(Value<?> duration, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return new Statement(Action.WAIT);
+		Statement wait = new Statement(Action.WAIT);
+		wait.addConditiond(duration);
+		return wait;
 	}
 
 	@Override
 	public Statement createSkip(SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return new Statement(Action.WAIT);
+		Statement skip = new Statement(Action.WAIT);
+		skip.addConditiond(new Value<Double>(0.001d));
+		return skip;
 	}
 
 	@Override

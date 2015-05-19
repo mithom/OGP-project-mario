@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import jumpingalien.model.gameObject.GameObject;
+import jumpingalien.part3.programs.IProgramFactory;
 import jumpingalien.program.internal.Statement;
 import jumpingalien.program.internal.Type;
 
@@ -12,6 +13,21 @@ public class Program {
 	private Statement statement;
 	public enum Direction {
 		UP,LEFT,DOWN,RIGHT;
+		public static Direction getEquivalent(IProgramFactory.Direction dir){
+			switch(dir){
+			case UP:
+				return UP;
+			case DOWN:
+				return DOWN;
+			case LEFT:
+				return LEFT;
+			case RIGHT:
+				return RIGHT;
+			default:
+				System.out.println("should never happen");
+				return RIGHT;
+			}
+		}
 	}
 	
 	private HashMap<String, Boolean> booleans = new HashMap<String,Boolean>();
@@ -37,7 +53,7 @@ public class Program {
 		//System.out.println("tijd bij uitgaan:"+dt[0]);
 	}
 	
-	public void executeTime(double dt){
+	public double executeTime(double dt){
 		double[] dt2 = new double[]{dt};
 		//System.out.println("begin program");
 		while(dt2[0]>0){
@@ -46,6 +62,7 @@ public class Program {
 			executeNext(dt2);
 			//System.out.println("tijd bij buitenkomen"+dt2[0]);
 		}
+		return dt2[0];
 	}
 	
 	public void addStatement(Statement statement){//TODO add checkers
