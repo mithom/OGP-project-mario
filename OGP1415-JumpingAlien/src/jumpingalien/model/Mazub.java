@@ -13,6 +13,7 @@ import jumpingalien.state.Direction;
 import jumpingalien.state.DuckState;
 import jumpingalien.state.GroundState;
 import jumpingalien.util.Sprite;
+
 /**
  * Mazub is a class representing a character/GameObject of the game. 
  * @author Meerten Wouter & Michiels Thomas (both 2de fase ingenieurswetenschappen)
@@ -824,4 +825,5 @@ public class Mazub extends GameObject{
 	public boolean isJumping(){
 		return groundState != GroundState.GROUNDED && getVerticalVelocity()>0;
 	}
+	
 }

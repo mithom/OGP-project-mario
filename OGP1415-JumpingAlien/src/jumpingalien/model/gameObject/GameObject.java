@@ -10,6 +10,7 @@ import jumpingalien.exception.IllegalSizeException;
 import jumpingalien.exception.IllegalTimeException;
 import jumpingalien.exception.PositionOutOfBoundsException;
 import jumpingalien.model.Program;
+import jumpingalien.model.Program.Direction;
 import jumpingalien.model.World;
 import jumpingalien.util.ModelException;
 import jumpingalien.util.Sprite;
@@ -539,4 +540,6 @@ public abstract class GameObject {//TODO: make TileObject
 	public Program getProgram() {
 		return program;
 	}
+	
+	
 }

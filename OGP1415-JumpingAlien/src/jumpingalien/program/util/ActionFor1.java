@@ -1,9 +1,12 @@
 package jumpingalien.program.util;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 import jumpingalien.exception.IllegalSizeException;
+import jumpingalien.model.World;
 import jumpingalien.model.gameObject.GameObject;
+import jumpingalien.model.Program.Direction;
 import jumpingalien.program.internal.Value;
 
 public enum ActionFor1 {
@@ -53,10 +56,107 @@ public enum ActionFor1 {
 		}
 	},
 	SEARCHOBJ{
-		public Value<?> evaluate(Value<?> expression, double[] dt){//TODO: implement this function
-			return new Value<GameObject>();
+		GameObject closestGameObject;
+		
+		public Value<?> evaluate(Value<?> expression, double[] dt){
+			if ( ((Direction)expression.evaluate(dt)) == Direction.LEFT){
+				closestGameObject = ClosestLeft(expression);
+			}
+			if (((Direction)expression.evaluate(dt)) == Direction.RIGHT){
+				closestGameObject = ClosestRight(expression);
+			}
+			if (((Direction)expression.evaluate(dt)) == Direction.UP){
+				closestGameObject = ClosestUp(expression);
+			}
+			if (((Direction)expression.evaluate(dt)) == Direction.DOWN){
+				closestGameObject = ClosestDown(expression);
+			}
+			return new Value<GameObject>(closestGameObject);
 		}
-	},//TODO: controleren of dit direction MOET zijn, of ook ander object, en in richting van dat object
+		
+	
+	public GameObject ClosestLeft(Value<?> expression){
+		ArrayList<GameObject> gameObjects = expression.getProgram().getGameObject().getWorld().getAllGameObjects();
+		GameObject thisGameObject = expression.getProgram().getGameObject();
+		double closestRangeTillNow = Double.POSITIVE_INFINITY;
+		for (int i = 0; i < gameObjects.size(); i++){
+			//bottom needs to be between bottom and top of this
+			if (gameObjects.get(i).getPerimeters()[1]>thisGameObject.getPerimeters()[1]
+					&& gameObjects.get(i).getPerimeters()[1] < thisGameObject.getPerimeters()[3]){
+				//gameobject links van this 
+				if (gameObjects.get(i).getPerimeters()[0] < thisGameObject.getPerimeters()[0]){
+					if ((Math.abs(gameObjects.get(i).getPerimeters()[2] - thisGameObject.getPerimeters()[0]))<closestRangeTillNow){
+						closestRangeTillNow= Math.abs(gameObjects.get(i).getPerimeters()[2] - thisGameObject.getPerimeters()[0]);
+						closestGameObject= gameObjects.get(i);
+					}
+				}
+			}
+		}
+		return closestGameObject ;
+	}
+	
+	public GameObject ClosestRight(Value<?> expression){
+		ArrayList<GameObject> gameObjects = expression.getProgram().getGameObject().getWorld().getAllGameObjects();
+		GameObject thisGameObject = expression.getProgram().getGameObject();
+		double closestRangeTillNow = Double.POSITIVE_INFINITY;
+		for (int i = 0; i < gameObjects.size(); i++){
+			//bottom needs to be between bottom and top of this
+			if (gameObjects.get(i).getPerimeters()[1]>thisGameObject.getPerimeters()[1]
+					&& gameObjects.get(i).getPerimeters()[1] < thisGameObject.getPerimeters()[3]){
+				//gameobject rechts van this 
+				if (gameObjects.get(i).getPerimeters()[0] < thisGameObject.getPerimeters()[0]){
+					if ((gameObjects.get(i).getPerimeters()[0] - thisGameObject.getPerimeters()[2])<closestRangeTillNow){
+						closestRangeTillNow= gameObjects.get(i).getPerimeters()[0] - thisGameObject.getPerimeters()[2] ;
+						closestGameObject=gameObjects.get(i);
+					}
+				}
+			}
+		}
+		return closestGameObject;
+	}
+	
+	public GameObject ClosestUp(Value<?> expression){
+		ArrayList<GameObject> gameObjects = expression.getProgram().getGameObject().getWorld().getAllGameObjects();
+		GameObject thisGameObject = expression.getProgram().getGameObject();
+		double closestRangeTillNow = Double.POSITIVE_INFINITY;
+		for (int i = 0; i < gameObjects.size(); i++){
+			//Left needs to be between Left and Right of this
+			if (gameObjects.get(i).getPerimeters()[0]>thisGameObject.getPerimeters()[0]
+					&& gameObjects.get(i).getPerimeters()[0] < thisGameObject.getPerimeters()[2]){
+				//gameobject above this 
+				if (gameObjects.get(i).getPerimeters()[3] < thisGameObject.getPerimeters()[3]){
+					if ((Math.abs(gameObjects.get(i).getPerimeters()[1] - thisGameObject.getPerimeters()[3]))<closestRangeTillNow){
+						closestGameObject=gameObjects.get(i);
+						closestRangeTillNow= Math.abs(gameObjects.get(i).getPerimeters()[1] - thisGameObject.getPerimeters()[3]);
+					}
+				}
+			}
+		}
+		return closestGameObject ;
+	}
+	
+	public GameObject ClosestDown(Value<?> expression){
+		ArrayList<GameObject> gameObjects = expression.getProgram().getGameObject().getWorld().getAllGameObjects();
+		GameObject thisGameObject = expression.getProgram().getGameObject();
+		double closestRangeTillNow = Double.POSITIVE_INFINITY;
+		for (int i = 0; i < gameObjects.size(); i++){
+			//Left needs to be between Left and Right of this
+			if (gameObjects.get(i).getPerimeters()[0]>thisGameObject.getPerimeters()[0]
+					&& gameObjects.get(i).getPerimeters()[0] < thisGameObject.getPerimeters()[2]){
+				//gameobject is beneath this gameobject
+				if (gameObjects.get(i).getPerimeters()[3] < thisGameObject.getPerimeters()[1]){
+					if ((Math.abs(gameObjects.get(i).getPerimeters()[3] - thisGameObject.getPerimeters()[1]))<closestRangeTillNow){
+						closestGameObject=gameObjects.get(i);
+						closestRangeTillNow= Math.abs(gameObjects.get(i).getPerimeters()[3] - thisGameObject.getPerimeters()[1]) ;
+					}
+				}
+			}
+		}
+		return closestGameObject ;
+	}
+
+	},
+	//TODO: controleren of dit direction MOET zijn, of ook ander object, en in richting van dat object
 	ISDEAD{
 		public Value<?> evaluate(Value<?> expression, double[] dt){
 			return new Value<Boolean>(((GameObject)expression.evaluate(dt)).isDead());
