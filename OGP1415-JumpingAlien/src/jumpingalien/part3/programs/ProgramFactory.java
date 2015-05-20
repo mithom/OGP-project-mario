@@ -24,8 +24,19 @@ public class ProgramFactory implements IProgramFactory<Value<?>, Statement, Type
 	@Override
 	public Value<?> createReadVariable(String variableName, Type variableType,
 			SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return new Value<Double>(0.0d);
+		switch(variableType.getType()){
+		case BOOL:
+			return new Expression<Boolean,Value<String>>(new Value<String>(variableName),ActionFor1.READ);
+		case DOUBLE:
+			return new Expression<Double,Value<String>>(new Value<String>(variableName),ActionFor1.READ);
+		case DIRECTION:
+			return new Expression<Program.Direction,Value<String>>(new Value<String>(variableName),ActionFor1.READ);
+		case OBJECT:
+			return new Expression<GameObject,Value<String>>(new Value<String>(variableName),ActionFor1.READ);
+		default:
+			return null;
+		}
+		
 	}
 
 	@Override

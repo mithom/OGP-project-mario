@@ -10,6 +10,11 @@ import jumpingalien.model.Program.Direction;
 import jumpingalien.program.internal.Value;
 
 public enum ActionFor1 {
+	READ{
+		public Value<?> evaluate(Value<?> expression, double[] dt){
+			return expression.getProgram().getVariable((String)expression.evaluate(dt));
+		}
+	},
 	SQRT{
 		public Value<?> evaluate(Value<?> expression, double[] dt){
 			return new Value<Double>(Math.sqrt((double)expression.evaluate(dt)));

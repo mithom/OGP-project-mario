@@ -6,6 +6,7 @@ import java.util.Map;
 import jumpingalien.model.gameObject.GameObject;
 import jumpingalien.program.internal.Statement;
 import jumpingalien.program.internal.Type;
+import jumpingalien.program.internal.Value;
 
 public class Program {
 	private GameObject gameObject;
@@ -15,7 +16,7 @@ public class Program {
 	}
 	
 	private HashMap<String, Boolean> booleans = new HashMap<String,Boolean>();
-	private HashMap<String,GameObject> Objects = new HashMap<>();
+	private HashMap<String,GameObject> objects = new HashMap<>();
 	private HashMap<String,Direction> directions = new HashMap<>();
 	private HashMap<String,Double> doubles = new HashMap<>();
 
@@ -62,7 +63,7 @@ public class Program {
 			directions.put(text, null);
 		}
 		if(kind == Type.type.OBJECT){
-			Objects.put(text,null);
+			objects.put(text,null);
 		}
 		if(kind == Type.type.DOUBLE){
 			doubles.put(text, null);
@@ -89,11 +90,11 @@ public class Program {
 	}
 
 	public GameObject getObject(String key) {
-		return Objects.get(key);
+		return objects.get(key);
 	}
 
 	public void setObject(String key,GameObject value) {
-		this.Objects.put(key, value);
+		this.objects.put(key, value);
 	}
 	public Direction getDirection(String key) {
 		return directions.get(key);
@@ -108,5 +109,17 @@ public class Program {
 
 	public void setDouble(String key,Double value) {
 		this.doubles.put(key, value);
+	}
+	
+	public Value<?> getVariable(String key){
+		if(doubles.containsKey(key))
+			return new Value<Double>(doubles.get(key));
+		if(directions.containsKey(key))
+			return new Value<Direction>(directions.get(key));
+		if(booleans.containsKey(key))
+			return new Value<Boolean>(booleans.get(key));
+		if(objects.containsKey(key))
+			return new Value<GameObject>(objects.get(key));
+		return new Value<Object>(null);
 	}
 }
