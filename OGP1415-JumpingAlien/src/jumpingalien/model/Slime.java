@@ -299,7 +299,8 @@ public class Slime extends GameObject{
 	 */
 	
 	private double moveHorizontal(double dt) throws IllegalMovementException,PositionOutOfBoundsException{
-		int dirSign =this.direction.getMultiplier(); 
+		int dirSign =this.direction.getMultiplier();
+		System.out.println(this.direction);
 		double newSpeed = this.getHorizontalVelocity()+this.getHorizontalAcceleration()*dt;
 		double s;
 		//dirsign is used in here to compensate for the current direction of the mazub.
@@ -308,12 +309,18 @@ public class Slime extends GameObject{
 			double accDt = (this.getMaxHorizontalVelocity()- this.getHorizontalVelocity()*dirSign)/(getHorizontalAcceleration()*dirSign);
 			s= travelledHorizontalDistance(accDt)+getMaxHorizontalVelocity()*(dt-accDt)*dirSign;
 			this.setHorizontalVelocity(this.getMaxHorizontalVelocity()*dirSign);
+			System.out.println("1");
 		}
 		else{
+			System.out.println("2");
+			System.out.println(horizontalAcceleration+","+horizontalVelocity);
 			s= travelledHorizontalDistance(dt);
+			System.out.println(newSpeed+","+s);
 			this.setHorizontalVelocity(newSpeed);
 		}
 		if(((getPositionX()+s <=0d || s<0)&& dirSign>0 )|| (s>0 && dirSign<0)){
+			System.out.println(s +","+ dirSign+","+getPositionX());
+			System.out.println(dt+","+newSpeed);
 			throw new IllegalMovementException("positionX overflowed");
 		}
 		//correct position if out of window

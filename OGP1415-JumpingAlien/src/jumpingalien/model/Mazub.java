@@ -13,6 +13,7 @@ import jumpingalien.state.Direction;
 import jumpingalien.state.DuckState;
 import jumpingalien.state.GroundState;
 import jumpingalien.util.Sprite;
+
 /**
  * Mazub is a class representing a character/GameObject of the game. 
  * @author Meerten Wouter & Michiels Thomas (both 2de fase ingenieurswetenschappen)
@@ -336,9 +337,6 @@ public class Mazub extends GameObject{
 			if(getHorizontalAcceleration()==0)throw new IllegalMovementException("impossible to divide by zero");
 			double accDt = Math.max(0,(this.getMaxHorizontalVelocity()- this.getHorizontalVelocity()*dirSign)/(getHorizontalAcceleration()*dirSign));
 			s= travelledHorizontalDistance(accDt)+getMaxHorizontalVelocity()*(dt-accDt)*dirSign;
-			//System.out.println(travelledHorizontalDistance(accDt));
-			//System.out.println(getMaxHorizontalVelocity()*(dt-accDt)*dirSign);
-			//System.out.println(dt+","+accDt);
 			this.setHorizontalVelocity(this.getMaxHorizontalVelocity()*dirSign);
 		}
 		else{
@@ -829,4 +827,5 @@ public class Mazub extends GameObject{
 	public boolean isJumping(){
 		return groundState != GroundState.GROUNDED && getVerticalVelocity()>0;
 	}
+	
 }
