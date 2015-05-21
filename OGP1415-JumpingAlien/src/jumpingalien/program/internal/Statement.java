@@ -83,7 +83,7 @@ public class Statement {
 	
 	
 	public Program getProgram(){
-		done = false;
+		//done = false;
 		return program;
 	}
 	
@@ -162,12 +162,13 @@ public class Statement {
 	}
 	
 	public void executeNext(double[] dt){//TODO only if action is if,foreach or while, 2 next statements, 2cnd used if:end of while, after last of kind, and else clause.
-		if(dt[0]<=0)
+		if(dt[0]<=0.0)
 			return;
 		if(!isDone()){
-			//System.out.println("category: "+category);
+			System.out.println("not done -> category: "+category);
 			execute(dt);
-		}
+		}else
+			System.out.println("it was done ("+category+")");
 		int nextNb;
 		if(getCategory()==Category.WHILE || getCategory()==Category.FOREACH)
 			nextNb=1;
@@ -206,7 +207,7 @@ public class Statement {
 	}
 	
 	void reset(double[] dt){
-		//System.out.println("resetting");
+		System.out.println("resetting");
 		if(isDone()){
 			done = false;
 			timeToWait=null;
@@ -221,7 +222,7 @@ public class Statement {
 			}
 		}else{
 			if((getCategory()==Category.WHILE || getCategory()==Category.FOREACH || getCategory()==Category.IF)){
-				//System.out.println("opnieuw de while in");
+				System.out.println("expressions while resetted");
 				for(Value<?> expression:expressions)
 					if(expression != null)
 						expression.reset();
@@ -285,5 +286,14 @@ public class Statement {
 
 	public void setTimeToWait(double timeToWait) {
 		this.timeToWait = timeToWait;
+	}
+	
+	public String toString(){
+		String str="";
+		for(Value<?> expr:expressions){
+			if(expr != null)
+				str += expr.toString();
+		}
+		return category.toString()+","+action+","+str+",done?: "+isDone();
 	}
 }

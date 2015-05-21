@@ -26,12 +26,15 @@ public class Value<R extends Object> {
 	};
 	
 	public R evaluate(double[] dt){//TODO: aanpassen voor previousStatement en dt!
+		System.out.println(dt[0]+",evaluating base value, done: "+done+",value: "+value);
 		if(!isDone()){
 			if(dt[0]>0.0){
 				setDoneTrue(dt);
 				return value;
-			}else
+			}else{
+				System.out.println("returned null with time: "+dt[0]);
 				return null;
+			}
 		}
 			/*System.out.println("tijd eraf");
 		else
@@ -93,6 +96,7 @@ public class Value<R extends Object> {
 	}
 	
 	protected Value<R> Copy(){
+		System.out.println("aant kopiëren: "+this);
 		Value<R> copy = new Value<R>(value);
 		copy.addProgram(getProgram());
 		copy.done = done;
@@ -106,6 +110,7 @@ public class Value<R extends Object> {
 	}
 	
 	public void setDoneTrue(double[] dt){
+		System.out.println("expression set Done");
 		dt[0]-= 0.001d;
 		done = true;
 	}
@@ -116,5 +121,9 @@ public class Value<R extends Object> {
 	
 	public boolean isDone(){
 		return done;
+	}
+	
+	public String toString(){
+		return "value: "+ value;
 	}
 }

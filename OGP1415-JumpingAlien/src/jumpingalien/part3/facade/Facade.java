@@ -24,7 +24,6 @@ public class Facade extends jumpingalien.part2.facade.Facade implements IFacadeP
 	@Override
 	public Buzam createBuzam(int pixelLeftX, int pixelBottomY, Sprite[] sprites)throws ModelException{
 		try{
-			// TODO Auto-generated method stub
 			return new Buzam(pixelLeftX,pixelBottomY, sprites);
 		}catch(PositionOutOfBoundsException e){
 			throw new ModelException("illegal possition");
@@ -35,8 +34,7 @@ public class Facade extends jumpingalien.part2.facade.Facade implements IFacadeP
 	public Buzam createBuzamWithProgram(int pixelLeftX, int pixelBottomY,
 			Sprite[] sprites, Program program) {
 		try{
-			// TODO Auto-generated method stub
-			return new Buzam(pixelLeftX,pixelBottomY, sprites);
+			return new Buzam(pixelLeftX,pixelBottomY, sprites,program);
 		}catch(PositionOutOfBoundsException e){
 			throw new ModelException("illegal possition");
 		}

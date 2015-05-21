@@ -187,6 +187,7 @@ public class Slime extends GameObject{
 	public void decideAction(){
 		if(getProgram() != null){
 			if(actionTime>0){
+				System.out.println("nieuw begin");
 				//actionTime = getProgram().executeTime(((double)((int)(actionTime*1000)))/1000.0d);
 				actionTime = getProgram().executeTime(0.002d);
 			}

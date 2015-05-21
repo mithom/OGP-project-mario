@@ -14,11 +14,19 @@ import jumpingalien.program.internal.Value;
 public enum Category {//TODO eerst evalueren, dan tijd controleren, dan pas uitvoeren!!!
 	WHILE{
 		public void execute(Statement statement, double[] dt){
-			while((boolean)statement.getExpressions()[0].evaluate(dt) && dt[0]>0 && ! statement.isDone()){
+			Boolean variable = (Boolean)statement.getExpressions()[0].evaluate(dt);
+			System.out.println(dt[0]+","+statement);
+			while( dt[0]>0 && variable && ! statement.isDone()){
+				System.out.println("begin in while"+ dt[0]+","+statement);
 				statement.getNextStatements()[0].addPreviousStatement(statement);
 				statement.getNextStatements()[0].executeNext(dt);
+				
+				variable = (Boolean)statement.getExpressions()[0].evaluate(dt);
+				System.out.println("einde in while: "+dt[0]+","+statement);
 			}
+			System.out.println("achter while: "+dt[0]);
 			if(dt[0]>0){
+				System.out.println("er was tijd over!");
 				statement.setDoneTrue();
 				//System.out.println("uit while, niet door tijd");
 				/*statement.getNextStatements()[1].addPreviousStatement(statement);//dit gebeurt automatisch in executeNext!
@@ -31,18 +39,38 @@ public enum Category {//TODO eerst evalueren, dan tijd controleren, dan pas uitv
 	},
 	ASSIGNMENT{
 		public void execute(Statement statement, double[] dt){
-			if(statement.getType().getType()==Type.type.BOOL)
-				statement.getProgram().setBoolean((String)statement.getExpressions()[0].evaluate(dt),(Boolean)statement.getExpressions()[1].evaluate(dt));				
-			if(statement.getType().getType()==Type.type.DIRECTION)
-				statement.getProgram().setDirection((String)statement.getExpressions()[0].evaluate(dt),(Direction)statement.getExpressions()[1].evaluate(dt));
-			if(statement.getType().getType()==Type.type.OBJECT)
-				statement.getProgram().setObject((String)statement.getExpressions()[0].evaluate(dt),(GameObject)statement.getExpressions()[1].evaluate(dt));
-			if(statement.getType().getType()==Type.type.DOUBLE){
-				statement.getProgram().setDouble((String)statement.getExpressions()[0].evaluate(dt),(Double)statement.getExpressions()[1].evaluate(dt));
+			System.out.println("assignment: "+ (String)statement.getExpressions()[0].evaluate(dt));
+			String variable1 = (String)statement.getExpressions()[0].evaluate(dt);
+			switch(statement.getType().getType()){
+			case BOOL:
+				Boolean variable2 = (Boolean)statement.getExpressions()[1].evaluate(dt);
+				if(dt[0]>0){
+					statement.setDoneTrue();
+					dt[0]-=0.001d;
+					statement.getProgram().setBoolean(variable1,variable2);
+				}
+			case DIRECTION:
+				Direction variable3 = (Direction)statement.getExpressions()[1].evaluate(dt);
+				if(dt[0]>0){
+					statement.setDoneTrue();
+					dt[0]-=0.001d;
+					statement.getProgram().setDirection(variable1,variable3);
+				}
+			case OBJECT:
+				GameObject variable4 = (GameObject)statement.getExpressions()[1].evaluate(dt);
+				if(dt[0]>0){
+					statement.setDoneTrue();
+					dt[0]-=0.001d;
+					statement.getProgram().setObject(variable1,variable4);
+				}
+			case DOUBLE:
+				Double variable5 = (Double)statement.getExpressions()[1].evaluate(dt);
+				if(dt[0]>0){
+					statement.setDoneTrue();
+					dt[0]-=0.001d;
+					statement.getProgram().setDouble(variable1,variable5);
+				}
 			}
-			statement.setDoneTrue();
-			dt[0]-=0.001d;
-			
 			if(statement.getType()==null){
 				System.out.println("invalid type in assignment evaluation");
 			}

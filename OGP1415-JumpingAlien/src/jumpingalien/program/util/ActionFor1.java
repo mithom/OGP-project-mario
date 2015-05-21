@@ -21,7 +21,8 @@ public enum ActionFor1 {
 				expression.setDoneTrue(dt);
 				return value.getProgram().getVariable(variableName);
 			}else
-				return new Value<Object>(null);
+				System.out.println("returned null with time: "+dt[0]);
+				System.out.println("returned null with time: "+dt[0]);return new Value<Object>(null);
 		}
 	},
 	SQRT{
@@ -32,7 +33,8 @@ public enum ActionFor1 {
 				expression.setDoneTrue(dt);
 				return new Value<Double>(Math.sqrt(variable));
 			}else
-				return new Value<Object>(null);
+				System.out.println("returned null with time: "+dt[0]);
+				System.out.println("returned null with time: "+dt[0]);return new Value<Object>(null);
 			
 		}
 	},
@@ -44,7 +46,8 @@ public enum ActionFor1 {
 				expression.setDoneTrue(dt);
 				return new Value<Boolean>(!variable);
 			}else
-				return new Value<Object>(null);
+				System.out.println("returned null with time: "+dt[0]);
+				System.out.println("returned null with time: "+dt[0]);return new Value<Object>(null);
 			
 		}
 	},
@@ -56,7 +59,7 @@ public enum ActionFor1 {
 				expression.setDoneTrue(dt);
 				return new Value<Integer>((variable).getPosition().getPixelPosition()[0]);
 			}else
-				return new Value<Object>(null);
+				System.out.println("returned null with time: "+dt[0]);return new Value<Object>(null);
 		}
 	},
 	GETY{
@@ -67,7 +70,7 @@ public enum ActionFor1 {
 				expression.setDoneTrue(dt);
 				return new Value<Integer>((variable).getPosition().getPixelPosition()[1]);
 			}else
-				return new Value<Object>(null);
+				System.out.println("returned null with time: "+dt[0]);return new Value<Object>(null);
 		}
 	},
 	GETWIDTH{
@@ -79,7 +82,7 @@ public enum ActionFor1 {
 					expression.setDoneTrue(dt);
 					return new Value<Integer>((variable).getSize()[0]);
 				}else
-					return new Value<Object>(null);
+					System.out.println("returned null with time: "+dt[0]);return new Value<Object>(null);
 			}catch(IllegalSizeException e){
 				System.out.println("getter moet nog gefixed worden");
 				return new Value<Integer>();
@@ -95,7 +98,7 @@ public enum ActionFor1 {
 					expression.setDoneTrue(dt);
 					return new Value<Integer>((variable).getSize()[1]);
 				}else
-					return new Value<Object>(null);
+					System.out.println("returned null with time: "+dt[0]);return new Value<Object>(null);
 			}catch(IllegalSizeException e){
 				System.out.println("getter moet nog gefixed worden");
 				return new Value<Integer>();
@@ -110,7 +113,7 @@ public enum ActionFor1 {
 				expression.setDoneTrue(dt);
 				return new Value<Integer>((variable).getNbHitPoints());
 			}else
-				return new Value<Object>(null);
+				System.out.println("returned null with time: "+dt[0]);return new Value<Object>(null);
 		}
 	},
 	SEARCHOBJ{
@@ -133,7 +136,7 @@ public enum ActionFor1 {
 				}
 				return new Value<GameObject>(closestGameObject);
 			}else
-				return new Value<Object>(null);
+				System.out.println("returned null with time: "+dt[0]);return new Value<Object>(null);
 		}
 		
 	
@@ -226,7 +229,7 @@ public enum ActionFor1 {
 				expression.setDoneTrue(dt);
 				return new Value<Boolean>((variable).isDead());
 			}else
-				return new Value<Object>(null);
+				System.out.println("returned null with time: "+dt[0]);return new Value<Object>(null);
 		}
 	},
 	ISPASSABLE{
@@ -237,7 +240,7 @@ public enum ActionFor1 {
 				expression.setDoneTrue(dt);
 				return new Value<Boolean>((variable).isPassable());
 			}else
-				return new Value<Object>(null);
+				System.out.println("returned null with time: "+dt[0]);return new Value<Object>(null);
 		}
 	},
 	ISWATER{
@@ -248,7 +251,7 @@ public enum ActionFor1 {
 				expression.setDoneTrue(dt);
 				return new Value<Boolean>((variable).isWater());
 			}else
-				return new Value<Object>(null);
+				System.out.println("returned null with time: "+dt[0]);return new Value<Object>(null);
 		}
 	},
 	ISMAGMA{
@@ -259,7 +262,7 @@ public enum ActionFor1 {
 				expression.setDoneTrue(dt);
 				return new Value<Boolean>((variable).isMagma());
 			}else
-				return new Value<Object>(null);
+				System.out.println("returned null with time: "+dt[0]);return new Value<Object>(null);
 		}
 	},
 	ISAIR{
@@ -270,7 +273,7 @@ public enum ActionFor1 {
 				expression.setDoneTrue(dt);
 				return new Value<Boolean>((variable).isAir());
 			}else
-				return new Value<Object>(null);
+				System.out.println("returned null with time: "+dt[0]);return new Value<Object>(null);
 		}
 	},
 	ISDUCKING{
@@ -281,7 +284,7 @@ public enum ActionFor1 {
 				expression.setDoneTrue(dt);
 				return new Value<Boolean>((variable).isDucking());//TODO: check if this has to be reversed or not (Wouter did this)
 			}else
-				return new Value<Object>(null);
+				System.out.println("returned null with time: "+dt[0]);return new Value<Object>(null);
 		}
 	},
 	ISJUMPING{
@@ -292,7 +295,7 @@ public enum ActionFor1 {
 				expression.setDoneTrue(dt);
 				return new Value<Boolean>((variable).isJumping());
 			}else
-				return new Value<Object>(null);
+				System.out.println("returned null with time: "+dt[0]);return new Value<Object>(null);
 		}
 	},RANDOM{
 		public Value<?> evaluate(Expression<?,? extends Value<?>> expression, double[] dt){
@@ -303,7 +306,7 @@ public enum ActionFor1 {
 				expression.setDoneTrue(dt);
 				return new Value<Double>(rand.nextDouble()*variable);
 			}else
-				return new Value<Object>(null);
+				System.out.println("returned null with time: "+dt[0]);return new Value<Object>(null);
 		}
 	};
 	

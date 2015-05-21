@@ -69,7 +69,7 @@ public class Mazub extends GameObject{
 	 * 			| new.duckstate == DuckState.STRAIGHT
 	 */
 	public Mazub(int pixelLeftX, int pixelBottomY, Sprite[] sprites) throws PositionOutOfBoundsException{
-		super(pixelLeftX, pixelBottomY, sprites);
+		super(pixelLeftX, pixelBottomY, sprites,0,500,100);
 		this.maxHorizontalVelocity = 3d;
 		this.initialHorizontalVelocity=1d;
 		duckState  = DuckState.STRAIGHT;
@@ -95,7 +95,7 @@ public class Mazub extends GameObject{
 	 * 			|new.getMaximumHorizontalVelocity()== maxHorVel
 	 * @Pre		the initial velocity can never be greater then the maximum velocity in horizontal direction.
 	 * 			|initHorVel <= maxHorVel
-	 */
+	 *//*
 	public Mazub(int pixelLeftX, int pixelBottomY,double initHorVel,double maxHorVel, Sprite[] sprites)throws PositionOutOfBoundsException{
 		super(pixelLeftX, pixelBottomY, sprites);
 		this.m = (getSpriteList().length-8)/2;
@@ -103,6 +103,36 @@ public class Mazub extends GameObject{
 		this.initialHorizontalVelocity = initHorVel;
 		duckState  = DuckState.STRAIGHT;
 		direction= Direction.STALLED;
+	}*/
+	
+	public Mazub(int pixelLeftX, int pixelBottomY, Sprite[] sprites,Program program) throws PositionOutOfBoundsException{
+		super(pixelLeftX, pixelBottomY, sprites,0,500,100,program);
+		this.maxHorizontalVelocity = 3d;
+		this.initialHorizontalVelocity=1d;
+		duckState  = DuckState.STRAIGHT;
+		direction= Direction.STALLED;
+		horizontalVelocity=0.0d;
+		verticalVelocity = 0.0d;
+	}
+	
+	public Mazub(int pixelLeftX, int pixelBottomY, Sprite[] sprites,Program program,int minHp,int currentHp,int maxHp) throws PositionOutOfBoundsException{
+		super(pixelLeftX, pixelBottomY, sprites,minHp,currentHp,maxHp,program);
+		this.maxHorizontalVelocity = 3d;
+		this.initialHorizontalVelocity=1d;
+		duckState  = DuckState.STRAIGHT;
+		direction= Direction.STALLED;
+		horizontalVelocity=0.0d;
+		verticalVelocity = 0.0d;
+	}
+	
+	public Mazub(int pixelLeftX, int pixelBottomY, Sprite[] sprites,int minHp,int maxHp,int currentHp) throws PositionOutOfBoundsException{
+		super(pixelLeftX, pixelBottomY, sprites,minHp,maxHp,currentHp);
+		this.maxHorizontalVelocity = 3d;
+		this.initialHorizontalVelocity=1d;
+		duckState  = DuckState.STRAIGHT;
+		direction= Direction.STALLED;
+		horizontalVelocity=0.0d;
+		verticalVelocity = 0.0d;
 	}
 	
 	/**

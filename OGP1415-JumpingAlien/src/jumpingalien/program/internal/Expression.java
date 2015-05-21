@@ -44,26 +44,27 @@ public class Expression<R,G extends Value<?>> extends Value<R> {
 	@Override
 	//TODO: only works if correct program, still need to catch errors
 	public R evaluate(double[] dt){//TODO: aanpassen voor previousStatement en dt!
-		if(isDone())
+		if(isDone()){
+			System.out.println("reeds klaar ("+action+") , returned lastState: "+ lastState.evaluate(new double[]{Double.POSITIVE_INFINITY}));
 			return lastState.evaluate(dt);
-		else{
+		}else{
 			if(expressions.length==1){
 				if(action == null){
 					System.out.println("error want geen action?");
 					lastState = ((Value<R>)((G)expressions[0])).Copy();
-					if(lastState!=null)
-						setDoneTrue(dt);
+					//if(lastState!=null)
+						//setDoneTrue(dt);
 					return lastState.evaluate(dt);
 				}else{
 					lastState=((Value<R>)((ActionFor1)action).evaluate(this, dt)).Copy();
-					if(lastState!=null)
-						setDoneTrue(dt);
+					//if(lastState!=null)
+						//setDoneTrue(dt);
 					return lastState.evaluate(dt);
 				}
 			}else{
 				lastState=((Value<R>)((ActionFor2)action).evaluate(this,dt)).Copy();
-				if(lastState!=null)
-					setDoneTrue(dt);
+				//if(lastState!=null)
+					//setDoneTrue(dt);
 				return lastState.evaluate(dt);
 			}
 		}
@@ -96,5 +97,9 @@ public class Expression<R,G extends Value<?>> extends Value<R> {
 	
 	public Object[] getExpressions(){
 		return expressions;//cannot be a copy, cus they need to save the current state, if a copy is given, then it would each time cost time again.
+	}
+	
+	public String toString(){
+		return action.toString();
 	}
 }
