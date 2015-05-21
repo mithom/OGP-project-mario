@@ -34,6 +34,7 @@ public class Expression<R,G extends Value<?>> extends Value<R> {
 	
 	@Override
 	public void addProgram(Program program){
+		super.addProgram(program);
 		for(Object expressionObject:expressions)
 			if(expressionObject != null)
 				((Value<?>)expressionObject).addProgram(program);
@@ -54,7 +55,7 @@ public class Expression<R,G extends Value<?>> extends Value<R> {
 						setDoneTrue(dt);
 					return lastState.evaluate(dt);
 				}else{
-					lastState=((Value<R>)((ActionFor1)action).evaluate((G)expressions[0], dt)).Copy();
+					lastState=((Value<R>)((ActionFor1)action).evaluate(this, dt)).Copy();
 					if(lastState!=null)
 						setDoneTrue(dt);
 					return lastState.evaluate(dt);
@@ -91,5 +92,9 @@ public class Expression<R,G extends Value<?>> extends Value<R> {
 		return copy;*/
 		System.out.println("zou nooit zijn mogen gebeuren, .Copy() in expression");
 		return this;
+	}
+	
+	public Object[] getExpressions(){
+		return expressions;//cannot be a copy, cus they need to save the current state, if a copy is given, then it would each time cost time again.
 	}
 }

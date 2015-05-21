@@ -7,44 +7,79 @@ import jumpingalien.exception.IllegalSizeException;
 import jumpingalien.model.gameObject.GameObject;
 import jumpingalien.model.gameObject.TileObject;
 import jumpingalien.model.Program.Direction;
+import jumpingalien.program.internal.Expression;
 import jumpingalien.program.internal.Value;
 
-public enum ActionFor1 {//TODO eerst evalueren, dan tijd controleren, dan pas uitvoeren!!!
+public enum ActionFor1 {
 	READ{
-		public Value<?> evaluate(Value<?> expression, double[] dt){
-			if(expression.getProgram().getGameObject().toString().contains("nr:2"))
-				System.out.println(expression.evaluate(dt)+": "+expression.getProgram().getVariable((String)expression.evaluate(dt)).evaluate(dt));
-			String variableName = (String)expression.evaluate(dt);
-			//if(dt[0]>0.0)
-				return expression.getProgram().getVariable(variableName);
-			//else
-				//return new Value<>
+		public Value<?> evaluate(Expression<?,? extends Value<?>> expression, double[] dt){
+			Value<?> value = (Value<?>)expression.getExpressions()[0];
+			//if(value.getProgram().getGameObject().toString().contains("nr:2"))
+				//System.out.println(value.evaluate(dt)+": "+value.getProgram().getVariable((String)value.evaluate(dt)).evaluate(dt));
+			String variableName = (String)value.evaluate(dt);
+			if(dt[0]>0.0){
+				expression.setDoneTrue(dt);
+				return value.getProgram().getVariable(variableName);
+			}else
+				return new Value<Object>(null);
 		}
 	},
 	SQRT{
-		public Value<?> evaluate(Value<?> expression, double[] dt){
-			return new Value<Double>(Math.sqrt((double)expression.evaluate(dt)));
+		public Value<?> evaluate(Expression<?,? extends Value<?>> expression, double[] dt){
+			Value<?> value = (Value<?>)expression.getExpressions()[0];
+			Double variable = (Double)value.evaluate(dt);
+			if(dt[0]>0.0){
+				expression.setDoneTrue(dt);
+				return new Value<Double>(Math.sqrt(variable));
+			}else
+				return new Value<Object>(null);
+			
 		}
 	},
 	NEGATION{
-		public Value<?> evaluate(Value<?> expression, double[] dt){
-			return new Value<Boolean>(!(Boolean)expression.evaluate(dt));
+		public Value<?> evaluate(Expression<?,? extends Value<?>> expression, double[] dt){
+			Value<?> value = (Value<?>)expression.getExpressions()[0];
+			Boolean variable = (Boolean)value.evaluate(dt);
+			if(dt[0]>0){
+				expression.setDoneTrue(dt);
+				return new Value<Boolean>(!variable);
+			}else
+				return new Value<Object>(null);
+			
 		}
 	},
 	GETX{
-		public Value<?> evaluate(Value<?> expression, double[] dt){
-			return new Value<Integer>(((GameObject)expression.evaluate(dt)).getPosition().getPixelPosition()[0]);
+		public Value<?> evaluate(Expression<?,? extends Value<?>> expression, double[] dt){
+			Value<?> value = (Value<?>)expression.getExpressions()[0];
+			GameObject variable = (GameObject)value.evaluate(dt);
+			if(dt[0]>0){
+				expression.setDoneTrue(dt);
+				return new Value<Integer>((variable).getPosition().getPixelPosition()[0]);
+			}else
+				return new Value<Object>(null);
 		}
 	},
 	GETY{
-		public Value<?> evaluate(Value<?> expression, double[] dt){
-			return new Value<Integer>(((GameObject)expression.evaluate(dt)).getPosition().getPixelPosition()[1]);
+		public Value<?> evaluate(Expression<?,? extends Value<?>> expression, double[] dt){
+			Value<?> value = (Value<?>)expression.getExpressions()[0];
+			GameObject variable = (GameObject)value.evaluate(dt);
+			if(dt[0]>0){
+				expression.setDoneTrue(dt);
+				return new Value<Integer>((variable).getPosition().getPixelPosition()[1]);
+			}else
+				return new Value<Object>(null);
 		}
 	},
 	GETWIDTH{
-		public Value<?> evaluate(Value<?> expression, double[] dt){
+		public Value<?> evaluate(Expression<?,? extends Value<?>> expression, double[] dt){
+			Value<?> value = (Value<?>)expression.getExpressions()[0];
 			try{//TODO: remove try catch zodra getter gefixed is
-				return new Value<Integer>(((GameObject)expression.evaluate(dt)).getSize()[0]);
+				GameObject variable =(GameObject)value.evaluate(dt);
+				if(dt[0]>0){
+					expression.setDoneTrue(dt);
+					return new Value<Integer>((variable).getSize()[0]);
+				}else
+					return new Value<Object>(null);
 			}catch(IllegalSizeException e){
 				System.out.println("getter moet nog gefixed worden");
 				return new Value<Integer>();
@@ -52,9 +87,15 @@ public enum ActionFor1 {//TODO eerst evalueren, dan tijd controleren, dan pas ui
 		}
 	},
 	GETHEIGHT{
-		public Value<?> evaluate(Value<?> expression, double[] dt){
+		public Value<?> evaluate(Expression<?,? extends Value<?>> expression, double[] dt){
+			Value<?> value = (Value<?>)expression.getExpressions()[0];
 			try{//TODO: remove try catch zodra getter gefixed is
-				return new Value<Integer>(((GameObject)expression.evaluate(dt)).getSize()[1]);
+				GameObject variable = (GameObject)value.evaluate(dt);
+				if(dt[0]>0){
+					expression.setDoneTrue(dt);
+					return new Value<Integer>((variable).getSize()[1]);
+				}else
+					return new Value<Object>(null);
 			}catch(IllegalSizeException e){
 				System.out.println("getter moet nog gefixed worden");
 				return new Value<Integer>();
@@ -62,25 +103,37 @@ public enum ActionFor1 {//TODO eerst evalueren, dan tijd controleren, dan pas ui
 		}
 	},
 	GETHP{
-		public Value<?> evaluate(Value<?> expression, double[] dt){
-			return new Value<Integer>(((GameObject)expression.evaluate(dt)).getNbHitPoints());
+		public Value<?> evaluate(Expression<?,? extends Value<?>> expression, double[] dt){
+			Value<?> value = (Value<?>)expression.getExpressions()[0];
+			GameObject variable = (GameObject)value.evaluate(dt);
+			if(dt[0]>0){
+				expression.setDoneTrue(dt);
+				return new Value<Integer>((variable).getNbHitPoints());
+			}else
+				return new Value<Object>(null);
 		}
 	},
 	SEARCHOBJ{
 		GameObject closestGameObject;
 		
-		public Value<?> evaluate(Value<?> expression, double[] dt){
-			switch((Direction)expression.evaluate(dt)){
-			case LEFT:
-				closestGameObject = ClosestLeft(expression);
-			case RIGHT:
-				closestGameObject = ClosestRight(expression);
-			case UP:
-				closestGameObject = ClosestUp(expression);
-			case DOWN:
-				closestGameObject = ClosestDown(expression);
-			}
-			return new Value<GameObject>(closestGameObject);
+		public Value<?> evaluate(Expression<?,? extends Value<?>> expression, double[] dt){
+			Value<?> value = (Value<?>)expression.getExpressions()[0];
+			Direction variable= (Direction)value.evaluate(dt);
+			if(dt[0]>0){
+				expression.setDoneTrue(dt);
+				switch(variable){
+				case LEFT:
+					closestGameObject = ClosestLeft(expression);
+				case RIGHT:
+					closestGameObject = ClosestRight(expression);
+				case UP:
+					closestGameObject = ClosestUp(expression);
+				case DOWN:
+					closestGameObject = ClosestDown(expression);
+				}
+				return new Value<GameObject>(closestGameObject);
+			}else
+				return new Value<Object>(null);
 		}
 		
 	
@@ -166,45 +219,93 @@ public enum ActionFor1 {//TODO eerst evalueren, dan tijd controleren, dan pas ui
 
 	},
 	ISDEAD{
-		public Value<?> evaluate(Value<?> expression, double[] dt){
-			return new Value<Boolean>(((GameObject)expression.evaluate(dt)).isDead());
+		public Value<?> evaluate(Expression<?,? extends Value<?>> expression, double[] dt){
+			Value<?> value = (Value<?>)expression.getExpressions()[0];
+			GameObject variable =(GameObject)value.evaluate(dt);
+			if(dt[0]>0){
+				expression.setDoneTrue(dt);
+				return new Value<Boolean>((variable).isDead());
+			}else
+				return new Value<Object>(null);
 		}
 	},
 	ISPASSABLE{
-		public Value<?> evaluate(Value<?> expression, double[] dt){
-			return new Value<Boolean>(((TileObject)expression.evaluate(dt)).isPassable());
+		public Value<?> evaluate(Expression<?,? extends Value<?>> expression, double[] dt){
+			Value<?> value = (Value<?>)expression.getExpressions()[0];
+			TileObject variable = (TileObject)value.evaluate(dt);
+			if(dt[0]>0){
+				expression.setDoneTrue(dt);
+				return new Value<Boolean>((variable).isPassable());
+			}else
+				return new Value<Object>(null);
 		}
 	},
 	ISWATER{
-		public Value<?> evaluate(Value<?> expression, double[] dt){
-			return new Value<Boolean>(((TileObject)expression.evaluate(dt)).isWater());
+		public Value<?> evaluate(Expression<?,? extends Value<?>> expression, double[] dt){
+			Value<?> value = (Value<?>)expression.getExpressions()[0];
+			TileObject variable = (TileObject)value.evaluate(dt);
+			if(dt[0]>0){
+				expression.setDoneTrue(dt);
+				return new Value<Boolean>((variable).isWater());
+			}else
+				return new Value<Object>(null);
 		}
 	},
 	ISMAGMA{
-		public Value<?> evaluate(Value<?> expression, double[] dt){
-			return new Value<Boolean>(((TileObject)expression.evaluate(dt)).isMagma());
+		public Value<?> evaluate(Expression<?,? extends Value<?>> expression, double[] dt){
+			Value<?> value = (Value<?>)expression.getExpressions()[0];
+			TileObject variable =(TileObject)value.evaluate(dt);
+			if(dt[0]>0){
+				expression.setDoneTrue(dt);
+				return new Value<Boolean>((variable).isMagma());
+			}else
+				return new Value<Object>(null);
 		}
 	},
 	ISAIR{
-		public Value<?> evaluate(Value<?> expression, double[] dt){
-			return new Value<Boolean>(((TileObject)expression.evaluate(dt)).isAir());
+		public Value<?> evaluate(Expression<?,? extends Value<?>> expression, double[] dt){
+			Value<?> value = (Value<?>)expression.getExpressions()[0];
+			TileObject variable = (TileObject)value.evaluate(dt);
+			if(dt[0]>0){
+				expression.setDoneTrue(dt);
+				return new Value<Boolean>((variable).isAir());
+			}else
+				return new Value<Object>(null);
 		}
 	},
 	ISDUCKING{
-		public Value<?> evaluate(Value<?> expression, double[] dt){
-			return new Value<Boolean>(!((GameObject)expression.evaluate(dt)).isDucking());
+		public Value<?> evaluate(Expression<?,? extends Value<?>> expression, double[] dt){
+			Value<?> value = (Value<?>)expression.getExpressions()[0];
+			GameObject variable = (GameObject)value.evaluate(dt);
+			if(dt[0]>0){
+				expression.setDoneTrue(dt);
+				return new Value<Boolean>((variable).isDucking());//TODO: check if this has to be reversed or not (Wouter did this)
+			}else
+				return new Value<Object>(null);
 		}
 	},
 	ISJUMPING{
-		public Value<?> evaluate(Value<?> expression, double[] dt){
-			return new Value<Boolean>(!((GameObject)expression.evaluate(dt)).isJumping());
+		public Value<?> evaluate(Expression<?,? extends Value<?>> expression, double[] dt){//TODO: check if this has to be reversed or not (Wouter did this)
+			Value<?> value = (Value<?>)expression.getExpressions()[0];
+			GameObject variable = (GameObject)value.evaluate(dt);
+			if(dt[0]>0){
+				expression.setDoneTrue(dt);
+				return new Value<Boolean>((variable).isJumping());
+			}else
+				return new Value<Object>(null);
 		}
 	},RANDOM{
-		public Value<?> evaluate(Value<?> expression, double[] dt){
+		public Value<?> evaluate(Expression<?,? extends Value<?>> expression, double[] dt){
+			Value<?> value = (Value<?>)expression.getExpressions()[0];
 			Random rand = new Random();
-			return new Value<Double>(rand.nextDouble()*(Double)expression.evaluate(dt));
+			Double variable = (Double)value.evaluate(dt);
+			if(dt[0]>0){
+				expression.setDoneTrue(dt);
+				return new Value<Double>(rand.nextDouble()*variable);
+			}else
+				return new Value<Object>(null);
 		}
 	};
 	
-	public abstract Value<?> evaluate(Value<?> expression, double[] dt);
+	public abstract Value<?> evaluate(Expression<?,? extends Value<?>> expression, double[] dt);
 }
