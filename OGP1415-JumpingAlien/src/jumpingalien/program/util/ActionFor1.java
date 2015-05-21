@@ -127,12 +127,16 @@ public enum ActionFor1 {
 				switch(variable){
 				case LEFT:
 					closestGameObject = ClosestLeft(expression);
+					break;
 				case RIGHT:
 					closestGameObject = ClosestRight(expression);
+					break;
 				case UP:
 					closestGameObject = ClosestUp(expression);
+					break;
 				case DOWN:
 					closestGameObject = ClosestDown(expression);
+					break;
 				}
 				return new Value<GameObject>(closestGameObject);
 			}else
