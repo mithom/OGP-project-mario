@@ -11,7 +11,7 @@ import jumpingalien.program.internal.Statement;
 import jumpingalien.program.internal.Type;
 import jumpingalien.program.internal.Value;
 
-public enum Category {
+public enum Category {//TODO eerst evalueren, dan tijd controleren, dan pas uitvoeren!!!
 	WHILE{
 		public void execute(Statement statement, double[] dt){
 			while((boolean)statement.getExpressions()[0].evaluate(dt) && dt[0]>0 && ! statement.isDone()){

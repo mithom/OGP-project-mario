@@ -2,7 +2,7 @@ package jumpingalien.program.internal;
 
 import jumpingalien.model.Program;
 
-public class Value<R> {
+public class Value<R extends Object> {
 	private Program program;
 	private boolean done;
 	private R value;
@@ -27,7 +27,11 @@ public class Value<R> {
 	
 	public R evaluate(double[] dt){//TODO: aanpassen voor previousStatement en dt!
 		if(!isDone()){
-			setDoneTrue(dt);
+			if(dt[0]>0.0){
+				setDoneTrue(dt);
+				return value;
+			}else
+				return null;
 		}
 			/*System.out.println("tijd eraf");
 		else

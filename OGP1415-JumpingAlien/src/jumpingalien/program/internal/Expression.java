@@ -61,7 +61,7 @@ public class Expression<R,G extends Value<?>> extends Value<R> {
 					return lastState.evaluate(dt);
 				}
 			}else{
-				lastState=((Value<R>)((ActionFor2)action).evaluate((G)expressions[0],(Value<?>)expressions[1], dt)).Copy();
+				lastState=((Value<R>)((ActionFor2)action).evaluate(this,dt)).Copy();
 				if(lastState!=null)
 					setDoneTrue(dt);
 				return lastState.evaluate(dt);

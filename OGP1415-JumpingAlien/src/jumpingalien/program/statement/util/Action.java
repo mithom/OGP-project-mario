@@ -4,7 +4,7 @@ import jumpingalien.model.Program;
 import jumpingalien.program.internal.Statement;
 import jumpingalien.state.Direction;
 
-public enum Action {
+public enum Action {//TODO eerst evalueren, dan tijd controleren, dan pas uitvoeren!!!
 	STARTRUN{
 		public void execute(Statement statement, double[] dt){
 			if(statement.getExpressions()[0].evaluate(dt)==Program.Direction.LEFT && dt[0]>0){

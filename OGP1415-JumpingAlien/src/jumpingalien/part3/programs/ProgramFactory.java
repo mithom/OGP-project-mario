@@ -178,7 +178,7 @@ public class ProgramFactory implements IProgramFactory<Value<?>, Statement, Type
 
 	@Override
 	public Value<?> createSearchObject(Value<?> direction, SourceLocation sourceLocation) {
-		return new Expression<GameObject, Value<Direction>>((Value<Direction>)direction, ActionFor1.SEARCHOBJ);
+		return new Expression<GameObject, Value<Program.Direction>>((Value<Program.Direction>)direction, ActionFor1.SEARCHOBJ);
 	}
 
 	@Override
@@ -233,7 +233,7 @@ public class ProgramFactory implements IProgramFactory<Value<?>, Statement, Type
 
 	@Override
 	public Value<?> createIsMoving(Value<?> expr, Value<?> direction, SourceLocation sourceLocation) {
-		return new Expression<Boolean, Value<?>>((Value<GameObject>)expr,(Value<Direction>)direction, ActionFor2.ISMOVING);
+		return new Expression<Boolean, Value<?>>((Value<GameObject>)expr,(Value<Program.Direction>)direction, ActionFor2.ISMOVING);
 	}
 
 	@Override
