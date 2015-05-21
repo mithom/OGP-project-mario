@@ -45,7 +45,7 @@ public class Expression<R,G extends Value<?>> extends Value<R> {
 	//TODO: only works if correct program, still need to catch errors
 	public R evaluate(double[] dt){//TODO: aanpassen voor previousStatement en dt!
 		if(isDone()){
-			System.out.println("reeds klaar ("+action+") , returned lastState: "+ lastState.evaluate(new double[]{Double.POSITIVE_INFINITY}));
+			//System.out.println("reeds klaar ("+action+") , returned lastState: "+ lastState.evaluate(new double[]{Double.POSITIVE_INFINITY}));
 			return lastState.evaluate(dt);
 		}else{
 			if(expressions.length==1){

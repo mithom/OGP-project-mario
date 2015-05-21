@@ -122,7 +122,8 @@ public class Slime extends GameObject{
 			if(getProgram()==null)
 				smallDt = Math.min(calculateCorrectDt(dt),actionDuration-actionTime);
 			else
-				smallDt= Math.min(calculateCorrectDt(dt), 0.001d);
+				//smallDt= Math.min(calculateCorrectDt(dt), 0.001d);
+				smallDt = calculateCorrectDt(dt);
 			actionTime+=smallDt;
 			dt-= smallDt;
 			imunityTime= Math.max(0,imunityTime-smallDt);
@@ -187,9 +188,9 @@ public class Slime extends GameObject{
 	public void decideAction(){
 		if(getProgram() != null){
 			if(actionTime>0){
-				System.out.println("nieuw begin");
+				//System.out.println("nieuw begin:"+actionTime);
 				//actionTime = getProgram().executeTime(((double)((int)(actionTime*1000)))/1000.0d);
-				actionTime = getProgram().executeTime(0.002d);
+				actionTime = getProgram().executeTime(actionTime);
 			}
 		}else{
 			if(actionTime == actionDuration){
@@ -317,8 +318,8 @@ public class Slime extends GameObject{
 			//System.out.println("2");
 			s= travelledHorizontalDistance(dt);
 			if(toString().contains("nr:2")){
-				System.out.println("acc: "+horizontalAcceleration+",vel: "+horizontalVelocity+",sign: "+dirSign);
-				System.out.println(newSpeed+","+s);
+				//System.out.println("acc: "+horizontalAcceleration+",vel: "+horizontalVelocity+",sign: "+dirSign);
+				//System.out.println(newSpeed+","+s);
 			}
 			this.setHorizontalVelocity(newSpeed);
 		}

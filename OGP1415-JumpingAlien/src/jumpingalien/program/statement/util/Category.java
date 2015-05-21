@@ -14,19 +14,19 @@ import jumpingalien.program.internal.Value;
 public enum Category {
 	WHILE{
 		public void execute(Statement statement, double[] dt){
-			System.out.println(dt[0]+","+statement);
+			//System.out.println(dt[0]+","+statement);
 			while( dt[0]>0 && ! statement.isDone()){
 				Boolean variable = (Boolean)statement.getExpressions()[0].evaluate(dt);
 				if(variable != null ){
 					if(variable){
-					System.out.println("begin in while"+ dt[0]+","+statement);
+					//System.out.println("begin in while"+ dt[0]+","+statement);
 					statement.getNextStatements()[0].addPreviousStatement(statement);
 					statement.getNextStatements()[0].executeNext(dt);
-					System.out.println("einde in while: "+dt[0]+","+statement);
+					//System.out.println("einde in while: "+dt[0]+","+statement);
 					}
 					else{
 						statement.setDoneTrue();
-						System.out.println("einde van de while lus");
+						//System.out.println("einde van de while lus");
 						break;
 					}
 				}
@@ -35,7 +35,7 @@ public enum Category {
 	},
 	ASSIGNMENT{
 		public void execute(Statement statement, double[] dt){
-			System.out.println("assignment: "+ (String)statement.getExpressions()[0].evaluate(dt)+":="+statement.getType().getType());
+			//System.out.println("assignment: "+ (String)statement.getExpressions()[0].evaluate(dt)+":="+statement.getType().getType());
 			String variable1 = (String)statement.getExpressions()[0].evaluate(dt);
 			switch(statement.getType().getType()){
 			case BOOL:
@@ -55,7 +55,7 @@ public enum Category {
 				}
 				break;
 			case OBJECT:
-				System.out.println("printing in object: "+statement.getExpressions()[1].evaluate(dt));
+				//System.out.println("printing in object: "+statement.getExpressions()[1].evaluate(dt));
 				GameObject variable4 = (GameObject)statement.getExpressions()[1].evaluate(dt);
 				if(dt[0]>0){
 					statement.setDoneTrue();
@@ -73,7 +73,7 @@ public enum Category {
 				break;
 			}
 			if(statement.getType()==null){
-				System.out.println("invalid type in assignment evaluation");
+				//System.out.println("invalid type in assignment evaluation");
 			}
 		};
 	},
@@ -169,7 +169,7 @@ public enum Category {
 	BREAK{
 		public void execute(Statement statement, double[] dt){
 			if(dt[0]>0){
-				System.out.println("break");
+				//System.out.println("break");
 				statement.setDoneTrue();
 				dt[0]-=0.001d;
 				Statement prev = statement.getPreviousStatement();

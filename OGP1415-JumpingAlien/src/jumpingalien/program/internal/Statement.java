@@ -165,10 +165,10 @@ public class Statement {
 		if(dt[0]<=0.0)
 			return;
 		if(!isDone()){
-			System.out.println("not done -> category: "+category);
+			//System.out.println("not done -> category: "+category);
 			execute(dt);
-		}else
-			System.out.println("it was done ("+category+")");
+		}//else
+			//System.out.println("it was done ("+category+")");
 		int nextNb;
 		if(getCategory()==Category.WHILE || getCategory()==Category.FOREACH)
 			nextNb=1;
@@ -207,7 +207,7 @@ public class Statement {
 	}
 	
 	void reset(double[] dt){
-		System.out.println("resetting");
+		//System.out.println("resetting");
 		if(isDone()){
 			done = false;
 			timeToWait=null;
@@ -222,7 +222,7 @@ public class Statement {
 			}
 		}else{
 			if((getCategory()==Category.WHILE || getCategory()==Category.FOREACH || getCategory()==Category.IF)){
-				System.out.println("expressions while resetted");
+				//System.out.println("expressions while resetted");
 				for(Value<?> expression:expressions)
 					if(expression != null)
 						expression.reset();
@@ -284,7 +284,7 @@ public class Statement {
 		return timeToWait;
 	}
 
-	public void setTimeToWait(double timeToWait) {
+	public void setTimeToWait(Double timeToWait) {
 		this.timeToWait = timeToWait;
 	}
 	

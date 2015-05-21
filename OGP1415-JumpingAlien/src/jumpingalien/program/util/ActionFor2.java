@@ -16,7 +16,7 @@ public enum ActionFor2{//TODO check for overflow errors etc
 				expression.setDoneTrue(dt);
 				return new Value<Double>(variable1 +variable2);
 			}else
-				System.out.println("returned null with time: "+dt[0]);return new Value<Object>(null);
+				return new Value<Object>(null);
 			
 		}
 	},
@@ -30,7 +30,7 @@ public enum ActionFor2{//TODO check for overflow errors etc
 				expression.setDoneTrue(dt);
 				return new Value<Double>(variable1 -variable2);
 			}else
-				System.out.println("returned null with time: "+dt[0]);return new Value<Object>(null);
+				return new Value<Object>(null);
 		}
 	},
 	MULTIPLICATION{
@@ -43,7 +43,7 @@ public enum ActionFor2{//TODO check for overflow errors etc
 				expression.setDoneTrue(dt);
 				return new Value<Double>(variable1 *variable2);
 			}else
-				System.out.println("returned null with time: "+dt[0]);return new Value<Object>(null);
+				return new Value<Object>(null);
 		}
 	},
 	DIVISION{
@@ -56,7 +56,7 @@ public enum ActionFor2{//TODO check for overflow errors etc
 				expression.setDoneTrue(dt);
 				return new Value<Double>(variable1 /variable2);
 			}else
-				System.out.println("returned null with time: "+dt[0]);return new Value<Object>(null);
+				return new Value<Object>(null);
 		}
 	},
 	CONJUNCTION{
@@ -69,7 +69,7 @@ public enum ActionFor2{//TODO check for overflow errors etc
 				expression.setDoneTrue(dt);
 				return new Value<Boolean>(variable1 && variable2);
 			}else
-				System.out.println("returned null with time: "+dt[0]);return new Value<Object>(null);
+				return new Value<Object>(null);
 		}
 	},
 	DISJUNCTION{
@@ -82,7 +82,7 @@ public enum ActionFor2{//TODO check for overflow errors etc
 				expression.setDoneTrue(dt);
 				return new Value<Boolean>(variable1 || variable2);
 			}else
-				System.out.println("returned null with time: "+dt[0]);return new Value<Object>(null);
+				return new Value<Object>(null);
 		}
 	},
 	LT{
@@ -91,13 +91,13 @@ public enum ActionFor2{//TODO check for overflow errors etc
 			Value<?> right = (Value<?>)expression.getExpressions()[1];
 			Double variable1 = (Double)left.evaluate(dt);
 			Double variable2 = (Double)right.evaluate(dt);
-			System.out.println("in LT met tijd: "+dt[0]+"en viriabelen: "+variable1+","+variable2);
+			//System.out.println("in LT met tijd: "+dt[0]+"en viriabelen: "+variable1+","+variable2);
 			if(dt[0]>0.0){
-				System.out.println("setting Done!!!");
+				//System.out.println("setting Done!!!");
 				expression.setDoneTrue(dt);
 				return new Value<Boolean>(variable1 < variable2);
 			}else
-				System.out.println("returned null with time: "+dt[0]);return new Value<Object>(null);
+				return new Value<Object>(null);
 		}
 	},
 	LE{
@@ -110,7 +110,7 @@ public enum ActionFor2{//TODO check for overflow errors etc
 				expression.setDoneTrue(dt);
 				return new Value<Boolean>(variable1 <= variable2);
 			}else
-				System.out.println("returned null with time: "+dt[0]);return new Value<Object>(null);
+				return new Value<Object>(null);
 		}
 	},
 	GT{
@@ -123,7 +123,7 @@ public enum ActionFor2{//TODO check for overflow errors etc
 				expression.setDoneTrue(dt);
 				return new Value<Boolean>(variable1 > variable2);
 			}else
-				System.out.println("returned null with time: "+dt[0]);return new Value<Object>(null);
+				return new Value<Object>(null);
 		}
 	},
 	GE{
@@ -136,7 +136,7 @@ public enum ActionFor2{//TODO check for overflow errors etc
 				expression.setDoneTrue(dt);
 				return new Value<Boolean>(variable1 >= variable2);
 			}else
-				System.out.println("returned null with time: "+dt[0]);return new Value<Object>(null);
+				return new Value<Object>(null);
 		}
 	},
 	EQ{
@@ -149,7 +149,7 @@ public enum ActionFor2{//TODO check for overflow errors etc
 				expression.setDoneTrue(dt);
 				return new Value<Boolean>(variable1 == variable2);
 			}else
-				System.out.println("returned null with time: "+dt[0]);return new Value<Object>(null);
+				return new Value<Object>(null);
 		}
 	},
 	NE{
@@ -162,7 +162,7 @@ public enum ActionFor2{//TODO check for overflow errors etc
 				expression.setDoneTrue(dt);
 				return new Value<Boolean>(variable1 != variable2);
 			}else
-				System.out.println("returned null with time: "+dt[0]);return new Value<Object>(null);
+				return new Value<Object>(null);
 		}
 	},
 	ISINSTANCE{
@@ -175,7 +175,7 @@ public enum ActionFor2{//TODO check for overflow errors etc
 				expression.setDoneTrue(dt);
 				return new Value<Boolean>(variable1.getClass() == variable2);
 			}else
-				System.out.println("returned null with time: "+dt[0]);return new Value<Object>(null);
+				return new Value<Object>(null);
 		}
 	},// 2different types(e and class)
 	ISMOVING{
@@ -189,7 +189,7 @@ public enum ActionFor2{//TODO check for overflow errors etc
 				expression.setDoneTrue(dt);
 				return new Value<Boolean>(true);
 			}else
-				System.out.println("returned null with time: "+dt[0]);return new Value<Object>(null);
+				return new Value<Object>(null);
 		}
 	},// 2different types (e and direction)
 	GETTILE{//TODO:implement this function when tileObject is ready
@@ -202,7 +202,7 @@ public enum ActionFor2{//TODO check for overflow errors etc
 				expression.setDoneTrue(dt);
 				return new Value<Double>(variable1 +variable2);
 			}else
-				System.out.println("returned null with time: "+dt[0]);return new Value<Object>(null);
+				return new Value<Object>(null);
 		}
 	};
 	

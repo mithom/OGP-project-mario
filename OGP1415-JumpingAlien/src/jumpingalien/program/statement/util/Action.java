@@ -75,14 +75,19 @@ public enum Action {//TODO eerst evalueren, dan tijd controleren, dan pas uitvoe
 		public void execute(Statement statement, double[] dt){
 			Double timeToWait = statement.getTimeToWait();
 			if(timeToWait==null)
-				timeToWait=(double)statement.getExpressions()[0].evaluate(dt);
-			while(timeToWait>0 && dt[0]>0){
+				timeToWait=(Double)statement.getExpressions()[0].evaluate(dt);
+			while(dt[0]>0 && timeToWait>0){//time to wait can be null due to smart booleans =)
 				dt[0]-= 0.001d;
 				timeToWait -= 0.001d;
 			}
-			if(dt[0]>0)
+			if(timeToWait != null){
+				double min = Math.min(dt[0],timeToWait);
+				dt[0]-= min;
+				timeToWait -= min;
 				statement.setTimeToWait(timeToWait);
-				statement.setDoneTrue();
+				if(timeToWait==0)
+					statement.setDoneTrue();
+			}
 		};
 	};
 	public abstract void execute(Statement statement, double[] dt); 

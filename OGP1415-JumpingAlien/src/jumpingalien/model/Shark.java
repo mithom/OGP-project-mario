@@ -138,7 +138,7 @@ public class Shark extends GameObject{
 			if(getProgram()==null)
 				smallDt = Math.min(calculateCorrectDt(dt),actionDuration-actionTime);
 			else
-				smallDt= Math.min(calculateCorrectDt(dt), 0.001d);
+				smallDt= calculateCorrectDt(dt);
 			actionTime+=smallDt;
 			dt-= smallDt;
 			imunityTime = Math.max(0, imunityTime - smallDt);
@@ -238,7 +238,7 @@ public class Shark extends GameObject{
 	private void decideAction(){
 		if(getProgram() != null){
 			if(actionTime>0){
-				//actionTime = getProgram().executeTime(((double)((int)(actionTime*1000)))/1000.0d);
+				actionTime = getProgram().executeTime(actionTime);
 				//actionTime = getProgram().executeTime(0.002d);
 			}
 		}else{
