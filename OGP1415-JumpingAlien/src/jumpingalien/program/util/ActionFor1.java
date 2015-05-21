@@ -9,10 +9,16 @@ import jumpingalien.model.gameObject.TileObject;
 import jumpingalien.model.Program.Direction;
 import jumpingalien.program.internal.Value;
 
-public enum ActionFor1 {
+public enum ActionFor1 {//TODO eerst evalueren, dan tijd controleren, dan pas uitvoeren!!!
 	READ{
 		public Value<?> evaluate(Value<?> expression, double[] dt){
-			return expression.getProgram().getVariable((String)expression.evaluate(dt));
+			if(expression.getProgram().getGameObject().toString().contains("nr:2"))
+				System.out.println(expression.evaluate(dt)+": "+expression.getProgram().getVariable((String)expression.evaluate(dt)).evaluate(dt));
+			String variableName = (String)expression.evaluate(dt);
+			//if(dt[0]>0.0)
+				return expression.getProgram().getVariable(variableName);
+			//else
+				//return new Value<>
 		}
 	},
 	SQRT{

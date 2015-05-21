@@ -14,7 +14,6 @@ import jumpingalien.program.internal.Value;
 public enum Category {
 	WHILE{
 		public void execute(Statement statement, double[] dt){
-			//System.out.println("begin van while");
 			while((boolean)statement.getExpressions()[0].evaluate(dt) && dt[0]>0 && ! statement.isDone()){
 				statement.getNextStatements()[0].addPreviousStatement(statement);
 				statement.getNextStatements()[0].executeNext(dt);
@@ -78,7 +77,16 @@ public enum Category {
 			default:
 				gameObjects = world.getAllGameObjects();//TODO terrain has to be in here too!!!!!!
 			}
-			gameObjects.removeIf(p -> !(Boolean)statement.getExpressions()[1].evaluate(new double[]{Double.POSITIVE_INFINITY}));
+			gameObjects.removeIf(p -> {
+				Statement assignment = new Statement(ASSIGNMENT);
+				assignment.addConditiond(new Value<String>(variable));
+				assignment.addConditiond(new Value<GameObject>(p));
+				assignment.setType(type);
+				assignment.noReset();
+				assignment.addProgram(statement.getProgram());
+				assignment.executeNext(new double[]{Double.POSITIVE_INFINITY});
+				return !(Boolean)statement.getExpressions()[1].evaluate(new double[]{Double.POSITIVE_INFINITY});
+			});
 			gameObjects.sort(new Comparator<GameObject>() {
 				public int compare(GameObject a,GameObject b){
 					statement.getExpressions()[1].reset();
@@ -133,15 +141,19 @@ public enum Category {
 	},
 	IF{
 		public void execute(Statement statement, double[] dt){
-			if((boolean)statement.getExpressions()[0].evaluate(dt) && dt[0]>0){
-				statement.setDoneTrue();
+			if((boolean)statement.getExpressions()[0].evaluate(dt)){
 				statement.getNextStatements()[0].addPreviousStatement(statement);
 				statement.getNextStatements()[0].executeNext(dt);
-			}else{
 				if(dt[0]>0)
 					statement.setDoneTrue();
-				if(statement.getNextStatements()[1] != null)
+			}else{
+				statement.setDoneTrue();
+				if(statement.getNextStatements()[1] != null){
 					statement.getNextStatements()[1].executeNext(dt);
+					if(dt[0]>0)
+						statement.setDoneTrue();
+				}else
+					statement.setDoneTrue();
 			}
 		};
 	},

@@ -239,7 +239,7 @@ public class Shark extends GameObject{
 		if(getProgram() != null){
 			if(actionTime>0){
 				//actionTime = getProgram().executeTime(((double)((int)(actionTime*1000)))/1000.0d);
-				getProgram().executeTime(0.01d);
+				//actionTime = getProgram().executeTime(0.002d);
 			}
 		}else{
 			if(actionTime == actionDuration){
@@ -457,7 +457,8 @@ public class Shark extends GameObject{
 			this.setHorizontalVelocity(newSpeed);
 		}
 		if(((getPositionX()+s <=0d || s<0)&& dirSign>0 )|| (s>0 && dirSign<0)){
-			throw new IllegalMovementException("positionX overflowed");
+			System.out.println("shark error");
+			//throw new IllegalMovementException("positionX overflowed");
 		}
 		//correct position if out of window
 		if(getPositionX()+s <0){

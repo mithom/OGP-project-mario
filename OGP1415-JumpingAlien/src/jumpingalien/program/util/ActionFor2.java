@@ -3,6 +3,7 @@ package jumpingalien.program.util;
 import jumpingalien.program.internal.Value;
 
 public enum ActionFor2{//TODO check for overflow errors etc
+	//TODO eerst evalueren, dan tijd controleren, dan pas uitvoeren!!!
 	ADDITION{
 		public Value<?> evaluate(Value<?> left,Value<?> right, double[] dt){
 			return new Value<Double>((double)left.evaluate(dt)+(double)right.evaluate(dt));

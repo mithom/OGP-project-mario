@@ -182,7 +182,7 @@ public class Statement {
 			nextStatements[nextNb].executeNext(dt);
 			return;
 		}
-		if(resetOnEnd)
+		if(resetOnEnd && isDone())
 			reset(dt);
 		//return dt;
 	}

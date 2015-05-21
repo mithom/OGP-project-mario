@@ -188,7 +188,7 @@ public class Slime extends GameObject{
 		if(getProgram() != null){
 			if(actionTime>0){
 				//actionTime = getProgram().executeTime(((double)((int)(actionTime*1000)))/1000.0d);
-				getProgram().executeTime(0.01d);
+				actionTime = getProgram().executeTime(0.002d);
 			}
 		}else{
 			if(actionTime == actionDuration){
@@ -227,6 +227,7 @@ public class Slime extends GameObject{
 	 */
 	public void endMove(){
 		setHorizontalVelocity(0.0d);
+		direction=Direction.STALLED;
 	}
 	/**
 	 * animates the movement of slime.
@@ -300,7 +301,7 @@ public class Slime extends GameObject{
 	
 	private double moveHorizontal(double dt) throws IllegalMovementException,PositionOutOfBoundsException{
 		int dirSign =this.direction.getMultiplier();
-		System.out.println(this.direction);
+		//System.out.println(this.direction+","+toString());
 		double newSpeed = this.getHorizontalVelocity()+this.getHorizontalAcceleration()*dt;
 		double s;
 		//dirsign is used in here to compensate for the current direction of the mazub.
@@ -309,13 +310,15 @@ public class Slime extends GameObject{
 			double accDt = (this.getMaxHorizontalVelocity()- this.getHorizontalVelocity()*dirSign)/(getHorizontalAcceleration()*dirSign);
 			s= travelledHorizontalDistance(accDt)+getMaxHorizontalVelocity()*(dt-accDt)*dirSign;
 			this.setHorizontalVelocity(this.getMaxHorizontalVelocity()*dirSign);
-			System.out.println("1");
+			//System.out.println("1");
 		}
 		else{
-			System.out.println("2");
-			System.out.println(horizontalAcceleration+","+horizontalVelocity);
+			//System.out.println("2");
 			s= travelledHorizontalDistance(dt);
-			System.out.println(newSpeed+","+s);
+			if(toString().contains("nr:2")){
+				System.out.println("acc: "+horizontalAcceleration+",vel: "+horizontalVelocity+",sign: "+dirSign);
+				System.out.println(newSpeed+","+s);
+			}
 			this.setHorizontalVelocity(newSpeed);
 		}
 		if(((getPositionX()+s <=0d || s<0)&& dirSign>0 )|| (s>0 && dirSign<0)){
@@ -640,6 +643,7 @@ public class Slime extends GameObject{
 
 	@Override
 	public void endMove(Direction direction) {
+		endMove();
 		// TODO Auto-generated method stub
 		
 	};

@@ -46,24 +46,23 @@ public class Expression<R,G extends Value<?>> extends Value<R> {
 		if(isDone())
 			return lastState.evaluate(dt);
 		else{
-			dt[0] -= 0.001d;
-			//System.out.println("tijd eraf");
 			if(expressions.length==1){
 				if(action == null){
+					System.out.println("error want geen action?");
 					lastState = ((Value<R>)((G)expressions[0])).Copy();
 					if(lastState!=null)
-						setDone(true);
+						setDoneTrue(dt);
 					return lastState.evaluate(dt);
 				}else{
 					lastState=((Value<R>)((ActionFor1)action).evaluate((G)expressions[0], dt)).Copy();
 					if(lastState!=null)
-						setDone(true);
+						setDoneTrue(dt);
 					return lastState.evaluate(dt);
 				}
 			}else{
 				lastState=((Value<R>)((ActionFor2)action).evaluate((G)expressions[0],(Value<?>)expressions[1], dt)).Copy();
 				if(lastState!=null)
-					setDone(true);
+					setDoneTrue(dt);
 				return lastState.evaluate(dt);
 			}
 		}
@@ -71,10 +70,10 @@ public class Expression<R,G extends Value<?>> extends Value<R> {
 	
 	@Override
 	public void reset(){
-		setDone(false);
+		setDoneFalse();
 		for(Object expressionObject:expressions){
 			Value<?> expression= (Value<?>)expressionObject;
-			expression.setDone(false);
+			expression.setDoneFalse();
 		}
 	}
 	

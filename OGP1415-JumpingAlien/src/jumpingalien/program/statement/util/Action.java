@@ -8,11 +8,15 @@ public enum Action {
 	STARTRUN{
 		public void execute(Statement statement, double[] dt){
 			if(statement.getExpressions()[0].evaluate(dt)==Program.Direction.LEFT && dt[0]>0){
+				if(statement.getProgram().getGameObject().toString().contains("nr:2"))
+					System.out.println("startrun LEFT");
 				statement.getProgram().getGameObject().startMove(Direction.LEFT);
 				statement.setDoneTrue();
 				dt[0]-=0.001;
 			}else{
 				if(dt[0]>0){
+					if(statement.getProgram().getGameObject().toString().contains("nr:2"))
+						System.out.println("startrun RIGHT");
 					statement.getProgram().getGameObject().startMove(Direction.RIGHT);
 					statement.setDoneTrue();
 					dt[0]-=0.001;
@@ -23,11 +27,15 @@ public enum Action {
 	STOPRUN{
 		public void execute(Statement statement, double[] dt){
 			if(statement.getExpressions()[0].evaluate(dt)==Program.Direction.LEFT && dt[0]>0){
+				if(statement.getProgram().getGameObject().toString().contains("nr:2"))
+					System.out.println("stoprun LEFT: "+statement.getProgram().getGameObject().toString());
 				statement.getProgram().getGameObject().endMove(Direction.LEFT);
 				statement.setDoneTrue();
 				dt[0]-=0.001;
 			}else{
 				if(dt[0]>0){
+					if(statement.getProgram().getGameObject().toString().contains("nr:2"))
+						System.out.println("stoprun RIGHT: "+statement.getProgram().getGameObject().toString());
 					statement.getProgram().getGameObject().endMove(Direction.RIGHT);
 					statement.setDoneTrue();
 					dt[0]-=0.001;

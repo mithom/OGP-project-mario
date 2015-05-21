@@ -27,12 +27,11 @@ public class Value<R> {
 	
 	public R evaluate(double[] dt){//TODO: aanpassen voor previousStatement en dt!
 		if(!isDone()){
-			dt[0]-=0.001d;
+			setDoneTrue(dt);
 		}
 			/*System.out.println("tijd eraf");
 		else
 			System.out.println("geen tijd eraf");*/
-		setDone(true);
 		return value;
 	}
 	
@@ -102,8 +101,13 @@ public class Value<R> {
 		return copy;
 	}
 	
-	protected void setDone(boolean bool){
-		done = bool;
+	public void setDoneTrue(double[] dt){
+		dt[0]-= 0.001d;
+		done = true;
+	}
+	
+	protected void setDoneFalse(){
+		done=false;
 	}
 	
 	public boolean isDone(){
