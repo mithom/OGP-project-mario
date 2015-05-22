@@ -29,9 +29,9 @@ while true do
   start_run dir;
   if (j > 1) then
     start_jump;
-    t := 0;
+    jn := 0;
   else
-    t := t + 1;
+    jn := jn + 1;
   fi
   wait t;
   if (j > 1) then
