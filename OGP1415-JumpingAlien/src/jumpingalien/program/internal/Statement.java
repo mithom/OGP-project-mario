@@ -49,7 +49,7 @@ public class Statement {
 	
 	public void setDoneTrue(){
 		if(done==true)
-			System.out.println("done was al true");
+			System.out.println("done was al true: "+category);
 		done=true;
 	}
 

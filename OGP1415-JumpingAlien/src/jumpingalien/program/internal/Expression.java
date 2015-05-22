@@ -52,17 +52,20 @@ public class Expression<R,G extends Value<?>> extends Value<R> {
 				if(action == null){
 					System.out.println("error want geen action?");
 					lastState = ((Value<R>)((G)expressions[0])).Copy();
+					lastState.addProgram(getProgram());
 					//if(lastState!=null)
 						//setDoneTrue(dt);
 					return lastState.evaluate(dt);
 				}else{
 					lastState=((Value<R>)((ActionFor1)action).evaluate(this, dt)).Copy();
+					lastState.addProgram(getProgram());
 					//if(lastState!=null)
 						//setDoneTrue(dt);
 					return lastState.evaluate(dt);
 				}
 			}else{
 				lastState=((Value<R>)((ActionFor2)action).evaluate(this,dt)).Copy();
+				lastState.addProgram(getProgram());
 				//if(lastState!=null)
 					//setDoneTrue(dt);
 				return lastState.evaluate(dt);

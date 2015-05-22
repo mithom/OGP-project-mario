@@ -286,7 +286,6 @@ public class Mazub extends GameObject{
 				EffectOnCollisionWith(gameObject);
 				gameObject.EffectOnCollisionWith(this);
 			}
-			this.moveWindow();
 			if(isInLava()){
 				lastLavaHit -= correctDt;
 				if(lastLavaHit <= 0){
@@ -306,6 +305,7 @@ public class Mazub extends GameObject{
 			}
 		}
 		this.animate(dt2);
+		this.moveWindow();
 	}
 	
 	

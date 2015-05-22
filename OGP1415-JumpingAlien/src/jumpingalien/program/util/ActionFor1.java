@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import jumpingalien.exception.IllegalSizeException;
+import jumpingalien.model.Buzam;
 import jumpingalien.model.gameObject.GameObject;
 import jumpingalien.model.gameObject.TileObject;
 import jumpingalien.model.Program.Direction;
@@ -22,6 +23,7 @@ public enum ActionFor1 {
 	},
 	READ{
 		public Value<?> evaluate(Expression<?,? extends Value<?>> expression, double[] dt){
+			
 			Value<?> value = (Value<?>)expression.getExpressions()[0];
 			//if(value.getProgram().getGameObject().toString().contains("nr:2"))
 				//System.out.println(value.evaluate(dt)+": "+value.getProgram().getVariable((String)value.evaluate(dt)).evaluate(dt));

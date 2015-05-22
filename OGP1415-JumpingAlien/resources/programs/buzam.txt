@@ -43,11 +43,11 @@ while true do
 
 
   if (! isjumping self &&
-      ! ispassable(gettile(getx self, gety self))) then
+       ispassable(gettile(getx self, gety self))) then
     newxdir := right;
   fi
   if (! isjumping self &&
-      ! ispassable(gettile((getx self) + (getwidth self) - 1, gety self))) then
+       ispassable(gettile((getx self) + (getwidth self) - 1, gety self))) then
     newxdir := left;
   fi
 

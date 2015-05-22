@@ -1,11 +1,13 @@
 package jumpingalien.program.internal;
 
+import jumpingalien.model.Buzam;
 import jumpingalien.model.Program;
 
 public class Value<R extends Object> {
 	private Program program;
 	private boolean done;
 	private R value;
+	boolean copied = false;
 	/*private Statement previousStatement;
 	private Value<?> previousExpression;
 	private enum next{
@@ -25,7 +27,7 @@ public class Value<R extends Object> {
 		done=false;
 	};
 	
-	public R evaluate(double[] dt){//TODO: aanpassen voor previousStatement en dt!
+	public R evaluate(double[] dt){
 		//System.out.println(dt[0]+",evaluating base value, done: "+done+",value: "+value);
 		if(!isDone()){
 			if(dt[0]>0.0){
@@ -98,8 +100,9 @@ public class Value<R extends Object> {
 	protected Value<R> Copy(){
 		//System.out.println("aant kopiëren: "+this);
 		Value<R> copy = new Value<R>(value);
-		copy.addProgram(getProgram());
+		copy.addProgram(program);
 		copy.done = done;
+		copy.copied=true;
 		/*copy.previousStatement = previousStatement;
 		copy.previousExpression = previousExpression;
 		copy.firstNext =firstNext;
@@ -110,7 +113,6 @@ public class Value<R extends Object> {
 	}
 	
 	public void setDoneTrue(double[] dt){
-		//System.out.println("expression set Done");
 		dt[0]-= 0.001d;
 		done = true;
 	}

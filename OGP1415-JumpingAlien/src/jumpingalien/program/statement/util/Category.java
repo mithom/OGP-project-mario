@@ -79,7 +79,6 @@ public enum Category {
 		};
 	},
 	FOREACH{//TODO eerst evalueren, dan tijd controleren, dan pas uitvoeren!!!
-		//TODO manier vinden om de staat waarin hij zich bevindt, op te slaan!
 		public void execute(Statement statement, double[] dt){
 			Iterator<? extends GameObject> iterator = statement.getIterObjects();
 			if(iterator==null){
@@ -213,7 +212,6 @@ public enum Category {
 					if(done)
 						statement.setDoneTrue();
 				}else{
-					statement.setDoneTrue();
 					if(statement.getNextStatements()[1] != null){
 						boolean done =statement.getNextStatements()[1].executeNext(dt);
 						//if(dt[0]>0)
