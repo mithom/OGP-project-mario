@@ -182,7 +182,6 @@ public enum ActionFor2{//TODO check for overflow errors etc
 		public Value<?> evaluate(Expression<?,? extends Value<?>> expression,double[] dt){//TODO: implement this function
 			Value<?> left = (Value<?>)expression.getExpressions()[0];
 			Value<?> right = (Value<?>)expression.getExpressions()[1];
-			
 			GameObject variable1 = (GameObject)left.evaluate(dt);
 			Direction variable2 = (Direction)right.evaluate(dt);
 			if(dt[0]>0.0){

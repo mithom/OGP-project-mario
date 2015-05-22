@@ -11,6 +11,15 @@ import jumpingalien.program.internal.Expression;
 import jumpingalien.program.internal.Value;
 
 public enum ActionFor1 {
+	SELF{
+		public Value<?> evaluate(Expression<?,? extends Value<?>> expression, double[] dt){
+			if(dt[0]>0){
+				expression.setDoneTrue(dt);
+				return new Value<GameObject>(expression.getProgram().getGameObject());
+			}else
+				return new Value<Object>(null);
+		}
+	},
 	READ{
 		public Value<?> evaluate(Expression<?,? extends Value<?>> expression, double[] dt){
 			Value<?> value = (Value<?>)expression.getExpressions()[0];

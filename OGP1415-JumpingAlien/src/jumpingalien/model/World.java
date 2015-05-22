@@ -44,6 +44,7 @@ public class World {
 	private ArrayList<Slime> slimes = new ArrayList<Slime>();
 	private boolean terminated = false;
 	private Mazub mazub;
+	private Buzam buzam;
 	
 	public World(int tileSize, int nbTilesX, int nbTilesY,
 			int visibleWindowWidth, int visibleWindowHeight, int targetTileX,
@@ -108,6 +109,11 @@ public class World {
 	public void addMazub(Mazub mazub){
 		if(mazub.getWorld()==this)
 			this.mazub = mazub;
+	}
+	
+	public void addBuzam(Buzam buzam){
+		if(buzam.getWorld()==this)
+			this.buzam = buzam;
 	}
 	
 	/**
@@ -440,10 +446,12 @@ public class World {
 		ArrayList<GameObject> worldObjects = new ArrayList<GameObject>();
 		if(isValidMazub())
 			worldObjects.add(mazub);
+		if(buzam != null)
+			worldObjects.add(buzam);
 		worldObjects.addAll(plants);
 		worldObjects.addAll(getSlimes());
 		worldObjects.addAll(sharks);
-		
+		//worldObjects = getAllGameObjects();
 		for(GameObject worldObject:worldObjects){
 			worldObject.advanceTime(dt);
 		}
@@ -546,11 +554,13 @@ public class World {
 	 */
 	public ArrayList<GameObject> getAllGameObjects(){
 		ArrayList<GameObject> gameObjects = new ArrayList<GameObject>();
+		if(mazub != null)
+			gameObjects.add(mazub);
+		if(buzam != null)
+			gameObjects.add(buzam);
 		gameObjects.addAll(getPlants());
 		gameObjects.addAll(getSharks());
 		gameObjects.addAll(getSlimes());
-		if(mazub != null)
-			gameObjects.add(mazub);
 		return gameObjects;
 	}
 	

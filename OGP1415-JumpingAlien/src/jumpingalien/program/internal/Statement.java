@@ -1,6 +1,10 @@
 package jumpingalien.program.internal;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+
 import jumpingalien.model.Program;
+import jumpingalien.model.gameObject.GameObject;
 import jumpingalien.program.statement.util.Action;
 import jumpingalien.program.statement.util.Category;
 import jumpingalien.program.statement.util.Kind;
@@ -25,9 +29,18 @@ public class Statement {
 	private boolean sortAscending = true;//false is sorting descending
 	private boolean resetOnEnd = true;
 	private Double timeToWait;
+	private Iterator<? extends GameObject> iterObjects;
 	
 	public Type getType() {
 		return type;
+	}
+	
+	public void setIterObjects(Iterator<? extends GameObject> iterator){
+		iterObjects = iterator;
+	}
+	
+	public Iterator<? extends GameObject> getIterObjects(){
+		return iterObjects;
 	}
 
 	public void setType(Type type) {
@@ -161,9 +174,9 @@ public class Statement {
 		return done;
 	}
 	
-	public void executeNext(double[] dt){//TODO only if action is if,foreach or while, 2 next statements, 2cnd used if:end of while, after last of kind, and else clause.
+	public boolean executeNext(double[] dt){//TODO only if action is if,foreach or while, 2 next statements, 2cnd used if:end of while, after last of kind, and else clause.
 		if(dt[0]<=0.0)
-			return;
+			return false;
 		if(!isDone()){
 			//System.out.println("not done -> category: "+category);
 			execute(dt);
@@ -180,11 +193,13 @@ public class Statement {
 		}
 		if(nextStatements[nextNb] != null){
 			nextStatements[nextNb].addPreviousStatement(this);
-			nextStatements[nextNb].executeNext(dt);
-			return;
+			return nextStatements[nextNb].executeNext(dt);
 		}
-		if(resetOnEnd && isDone())
+		if(resetOnEnd && isDone()){
 			reset(dt);
+			return true;
+		}
+		return false;
 		//return dt;
 	}
 	
@@ -211,6 +226,7 @@ public class Statement {
 		if(isDone()){
 			done = false;
 			timeToWait=null;
+			iterObjects = null;
 			for(Value<?> expression:expressions)
 				if(expression != null)
 					expression.reset();

@@ -49,6 +49,7 @@ public class Mazub extends GameObject{
 	private double maxDuckingVelocity = 1.0d;
 	private boolean movingLeft = false;
 	private boolean movingRight = false;
+	private double actionTime = 0.0d;
 
 	/**
 	 * 
@@ -225,7 +226,14 @@ public class Mazub extends GameObject{
 	public void advanceTime(double dt)throws PositionOutOfBoundsException, IllegalMazubStateException, IllegalTimeException,IllegalMovementException{
 		double dt2 = dt;
 		while(dt>0 && !isTerminated()){
+			if(getProgram() != null){
+				if(actionTime>0){
+					actionTime = getProgram().executeTime(actionTime);
+					//actionTime = getProgram().executeTime(0.002d);
+				}
+			}
 			double correctDt=this.calculateCorrectDt(dt);
+			actionTime+=correctDt;
 			dt -= correctDt;
 			imunityTime = Math.max(0, imunityTime - correctDt);
 			animate(0.0d);//make the ducking animations etc all right, advancing in walking etc only in end, (otherwise, there's inaccuracy with the timers)
@@ -856,6 +864,10 @@ public class Mazub extends GameObject{
 	@Override
 	public boolean isJumping(){
 		return groundState != GroundState.GROUNDED && getVerticalVelocity()>0;
+	}
+	
+	protected void setGroundState(GroundState groundstate){
+		this.groundState = groundstate;
 	}
 	
 }

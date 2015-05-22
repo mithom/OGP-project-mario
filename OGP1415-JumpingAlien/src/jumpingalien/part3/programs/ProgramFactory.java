@@ -60,8 +60,7 @@ public class ProgramFactory implements IProgramFactory<Value<?>, Statement, Type
 
 	@Override
 	public Value<?> createSelf(SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Expression<GameObject, Value<Object>>(new Value<Object>(null) , ActionFor1.SELF);
 	}
 
 	@Override

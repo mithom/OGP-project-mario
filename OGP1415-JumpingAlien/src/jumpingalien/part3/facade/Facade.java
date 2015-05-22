@@ -2,6 +2,7 @@ package jumpingalien.part3.facade;
 
 import java.util.Optional;
 
+import jumpingalien.exception.IllegalSizeException;
 import jumpingalien.exception.PositionOutOfBoundsException;
 import jumpingalien.model.Buzam;
 import jumpingalien.model.Plant;
@@ -86,44 +87,44 @@ public class Facade extends jumpingalien.part2.facade.Facade implements IFacadeP
 
 	@Override
 	public void addBuzam(World world, Buzam buzam) {
-		// TODO Auto-generated method stub
+		buzam.addToWorld(world);
 
 	}
 
 	@Override
 	public int[] getLocation(Buzam alien) {
-		// TODO Auto-generated method stub
-		return null;
+		return alien.getPosition().getPixelPosition();
 	}
 
 	@Override
 	public double[] getVelocity(Buzam alien) {
-		// TODO Auto-generated method stub
-		return null;
+		return new double[]{alien.getHorizontalVelocity(),alien.getVerticalVelocity()};
 	}
 
 	@Override
 	public double[] getAcceleration(Buzam alien) {
-		// TODO Auto-generated method stub
-		return null;
+		return new double[]{alien.getHorizontalAcceleration(),alien.getVerticalAcceleration()};
 	}
 
 	@Override
 	public int[] getSize(Buzam alien) {
-		// TODO Auto-generated method stub
-		return null;
+		try{
+			return alien.getSize();
+		}catch(NullPointerException e){
+			throw new ModelException(e.getMessage());
+		}catch(IllegalSizeException ex){
+			throw new ModelException("illegal size of currentSprite: "+ ex.getSize().toString());
+		}
 	}
 
 	@Override
 	public Sprite getCurrentSprite(Buzam alien) {
-		// TODO Auto-generated method stub
-		return null;
+		return alien.getCurrentSprite();
 	}
 
 	@Override
 	public int getNbHitPoints(Buzam alien) {
-		// TODO Auto-generated method stub
-		return 0;
+		return alien.getNbHitPoints();
 	}
 
 }
