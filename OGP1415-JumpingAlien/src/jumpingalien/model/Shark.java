@@ -2,6 +2,8 @@ package jumpingalien.model;
 
 import java.util.Random;
 
+import org.hamcrest.core.IsInstanceOf;
+
 import be.kuleuven.cs.som.annotate.Basic;
 import jumpingalien.exception.IllegalMovementException;
 import jumpingalien.exception.IllegalSizeException;
@@ -159,7 +161,7 @@ public class Shark extends GameObject{
 				}
 			}
 			//top
-			if( (overlapsWithWall()[2]==true || this.placeOverlapsWithGameObject()[3]==true) && getVerticalVelocity()>0){//TODO if elif ipv if if if
+			if( (overlapsWithWall()[2]==true || this.placeOverlapsWithGameObject()[3]==true) && getVerticalVelocity()>0){
 				this.setVerticalVelocity(0.0d);
 				setPositionY(oldPosition.getPositions()[1]);
 			}
@@ -653,23 +655,27 @@ public class Shark extends GameObject{
 	 */
 	
 	public void EffectOnCollisionWith(GameObject gameObject){
+		boolean done = false;
 		if(gameObject instanceof Mazub || gameObject instanceof Slime){
+			done = true;
 			if(!isImmune()){
 				this.loseHp(50);
 				this.imunityTime = 0.6d;
 			}
 		}
+		if(!done){
+			//doe nieuwe functie van andere
+			//gameObject.nieuwefunctie(this);
+		}
 	}
 
 	@Override
 	public void startDuck() {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void endDuck() {
-		// TODO Auto-generated method stub
 		
 	}
 
