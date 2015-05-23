@@ -4,12 +4,9 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
 
-import jumpingalien.model.Buzam;
-import jumpingalien.model.Mazub;
 import jumpingalien.model.Program.Direction;
 import jumpingalien.model.World;
 import jumpingalien.model.gameObject.GameObject;
-import jumpingalien.model.gameObject.TileObject;
 import jumpingalien.program.internal.Statement;
 import jumpingalien.program.internal.Type;
 import jumpingalien.program.internal.Value;
