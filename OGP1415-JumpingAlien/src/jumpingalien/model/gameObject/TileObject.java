@@ -5,6 +5,7 @@ import jumpingalien.exception.IllegalMovementException;
 import jumpingalien.exception.IllegalSizeException;
 import jumpingalien.exception.IllegalTimeException;
 import jumpingalien.exception.PositionOutOfBoundsException;
+import jumpingalien.model.Program;
 import jumpingalien.model.World;
 import jumpingalien.state.Direction;
 import jumpingalien.util.Sprite;
@@ -12,9 +13,8 @@ import jumpingalien.util.Sprite;
 public class TileObject extends GameObject {
 	private GeologicalFeature geologicalFeature;
 
-	protected TileObject(int pixelLeftX, int pixelBottomY,GeologicalFeature geologicalFeature)
-			throws PositionOutOfBoundsException {
-		super(pixelLeftX, pixelBottomY, new Sprite[]{});
+	public TileObject(int pixelX, int pixelY,GeologicalFeature geologicalFeature){
+		super(pixelX, pixelY, new Sprite[]{});
 		this.geologicalFeature = geologicalFeature;
 	}
 
@@ -105,4 +105,11 @@ public class TileObject extends GameObject {
 		
 	}
 	
+	public boolean isMoving(Program.Direction direction){
+		return false;
+	}
+	
+	public String toString(){
+		return "tile of type: "+geologicalFeature.toString();
+	}
 }

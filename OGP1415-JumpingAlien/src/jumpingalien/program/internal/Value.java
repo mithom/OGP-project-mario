@@ -28,7 +28,8 @@ public class Value<R extends Object> {
 	};
 	
 	public R evaluate(double[] dt){
-		//System.out.println(dt[0]+",evaluating base value, done: "+done+",value: "+value);
+		//if(getProgram().getGameObject() instanceof Buzam)
+			//System.out.println(dt[0]+",evaluating base value, done: "+done+",value: "+value);
 		if(!isDone()){
 			if(dt[0]>0.0){
 				setDoneTrue(dt);

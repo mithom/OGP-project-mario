@@ -13,7 +13,15 @@ public class Program {
 	private GameObject gameObject;
 	private Statement statement;
 	public enum Direction {
-		UP,LEFT,DOWN,RIGHT;
+		UP{
+			public int getSign(){return 1;};
+		},LEFT{
+			public int getSign(){return -1;};
+		},DOWN{
+			public int getSign(){return -1;};
+		},RIGHT{
+			public int getSign(){return 1;};
+		};
 		public static Direction getEquivalent(IProgramFactory.Direction dir){
 			switch(dir){
 			case UP:
@@ -29,6 +37,7 @@ public class Program {
 				return RIGHT;
 			}
 		}
+		public abstract int getSign();
 	}
 	
 	private HashMap<String, Boolean> booleans = new HashMap<String,Boolean>();

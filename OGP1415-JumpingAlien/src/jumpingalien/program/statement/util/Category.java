@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
 
+import jumpingalien.model.Buzam;
 import jumpingalien.model.Mazub;
 import jumpingalien.model.Program.Direction;
 import jumpingalien.model.World;
 import jumpingalien.model.gameObject.GameObject;
+import jumpingalien.model.gameObject.TileObject;
 import jumpingalien.program.internal.Statement;
 import jumpingalien.program.internal.Type;
 import jumpingalien.program.internal.Value;
@@ -16,7 +18,7 @@ public enum Category {
 	WHILE{
 		public void execute(Statement statement, double[] dt){
 			//System.out.println(dt[0]+","+statement);
-			while( dt[0]>0 && ! statement.isDone()){
+			while( dt[0]>0 && ! statement.isDone() && statement.getNoBreak()){
 				Boolean variable = (Boolean)statement.getExpressions()[0].evaluate(dt);
 				if(variable != null ){
 					if(variable){
@@ -78,76 +80,50 @@ public enum Category {
 			}
 		};
 	},
-	FOREACH{//TODO eerst evalueren, dan tijd controleren, dan pas uitvoeren!!!
+	FOREACH{
 		public void execute(Statement statement, double[] dt){
+			
 			Iterator<? extends GameObject> iterator = statement.getIterObjects();
+			String variable = (String)statement.getExpressions()[0].evaluate(new double[]{Double.POSITIVE_INFINITY});
 			if(iterator==null){
 				Kind kind = statement.getKind();
-				Type type = statement.getType();
-				ArrayList<? extends GameObject> gameObjects;
-				String variable = (String)statement.getExpressions()[0].evaluate(new double[]{Double.POSITIVE_INFINITY});
+				ArrayList<GameObject> gameObjects = new ArrayList<GameObject>();
 				World world = statement.getProgram().getGameObject().getWorld();
 				switch(kind){
 				case MAZUB:
-					ArrayList<Mazub> temp = new ArrayList<Mazub>();
-					temp.add(world.getMazub());
-					gameObjects = temp;
+					gameObjects.add(world.getMazub());
 					break;
 				case BUZAM:
-					//TODO: need to implement buzam first
-					gameObjects = new ArrayList<GameObject>();
+					gameObjects.add(world.getBuzam());
 					break;
 				case SLIME:
-					gameObjects = world.getSlimes();
+					gameObjects.addAll(world.getSlimes());
 					break;
 				case SHARK:
-					gameObjects = world.getSharks();
+					gameObjects.addAll(world.getSharks());
 					break;
 				case PLANT:
-					gameObjects = world.getPlants();
-					break;
-				case TERRAIN:
-					//TODO need to implement terrain first
-					gameObjects = new ArrayList<GameObject>();
+					gameObjects.addAll(world.getPlants());
 					break;
 				case ANY:
-					gameObjects = world.getAllGameObjects();//TODO terrain has to be in here too!!!!!!
-					break;
-				default:
-					gameObjects = world.getAllGameObjects();//TODO terrain has to be in here too!!!!!!
+					gameObjects.addAll(world.getAllGameObjects());//falltrough to terrain to add terrain to GameObjects
+				case TERRAIN:
+					gameObjects.addAll(statement.getProgram().getGameObject().getWorld().getAllTileObjects());
 					break;
 				}
 				gameObjects.removeIf(p -> {
 					statement.getExpressions()[1].reset();
-					Statement assignment = new Statement(ASSIGNMENT);
-					assignment.addConditiond(new Value<String>(variable));
-					assignment.addConditiond(new Value<GameObject>(p));
-					assignment.setType(type);
-					assignment.noReset();
-					assignment.addProgram(statement.getProgram());
-					assignment.executeNext(new double[]{Double.POSITIVE_INFINITY});
+					assignVariable(variable,p,statement);
 					return !(Boolean)statement.getExpressions()[1].evaluate(new double[]{Double.POSITIVE_INFINITY});
 				});
 				gameObjects.sort(new Comparator<GameObject>() {
 					public int compare(GameObject a,GameObject b){
 						statement.getExpressions()[2].reset();
-						Statement assignment = new Statement(ASSIGNMENT);
-						assignment.addConditiond(new Value<String>(variable));
-						assignment.addConditiond(new Value<GameObject>(a));
-						assignment.setType(type);
-						assignment.noReset();
-						assignment.addProgram(statement.getProgram());
-						assignment.executeNext(new double[]{Double.POSITIVE_INFINITY});
+						assignVariable(variable,a,statement);
 						double valueA = (double)statement.getExpressions()[2].evaluate(new double[]{Double.POSITIVE_INFINITY});
 						
 						statement.getExpressions()[2].reset();
-						assignment = new Statement(ASSIGNMENT);
-						assignment.addConditiond(new Value<String>(variable));
-						assignment.addConditiond(new Value<GameObject>(b));
-						assignment.setType(type);
-						assignment.noReset();
-						assignment.addProgram(statement.getProgram());
-						assignment.executeNext(new double[]{Double.POSITIVE_INFINITY});
+						assignVariable(variable,b,statement);
 						double valueB = (double)statement.getExpressions()[2].evaluate(new double[]{Double.POSITIVE_INFINITY});
 						if(valueA>valueB){
 							if(statement.getSortAscending())
@@ -164,21 +140,26 @@ public enum Category {
 				});
 				iterator = gameObjects.iterator();
 				statement.setIterObjects(iterator);
-				if(iterator.hasNext())
-					iterator.next();//create assignment here
+				//System.out.println("gameObjects: "+gameObjects.toString());
+				if(iterator.hasNext()){
+					assignVariable(variable,iterator.next(),statement);
+				}
 			}
 			dt[0]-=0.001d;
 			//int i = 0;
 			//while(i< gameObjects.size() && dt[0]>0.0d && ! statement.isDone()){
-			while(dt[0]>0 && !statement.isDone()){
+			while(dt[0]>0 && !statement.isDone() && statement.getNoBreak()){
 				
 				statement.getNextStatements()[0].addPreviousStatement(statement);
 				boolean done = statement.getNextStatements()[0].executeNext(dt);
 				if(done){
-					if(iterator.hasNext())
-						iterator.next();//create assignment here
-					else
+					if(iterator.hasNext()){
+						assignVariable(variable,iterator.next(),statement);
+					}
+					else{
 						statement.setDoneTrue();
+						//System.out.println("foreachlus gedaan");
+					}
 				}
 			}
 		};
@@ -190,15 +171,20 @@ public enum Category {
 				statement.setDoneTrue();
 				dt[0]-=0.001d;
 				Statement prev = statement.getPreviousStatement();
-				while(prev.getCategory() != Category.WHILE || prev.getCategory() != Category.FOREACH)
+				while(prev.getCategory() != Category.WHILE && prev.getCategory() != Category.FOREACH){
+					if(prev.getCategory()==Category.IF)
+						prev.setDoneTrue();
+					//System.out.println(prev);
 					prev = prev.getPreviousStatement();
-				prev.setDoneTrue();//TODO reset
-				//prev.executeNext(dt);
+				}
+				//System.out.println(prev);
+				//prev.setDoneTrue();
+				prev.BreakDone();
 				Statement next = prev.getNextStatements()[1];
 				next.addPreviousStatement(statement);
 				next.executeNext(dt);
-			}else
-				System.out.println("no time-> no break");
+			}//else
+				//System.out.println("no time-> no break");
 		};
 	},
 	IF{
@@ -211,14 +197,19 @@ public enum Category {
 					//if(dt[0]>0)
 					if(done)
 						statement.setDoneTrue();
+					//System.out.println("einde van de if,true");
 				}else{
-					if(statement.getNextStatements()[1] != null){
+					if(statement.getNextStatements()[1].getCategory() != null){
+						statement.getNextStatements()[1].addPreviousStatement(statement);
 						boolean done =statement.getNextStatements()[1].executeNext(dt);
 						//if(dt[0]>0)
 						if(done)
 							statement.setDoneTrue();
-					}else
+						//System.out.println("einde van de if,false");
+					}else{
 						statement.setDoneTrue();
+						//System.out.println("einde van de if, none");
+					}
 				}
 			}
 		};
@@ -228,7 +219,7 @@ public enum Category {
 			Object variable = statement.getExpressions()[0].evaluate(dt);
 			if(dt[0]>0){
 				statement.setDoneTrue();
-				System.out.println(variable);
+				System.out.print(variable);
 				dt[0]-=0.001d;
 			}
 		};
@@ -245,5 +236,15 @@ public enum Category {
 			dt[0]-=0.001d;
 		};
 	}*/;
-	public abstract void execute(Statement statement, double[] dt); 
+	public abstract void execute(Statement statement, double[] dt);
+	
+	protected void assignVariable(String variable, GameObject p,Statement statement){
+		Statement assignment = new Statement(ASSIGNMENT);
+		assignment.addConditiond(new Value<String>(variable));
+		assignment.addConditiond(new Value<GameObject>(p));
+		assignment.setType(new Type(Type.type.OBJECT));
+		assignment.noReset();
+		assignment.addProgram(statement.getProgram());
+		assignment.executeNext(new double[]{Double.POSITIVE_INFINITY});
+	}
 }

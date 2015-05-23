@@ -1,5 +1,6 @@
 package jumpingalien.program.internal;
 
+import jumpingalien.model.Buzam;
 import jumpingalien.model.Program;
 import jumpingalien.program.util.ActionFor1;
 import jumpingalien.program.util.ActionFor2;
@@ -45,9 +46,12 @@ public class Expression<R,G extends Value<?>> extends Value<R> {
 	//TODO: only works if correct program, still need to catch errors
 	public R evaluate(double[] dt){//TODO: aanpassen voor previousStatement en dt!
 		if(isDone()){
-			//System.out.println("reeds klaar ("+action+") , returned lastState: "+ lastState.evaluate(new double[]{Double.POSITIVE_INFINITY}));
+			//if(getProgram().getGameObject() instanceof Buzam)
+				//System.out.println("reeds klaar ("+action+") , returned lastState: "+ lastState.evaluate(new double[]{Double.POSITIVE_INFINITY}));
 			return lastState.evaluate(dt);
 		}else{
+			//if(getProgram().getGameObject() instanceof Buzam)
+				//System.out.println("expr: "+action);
 			if(expressions.length==1){
 				if(action == null){
 					System.out.println("error want geen action?");
@@ -78,7 +82,7 @@ public class Expression<R,G extends Value<?>> extends Value<R> {
 		setDoneFalse();
 		for(Object expressionObject:expressions){
 			Value<?> expression= (Value<?>)expressionObject;
-			expression.setDoneFalse();
+			expression.reset();
 		}
 	}
 	

@@ -58,7 +58,7 @@ public abstract class GameObject {//TODO: make TileObject
 	 * 
 	 */
 	@Raw @Model
-	protected GameObject(int pixelLeftX, int pixelBottomY, Sprite[] sprites) throws PositionOutOfBoundsException{
+	protected GameObject(int pixelLeftX, int pixelBottomY, Sprite[] sprites){
 		assert sprites.length>=1;
 		position = new Position(new double[]{pixelLeftX/100.0d,pixelBottomY/100.0d});
 		this.spriteList = sprites;
@@ -548,4 +548,6 @@ public abstract class GameObject {//TODO: make TileObject
 	public abstract void endDuck();
 	public abstract void startMove(Direction direction);
 	public abstract void endMove(Direction direction);
+	
+	public abstract boolean isMoving(Program.Direction direction);
 }

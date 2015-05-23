@@ -18,6 +18,7 @@ import jumpingalien.model.Program;
 import jumpingalien.model.Shark;
 import jumpingalien.model.Slime;
 import jumpingalien.model.gameObject.GameObject;
+import jumpingalien.model.gameObject.TileObject;
 
 public class ProgramFactory implements IProgramFactory<Value<?>, Statement, Type, Program> {
 
@@ -206,8 +207,8 @@ public class ProgramFactory implements IProgramFactory<Value<?>, Statement, Type
 	}
 
 	@Override
-	public Value<?> createIsTerrain(Value<?> expr, SourceLocation sourceLocation) {//TODO: change to terrain when object is ready
-		return new Expression<Boolean, Value<?>>((Value<GameObject>)expr,new Value<Class<?>>(Mazub.class), ActionFor2.ISINSTANCE);
+	public Value<?> createIsTerrain(Value<?> expr, SourceLocation sourceLocation) {
+		return new Expression<Boolean, Value<?>>((Value<GameObject>)expr,new Value<Class<?>>(TileObject.class), ActionFor2.ISINSTANCE);
 	}
 
 	@Override
@@ -299,7 +300,10 @@ public class ProgramFactory implements IProgramFactory<Value<?>, Statement, Type
 		Statement ifStatement = new Statement(Category.IF);
 		ifStatement.addConditiond(condition);
 		ifStatement.addNextStatement(ifBody);
-		ifStatement.addNextStatement(elseBody);
+		if(elseBody!=null)
+			ifStatement.addNextStatement(elseBody);
+		else
+			ifStatement.addNextStatement(new Statement((Category)null));
 		return ifStatement;
 	}
 
@@ -360,8 +364,10 @@ public class ProgramFactory implements IProgramFactory<Value<?>, Statement, Type
 
 	@Override
 	public Statement createSequence(List<Statement> statements, SourceLocation sourceLocation) {
-		for(int i =0;i<statements.size()-1;i++)
+		for(int i =0;i<statements.size()-1;i++){
 			statements.get(i).addNextStatement(statements.get(i+1));
+			statements.get(i+1).addPreviousStatement(statements.get(i));
+		}
 		return statements.get(0);
 	}
 
@@ -387,7 +393,7 @@ public class ProgramFactory implements IProgramFactory<Value<?>, Statement, Type
 
 	@Override
 	public Program createProgram(Statement mainStatement, Map<String, Type> globalVariables) {
-		// TODO complete
+		// TODO complete, think it's done XD,not shure
 		Program program = new Program();
 		program.addAllGlobals(globalVariables);
 		//addStatements after they are created

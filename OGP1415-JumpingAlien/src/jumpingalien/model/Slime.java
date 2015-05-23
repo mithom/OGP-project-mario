@@ -649,4 +649,16 @@ public class Slime extends GameObject{
 		// TODO Auto-generated method stub
 		
 	};
+	
+	public boolean isMoving(Program.Direction direction){
+		switch(direction){
+		case UP:
+		case DOWN:
+			return Math.signum(getVerticalVelocity())==direction.getSign();
+		case LEFT:
+		case RIGHT:
+			return Math.signum(getHorizontalVelocity())==direction.getSign();
+		}
+		return false;
+	}
 }

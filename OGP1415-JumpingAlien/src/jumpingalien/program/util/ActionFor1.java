@@ -65,7 +65,7 @@ public enum ActionFor1 {
 			GameObject variable = (GameObject)value.evaluate(dt);
 			if(dt[0]>0){
 				expression.setDoneTrue(dt);
-				return new Value<Integer>((variable).getPosition().getPixelPosition()[0]);
+				return new Value<Double>((Double)(double)(variable).getPosition().getPixelPosition()[0]);
 			}else
 				return new Value<Object>(null);
 		}
@@ -76,7 +76,7 @@ public enum ActionFor1 {
 			GameObject variable = (GameObject)value.evaluate(dt);
 			if(dt[0]>0){
 				expression.setDoneTrue(dt);
-				return new Value<Integer>((variable).getPosition().getPixelPosition()[1]);
+				return new Value<Double>((Double)(double)(variable).getPosition().getPixelPosition()[1]);
 			}else
 				return new Value<Object>(null);
 		}
@@ -88,12 +88,12 @@ public enum ActionFor1 {
 				GameObject variable =(GameObject)value.evaluate(dt);
 				if(dt[0]>0){
 					expression.setDoneTrue(dt);
-					return new Value<Integer>((variable).getSize()[0]);
+					return new Value<Double>((Double)(double)(variable).getSize()[0]);
 				}else
 					return new Value<Object>(null);
 			}catch(IllegalSizeException e){
 				System.out.println("getter moet nog gefixed worden");
-				return new Value<Integer>();
+				return new Value<Double>();
 			}
 		}
 	},
@@ -104,12 +104,12 @@ public enum ActionFor1 {
 				GameObject variable = (GameObject)value.evaluate(dt);
 				if(dt[0]>0){
 					expression.setDoneTrue(dt);
-					return new Value<Integer>((variable).getSize()[1]);
+					return new Value<Double>((Double)(double)(variable).getSize()[1]);
 				}else
 					return new Value<Object>(null);
 			}catch(IllegalSizeException e){
 				System.out.println("getter moet nog gefixed worden");
-				return new Value<Integer>();
+				return new Value<Double>();
 			}
 		}
 	},
@@ -119,7 +119,7 @@ public enum ActionFor1 {
 			GameObject variable = (GameObject)value.evaluate(dt);
 			if(dt[0]>0){
 				expression.setDoneTrue(dt);
-				return new Value<Integer>((variable).getNbHitPoints());
+				return new Value<Double>((Double)(double)(variable).getNbHitPoints());
 			}else
 				return new Value<Object>(null);
 		}

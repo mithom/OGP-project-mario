@@ -2,6 +2,7 @@ package jumpingalien.program.util;
 
 import jumpingalien.model.Program.Direction;
 import jumpingalien.model.gameObject.GameObject;
+import jumpingalien.model.gameObject.TileObject;
 import jumpingalien.program.internal.Value;
 import jumpingalien.program.internal.Expression;
 
@@ -64,6 +65,8 @@ public enum ActionFor2{//TODO check for overflow errors etc
 			Value<?> left = (Value<?>)expression.getExpressions()[0];
 			Value<?> right = (Value<?>)expression.getExpressions()[1];
 			Boolean variable1 = (Boolean)left.evaluate(dt);
+			if(dt[0]>0 && variable1 ==false)
+				return new Value<Boolean>(false);
 			Boolean variable2 = (Boolean)right.evaluate(dt);
 			if(dt[0]>0.0){
 				expression.setDoneTrue(dt);
@@ -77,6 +80,8 @@ public enum ActionFor2{//TODO check for overflow errors etc
 			Value<?> left = (Value<?>)expression.getExpressions()[0];
 			Value<?> right = (Value<?>)expression.getExpressions()[1];
 			Boolean variable1 = (Boolean)left.evaluate(dt);
+			if(dt[0]>0 && variable1 == true)
+				return new Value<Boolean>(true);
 			Boolean variable2 = (Boolean)right.evaluate(dt);
 			if(dt[0]>0.0){
 				expression.setDoneTrue(dt);
@@ -179,19 +184,18 @@ public enum ActionFor2{//TODO check for overflow errors etc
 		}
 	},// 2different types(e and class)
 	ISMOVING{
-		public Value<?> evaluate(Expression<?,? extends Value<?>> expression,double[] dt){//TODO: implement this function
+		public Value<?> evaluate(Expression<?,? extends Value<?>> expression,double[] dt){
 			Value<?> left = (Value<?>)expression.getExpressions()[0];
 			Value<?> right = (Value<?>)expression.getExpressions()[1];
 			GameObject variable1 = (GameObject)left.evaluate(dt);
 			Direction variable2 = (Direction)right.evaluate(dt);
 			if(dt[0]>0.0){
-				expression.setDoneTrue(dt);
-				return new Value<Boolean>(true);
+				return new Value<Boolean>(variable1.isMoving(variable2));
 			}else
 				return new Value<Object>(null);
 		}
-	},// 2different types (e and direction)
-	GETTILE{//TODO:implement this function when tileObject is ready
+	},
+	GETTILE{
 		public Value<?> evaluate(Expression<?,? extends Value<?>> expression,double[] dt){
 			Value<?> left = (Value<?>)expression.getExpressions()[0];
 			Value<?> right = (Value<?>)expression.getExpressions()[1];
@@ -199,7 +203,7 @@ public enum ActionFor2{//TODO check for overflow errors etc
 			Double variable2 = (Double)right.evaluate(dt);
 			if(dt[0]>0.0){
 				expression.setDoneTrue(dt);
-				return new Value<Double>(variable1 +variable2);
+				return new Value<TileObject>(expression.getProgram().getGameObject().getWorld().getTileObject(variable1, variable2));
 			}else
 				return new Value<Object>(null);
 		}

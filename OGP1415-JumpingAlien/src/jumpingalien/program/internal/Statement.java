@@ -1,8 +1,8 @@
 package jumpingalien.program.internal;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 
+import jumpingalien.model.Buzam;
 import jumpingalien.model.Program;
 import jumpingalien.model.gameObject.GameObject;
 import jumpingalien.program.statement.util.Action;
@@ -30,6 +30,7 @@ public class Statement {
 	private boolean resetOnEnd = true;
 	private Double timeToWait;
 	private Iterator<? extends GameObject> iterObjects;
+	private boolean noBreak = true;
 	
 	public Type getType() {
 		return type;
@@ -54,7 +55,7 @@ public class Statement {
 	}
 
 	public void addConditiond(Value<?> expression){
-		if(getCategory()==Category.WHILE || getCategory()==Category.FOREACH || getCategory()==Category.IF || getCategory() == Category.ASSIGNMENT || getCategory() == Category.ACTION){
+		if(getCategory()==Category.WHILE || getCategory()==Category.FOREACH || getCategory()==Category.IF || getCategory() == Category.ASSIGNMENT || getCategory() == Category.ACTION || getCategory() == Category.PRINT){
 			if(expressions[0]==null)
 				expressions[0] = expression;
 			else{
@@ -87,7 +88,7 @@ public class Statement {
 				if(expression != null)
 					expression.addProgram(program);
 			}
-		}else{//TODO: uitzoeken hoe dit komt!
+		}else{
 			//System.out.println(this.program);
 			System.out.println("oops had al een program");
 			//System.out.println(category +","+ expressions[0].evaluate(new double[]{100}));
@@ -174,14 +175,16 @@ public class Statement {
 		return done;
 	}
 	
-	public boolean executeNext(double[] dt){//TODO only if action is if,foreach or while, 2 next statements, 2cnd used if:end of while, after last of kind, and else clause.
+	public boolean executeNext(double[] dt){
 		if(dt[0]<=0.0)
 			return false;
 		if(!isDone()){
-			//System.out.println("not done -> category: "+category);
+			//if(getProgram().getGameObject() instanceof Buzam)
+				//System.out.println("not done -> category: "+category);
 			execute(dt);
 		}//else
-			//System.out.println("it was done ("+category+")");
+			//if(getProgram().getGameObject() instanceof Buzam)
+				//System.out.println("it was done ("+category+")");
 		int nextNb;
 		if(getCategory()==Category.WHILE || getCategory()==Category.FOREACH)
 			nextNb=1;
@@ -191,10 +194,12 @@ public class Statement {
 			else
 				nextNb=0;
 		}
-		if(nextStatements[nextNb] != null){
+		if(nextStatements[nextNb] != null && noBreak){
 			nextStatements[nextNb].addPreviousStatement(this);
 			return nextStatements[nextNb].executeNext(dt);
 		}
+		if(!noBreak)
+			setDoneTrue();
 		if(resetOnEnd && isDone()){
 			reset(dt);
 			return true;
@@ -227,6 +232,7 @@ public class Statement {
 			done = false;
 			timeToWait=null;
 			iterObjects = null;
+			noBreak = true;
 			for(Value<?> expression:expressions)
 				if(expression != null)
 					expression.reset();
@@ -311,5 +317,13 @@ public class Statement {
 				str += expr.toString();
 		}
 		return category.toString()+","+action+","+str+",done?: "+isDone();
+	}
+	
+	public void BreakDone(){
+		noBreak = false;
+	}
+	
+	public boolean getNoBreak(){
+		return noBreak;
 	}
 }

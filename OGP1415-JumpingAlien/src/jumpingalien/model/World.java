@@ -13,6 +13,7 @@ import jumpingalien.exception.PositionOutOfBoundsException;
 import jumpingalien.model.gameObject.GameObject;
 import jumpingalien.model.gameObject.Position;
 import jumpingalien.model.gameObject.GeologicalFeature;
+import jumpingalien.model.gameObject.TileObject;
 
 /**
  * World is a class representing the gameworld in which a game shall be played.
@@ -83,8 +84,12 @@ public class World {
 			((Slime)gameObject).getSchool().removeSlime((Slime)gameObject);
 			((Slime)gameObject).setSchool(null);
 		}
-		if(gameObject instanceof Mazub)
-			mazub = null;
+		if(gameObject instanceof Mazub){
+			if(gameObject instanceof Buzam)
+				buzam = null;
+			else
+				mazub = null;
+		}
 		if(gameObject instanceof Shark)
 			sharks.remove(gameObject);
 	}
@@ -579,5 +584,23 @@ public class World {
 	
 	public Mazub getMazub(){
 		return mazub;
+	}
+	
+	public Buzam getBuzam(){
+		return buzam;
+	}
+	
+	public TileObject getTileObject(Double pixelX,Double pixelY){
+		int geoFeature =this.getGeologicalFeature(new int[]{pixelX.intValue(),pixelY.intValue()});
+		return new TileObject(pixelX.intValue(),pixelY.intValue(),GeologicalFeature.numberTypeToGeologicalFeature(geoFeature));
+	}
+	
+	public ArrayList<TileObject> getAllTileObjects(){
+		int[][] positions = getTilePositionsIn(0, 0, width, height);
+		ArrayList<TileObject> tileObjects = new ArrayList<TileObject>();
+		for(int[] pos:positions){
+			tileObjects.add(new TileObject(pos[0], pos[1],GeologicalFeature.numberTypeToGeologicalFeature(getGeologicalFeature(pos))));
+		}
+		return tileObjects;
 	}
 }

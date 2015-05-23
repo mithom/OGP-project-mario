@@ -684,4 +684,16 @@ public class Shark extends GameObject{
 		endMove();//TODO: make direction specific for program!
 		
 	}
+	
+	public boolean isMoving(Program.Direction direction){
+		switch(direction){
+		case UP:
+		case DOWN:
+			return Math.signum(getVerticalVelocity())==direction.getSign();
+		case LEFT:
+		case RIGHT:
+			return Math.signum(getHorizontalVelocity())==direction.getSign();
+		}
+		return false;
+	}
 }

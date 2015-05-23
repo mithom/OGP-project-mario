@@ -34,7 +34,7 @@ public class Position {
 	 * @Post the position is set to the given coordinate
 	 * 			| new.getPositions = coordinate
 	 */		
-	public Position(double[] coordinate)throws PositionOutOfBoundsException{
+	public Position(double[] coordinate){
 		/*if(isValidCoordinate(coordinate)){
 			position = coordinate;
 		}else{

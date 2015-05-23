@@ -221,4 +221,17 @@ public class Plant extends GameObject{
 		// TODO Auto-generated method stub
 		
 	}
+	
+	public boolean isMoving(Program.Direction direction){
+		switch(direction){
+		case UP:
+		case DOWN:
+			return false;
+		case LEFT:
+			return this.direction== Direction.LEFT;
+		case RIGHT:
+			return this.direction ==Direction.RIGHT;
+		}
+		return false;
+	}
 }
