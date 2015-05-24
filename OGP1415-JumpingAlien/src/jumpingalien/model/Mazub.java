@@ -276,7 +276,7 @@ public class Mazub extends GameObject{
 			}
 			executeEndDuck();
 			for(GameObject gameObject:getOverlappingGameObjects()){
-				if(gameObject instanceof Slime || gameObject instanceof Shark){
+				if(gameObject instanceof Slime || gameObject instanceof Shark || gameObject instanceof Buzam){
 					setPositionX(oldPosition.getPositions()[0]);
 					setPositionY(oldPosition.getPositions()[1]);
 					boolean[] sides = sideOverlappingBetween(gameObject);
@@ -795,6 +795,11 @@ public class Mazub extends GameObject{
 	 * 		  | if this.world == null && canHaveAsWorld(world)
 	 * 		  |   then new.world = world
 	 *        |        world.addMazub(this)
+	 * @Post if the character overlaps with a wall at the bottom, his groundstate will be set to GROUNDED, otherwise he is in the air
+	 * 		  |if (overlapsWithWall()[0])
+	 * 		  | 	then new.getGroundState()==GroundState.GROUNDED
+	 * 	      |else
+	 * 		  |		then new.getGroundState() == GroundState.AIR
 	 */
 	@Override
 	public void addToWorld(World world){

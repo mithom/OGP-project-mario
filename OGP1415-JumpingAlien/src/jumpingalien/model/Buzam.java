@@ -84,8 +84,7 @@ public class Buzam extends GameObject{
 	 * @param pixelLeftX	|the most left position that is part from the currently showing Sprite.
 	 * @param pixelBottomY	|the lowest position that is part of the currently showing Sprite.
 	 * @param sprites		|a list of Sprites that mazub will use to rotate trough, to make
-	 * 						|animations. The first eight Sprites are predefined, while the next 2*m
-	 * 						|amount of Sprites will be used for the walking animation.
+	 * 						|animations. 
 	 * @param program		|the program that the Buzam istance will run
 	 * @Post	if the Buzam instance isn't located on the ground, he will know he is in the air.
 	 * 			|if(pixelBottomY>0):
@@ -112,8 +111,7 @@ public class Buzam extends GameObject{
 	 * @param pixelLeftX	|the most left position that is part from the currently showing Sprite.
 	 * @param pixelBottomY	|the lowest position that is part of the currently showing Sprite.
 	 * @param sprites		|a list of Sprites that mazub will use to rotate trough, to make
-	 * 						|animations. The first eight Sprites are predefined, while the next 2*m
-	 * 						|amount of Sprites will be used for the walking animation.
+	 * 						|animations. 
 	 * @param program 		|the program that the Buzam istance will run
 	 * @param minHp			|the minimum number of Hp	
 	 * @param maxHp			|the maximmum number of Hp
@@ -137,6 +135,23 @@ public class Buzam extends GameObject{
 		verticalVelocity = 0.0d;
 	}
 	
+	/**
+	 * 
+	 * @param pixelLeftX	|the most left position that is part from the currently showing Sprite.
+	 * @param pixelBottomY	|the lowest position that is part of the currently showing Sprite.
+	 * @param sprites		|a list of Sprites that mazub will use to rotate trough, to make
+	 * 						|animations. 
+	 * @param minHp			|the minimum number of Hp	
+	 * @param maxHp			|the maximmum number of Hp
+	 * @param currentHp		|the current number of Hp
+	 * @Post	if the Mazub instance isn't located on the ground, he will know he is in the air.
+	 * 			|if(pixelBottomY>0):
+	 * 			|	then new.groundState == GroundState.AIR
+	 * 			|	else new.groundState == GroundState.GROUNDED; 
+	 * @Post  Buzam will be automatically standing still and not ducking when the game starts 
+	 * 			| new.direction == Direction.STALLED
+	 * 			| new.duckstate == DuckState.STRAIGHT
+	 */
 	public Buzam(int pixelLeftX, int pixelBottomY, Sprite[] sprites,int minHp,int maxHp,int currentHp) throws PositionOutOfBoundsException{
 		super(pixelLeftX, pixelBottomY, sprites,minHp,maxHp,currentHp);
 		this.maxHorizontalVelocity = 3d;
@@ -168,12 +183,12 @@ public class Buzam extends GameObject{
 	 * @throws PositionOutOfBoundsException
 	 * 			mazub has an illegal position
 	 * 			| ! isValidPosition()
-	 * @Post	if mazub isn't standing still and the horizontal velocity is less than the initial velocity, his velocity will be set to the initial velocity
+	 * @Post	if buzam isn't standing still and the horizontal velocity is less than the initial velocity, his velocity will be set to the initial velocity
 	 * 			| while(dt>0 && !isTerminated())
 	 * 			|	if(getOriëntation()!= Direction.STALLED && getHorizontalVelocity()*getOriëntation().getMultiplier()<initialHorizontalVelocity){
 	 *			|			then new.getHorizontalVelocity()==initialHorizontalVelocity*direction.getMultiplier()
-	 * @Post 	if mazub isn't overlapping with a wall, it's y-position will be changed and mazub will be in the air. If it is overlapping, his position won't change 
-	 * 			and his vertical velocity will be set to 0. Depending on if mazub is overlapping with a wall beneath itself, the groundstate will change to grounded 
+	 * @Post 	if buzam isn't overlapping with a wall, it's y-position will be changed and buzam will be in the air. If it is overlapping, his position won't change 
+	 * 			and his vertical velocity will be set to 0. Depending on if buzam is overlapping with a wall beneath itself, the groundstate will change to grounded 
 	 * 			(if it is beneath) or in the air (if not).
 	 * 			|while(dt>0 && !isTerminated())
 	 * 			|	double correctDt=this.calculateCorrectDt(dt)
@@ -190,7 +205,7 @@ public class Buzam extends GameObject{
 				|	if(overlapsWithWall()[2]== true && getVerticalVelocity()>0.0d)
 				|		new.getVerticalVelocity()==0.0d
 				|		new.getPositionY()==oldPosition.getPositions()[1]
-	 * @Post 	if mazub isn't overlapping with a wall, it's x-position will be changed. If it is overlapping with a wall, 
+	 * @Post 	if buzam isn't overlapping with a wall, it's x-position will be changed. If it is overlapping with a wall, 
 	 * 			it's horizontal velocity will be set to 0 and it's position will remain the same		
 	 * 			|while(dt>0 && !isTerminated())
 	 * 			|	double correctDt=this.calculateCorrectDt(dt)
@@ -203,10 +218,10 @@ public class Buzam extends GameObject{
 				|		if( overlapsWithWall()[3]==true && getHorizontalVelocity()>0){
 				|			new.getHorizontalVelocity()==0.0d
 				|			new.getPositionX() == oldPosition.getPositions()[0]
-	 * @Post 	if Mazub collides with a Shark or Slime, his movement will be blocked (the change of position will be undone) and his velocity set to 0
+	 * @Post 	if Buzam collides with a Shark or Slime or Mazub, his movement will be blocked (the change of position will be undone) and his velocity set to 0
 	 * 			|while(dt>0 && !isTerminated())
 	 * 			|	for(GameObject gameObject:getOverlappingGameObjects()){
-				|		if(gameObject instanceof Slime || gameObject instanceof Shark){
+				|		if(gameObject instanceof Slime || gameObject instanceof Shark || gameObject instanceof Mazub){
 				|			new.getPositionX()== oldPosition.getPositions()[0]
 				|			new.getPositionY()==oldPosition.getPositions()[1]
 				|			boolean[] sides = sideOverlappingBetween(gameObject);
@@ -214,27 +229,26 @@ public class Buzam extends GameObject{
 				|				new.getVerticalVelocity()==0.0d
 	 *			|				new.groundState=GroundState.GROUNDED
 	 *
-	 * @effect	the position,velocity,acceleration and State from mazub will be update according to the physics over a span from dt seconds.
+	 * @effect	the position,velocity,acceleration and State from buzam will be updated according to the physics over a span from dt seconds.
 	 * 			|moveHorizontal()
 	 * 			|moveVertical()
-	 * @effect	the shown Sprite is updated according to the changed state of mazub.
+	 * @effect	the shown Sprite is updated according to the changed state of Buzam.
 	 * 			|animate(0.0d)
 	 * 			|animate(dt)
-	 * @effect  Mazub may be willing to end ducking
+	 * @effect  Buzam may be willing to end ducking
 	 * 			|executeEndDuck()
-	 * @effect  The window will be moving along with Mazub
-	 * 			|moveWindow()
-	 * @effect  If mazub collides with a gameObject, it will be checked if there are any consequences
+	 * @effect  If Buzam collides with a gameObject, it will be checked if there are any consequences
 	 * 			|for(GameObject gameObject:getOverlappingGameObjects())
 	 * 			|	EffectOnCollisionWith(gameObject)
 				|	gameObject.EffectOnCollisionWith(this)
-	 * @effect  If Mazub is in lava or water, he will lose Hp
+	 * @effect  If Buzam is in lava or water, he will lose Hp
 	 * 			|if isInLava() 
 				| 	then loseHp(50)
 				|if isInWater
 				|	then loseHp(2)
 	 */			
 
+	//TODO de move window moet toch weg hier he? ik heb die verwijderd in ieder geval
 	public void advanceTime(double dt)throws PositionOutOfBoundsException, IllegalMazubStateException, IllegalTimeException,IllegalMovementException{
 		double dt2 = dt;
 		while(dt>0 && !isTerminated()){
@@ -286,7 +300,7 @@ public class Buzam extends GameObject{
 			}
 			executeEndDuck();
 			for(GameObject gameObject:getOverlappingGameObjects()){
-				if(gameObject instanceof Slime || gameObject instanceof Shark){
+				if(gameObject instanceof Slime || gameObject instanceof Shark || gameObject instanceof Mazub){
 					setPositionX(oldPosition.getPositions()[0]);
 					setPositionY(oldPosition.getPositions()[1]);
 					boolean[] sides = sideOverlappingBetween(gameObject);
@@ -317,14 +331,13 @@ public class Buzam extends GameObject{
 			}
 		}
 		this.animate(dt2);
-		this.moveWindow();
 	}
 	
 	
 	/**
 	 * 
 	 * @param dt | The period of time from which, if necessary, needs to be taken a small part
-	 * @return the correct dt. This is the dt that makes sure that if mazub is moving, he will have moved 1 pixel after this dt.
+	 * @return the correct dt. This is the dt that makes sure that if Buzam is moving, he will have moved 1 pixel after this dt.
 	 * 			|Math.min(Math.min(Math.min(Math.min(0.01d/Math.abs(getHorizontalVelocity()),0.01d/Math.abs(getVerticalVelocity()))
 	 * 			 , Math.abs((-getHorizontalVelocity() + Math.sqrt(Math.pow(getHorizontalVelocity(), 2)-2*getHorizontalAcceleration()/100))/getHorizontalAcceleration()))
 	 * 			 , Math.abs((-getVerticalVelocity() + Math.sqrt(Math.pow(getVerticalVelocity(), 2)-2*getVerticalAcceleration()/100))/getVerticalAcceleration()))
@@ -372,7 +385,7 @@ public class Buzam extends GameObject{
 	 * @throws PositionOutOfBoundsException
 	 * 			(A part of) the character isn't located within the boundaries of the world
 	 * 			| ! hasValidPosition()
-	 * @Post the horizontal velocity of mazub will be set to the correct new velocity if this isn't more than the maximum allowed velocity. Else it will be set to the maximum velocity
+	 * @Post the horizontal velocity of buzam will be set to the correct new velocity if this isn't more than the maximum allowed velocity. Else it will be set to the maximum velocity
 	 * 			| if ! (newSpeed*dirSign > this.getMaxHorizontalVelocity())
 	 * 			| 	then new.getHorizontalVelocity()==this.getHorizontalVelocity()+this.getHorizontalAcceleration()*dt
 	 * 			| else
@@ -415,7 +428,7 @@ public class Buzam extends GameObject{
 	 * @throws PositionOutOfBoundsException
 	 * 			(A part of) the character isn't located within the boundaries of the world
 	 * 			| ! hasValidPosition()
-	 * @Post the vertical velocity of mazub will be set to the correct new velocity if mazub isn't standing on the bottom perimeter of the world. 
+	 * @Post the vertical velocity of buzam will be set to the correct new velocity if buzam isn't standing on the bottom perimeter of the world. 
 	 * 		 Else it will be set to 0 and it's groundstate will be set to grounded
 	 * 			| if ! (newPositiony<0)
 	 * 			| 	then new.getHorizontalVelocity()==this.getHorizontalVelocity()+this.getHorizontalAcceleration()*dt
@@ -577,7 +590,7 @@ public class Buzam extends GameObject{
 	}
 	
 	/**
-	 * returns the current acceleration of mazub according to the vertical direction
+	 * returns the current acceleration of buzam according to the vertical direction
 	 * @return this.verticalAcceleration*groundState.getMultiplier()
 	 */
 	@Basic
@@ -586,7 +599,7 @@ public class Buzam extends GameObject{
 	}
 	
 	/**
-	 * returns the current velocity of mazub according to the horizontal direction
+	 * returns the current velocity of buzam according to the horizontal direction
 	 * @return	|this.verticalVelocity
 	 */
 	@Basic
@@ -595,8 +608,8 @@ public class Buzam extends GameObject{
 	}
 	
 	/**
-	 * @param velocity	|the new velocity of mazub according to the y-axis
-	 * @post	mazub will have the vertical velocity that is passed on to this function
+	 * @param velocity	|the new velocity of buzam according to the y-axis
+	 * @post	buzam will have the vertical velocity that is passed on to this function
 	 * 			|new.getVerticalVelocity() == velocity
 	 */
 	private void setVerticalVelocity(double velocity){
@@ -604,7 +617,7 @@ public class Buzam extends GameObject{
 	}
 	
 	/**
-	 * returns the direction mazub is facing. If he is facing up front, the returned value will be Direction.STALLED.
+	 * returns the direction buzam is facing. If he is facing up front, the returned value will be Direction.STALLED.
 	 * @return this.direction
 	 */
 	@Basic
@@ -614,10 +627,10 @@ public class Buzam extends GameObject{
 	
 	/**
 	 * 
-	 * @param   dir	|the direction mazub is currently facing
+	 * @param   dir	|the direction buzam is currently facing
 	 * @Pre		the given Direction dir cannot be empty (null), neither can it be Direction.STALLED.
 	 * 			|(dir != null)&& (dir != Direction.STALLED)
-	 * @Post	mazub is ready to move in the given direction when time advances.
+	 * @Post	buzam is ready to move in the given direction when time advances.
 	 * 			|new.getHorizontalVelocity()== this.initialHorizontalVelocity*dir.getSign()
 	 * 			|new.getOrientation() == dir
 	 */
@@ -639,7 +652,7 @@ public class Buzam extends GameObject{
 	 * @param dir	|the direction in which you want to stop moving
 	 * @Pre		the given Direction dir cannot be empty (null), neither can it be Direction.STALLED.
 	 * 			|(dir != null)&& (dir != Direction.STALLED)
-	 * @Post	if the given direction is the direction in which mazub is moving, then mazub will not move when time advances.
+	 * @Post	if the given direction is the direction in which buzam is moving, then buzam will not move when time advances.
 	 * 			|if(this.getOrientation()==dir):
 	 * 			|	then	new.getHorizontalVelocity() == 0
 	 * 			|			new.getOrientation == Direction.STALLED
@@ -669,12 +682,12 @@ public class Buzam extends GameObject{
 	
 	/**
 	 * @throws IllegalMazubStateException
-	 * 			the grounState of mazub is the illegal value null
+	 * 			the grounState of buzam is the illegal value null
 	 * 			|this.getGroundState()==null
-	 * @Post	if mazub is on the ground, he'll get an upward velocity
+	 * @Post	if buzam is on the ground, he'll get an upward velocity
 	 * 			|if(this.getGroundState() == GroundState.GROUNDED
 	 * 			| then 	new.getVerticalVelocity() == this.initialVerticalVelocity
-	 * @Post	mazub will be noted as "being in the air". 
+	 * @Post	buzam will be noted as "being in the air". 
 	 * 			(if he isn't in the air, he jumps into it, if he is already in the air, hes state is already "in the air")
 	 * 			|new.getGroundState() == GroundState.AIR
 	 */
@@ -688,7 +701,7 @@ public class Buzam extends GameObject{
 	}
 	
 	/**
-	 * @Post	if mazub has an upward velocity, this will be set 0.
+	 * @Post	if buzam has an upward velocity, this will be set 0.
 	 * 			|if(this.getVerticalVelocity() > 0
 	 * 			|	then	new.getVerticalVelocity() == 0
 	 */
@@ -700,7 +713,7 @@ public class Buzam extends GameObject{
 	}
 	
 	/**
-	 * lets mazub duck
+	 * lets buzam duck
 	 * @Post	mazub will duck when time advances
 	 * 			|new.getDuckState() = DuckState.DUCKED
 	 */
@@ -710,10 +723,10 @@ public class Buzam extends GameObject{
 	}
 	
 	/**
-	 * lets mazub end with ducking
-	 * @Post	mazub will try to stand up (or stay straight if he was already staying straight)
+	 * lets buzam end with ducking
+	 * @Post	buzam will try to stand up (or stay straight if he was already staying straight)
 	 * 			|new.getDuckState() == DuckState.TRY_STRAIGHT
-	 * @effect  mazub will try to stand up
+	 * @effect  buzam will try to stand up
 	 * 			|executeEndDuck()
 	 */
 	public void endDuck(){
@@ -722,7 +735,7 @@ public class Buzam extends GameObject{
 		executeEndDuck();
 	}
 	/**
-	 * @Post	if mazub wants to stand up, he will if possible. Otherwise he will stay ducked
+	 * @Post	if buzam wants to stand up, he will if possible. Otherwise he will stay ducked
 	 * 			 |if(duckState == DuckState.TRY_STRAIGHT)
 	 * 			 |	if OverlapsWithWall()[2] = false
 	 * 			 | 		 then new.getduckState= DuckState.STRAIGHT
@@ -740,7 +753,7 @@ public class Buzam extends GameObject{
 	/**
 	 * returns the index of the most left pixel used by mazub. Each pixel represents 0.01m
 	 * @throws PositionOutOfBoundsException
-	 * 			mazub has an illegal position (error can also be in Y position)
+	 * 			buzam has an illegal position (error can also be in Y position)
 	 * 			| !hasValidPosition()
 	 * @return	|(int)this.positionX*100
 	 */
@@ -762,11 +775,11 @@ public class Buzam extends GameObject{
 				(getPositionY()<0 || getPositionY() >= getWorld().getHeight()/100.0d);
 	}
 	/**
-	 * returns the index of the lowest pixel used by mazub. Each pixel represents 0.01m
+	 * returns the index of the lowest pixel used by buzam. Each pixel represents 0.01m
 	 * @throws PositionOutOfBoundsException
-	 * 			mazub has an illegal position (error can also be in X position)
+	 * 			buzam has an illegal position (error can also be in X position)
 	 * 			| !hasValidPosition()
-	 * @return	|(int)this.positionY*100
+	 * @return	the y pixel |(int)this.positionY*100
 	 */
 	
 	public int getPixel_y() throws PositionOutOfBoundsException{
@@ -775,7 +788,7 @@ public class Buzam extends GameObject{
 	}
 	
 	/**
-	 * checks if Mazub has a valid state of direction, groundstate en duckstate
+	 * checks if Buzam has a valid state of direction, groundstate en duckstate
 	 * @return (direction != null && groundState != null && duckState != null)
 	 */
 	private boolean isValidState(Direction direction,GroundState groundState,DuckState duckState){
@@ -783,7 +796,7 @@ public class Buzam extends GameObject{
 	}
 	
 	/**
-	 * returns the current GroundState of mazub. This can be GROUNDED or AIR.
+	 * returns the current GroundState of buzam. This can be GROUNDED or AIR.
 	 * @return	|this.groundState
 	 */
 	@Basic
@@ -792,7 +805,7 @@ public class Buzam extends GameObject{
 	}
 	
 	/**
-	 * returns the current DuckState of mazub. this van be STRAIGHT or DUCKED
+	 * returns the current DuckState of buzam. this can be STRAIGHT or DUCKED
 	 * @return	|this.DuckState()
 	 */
 	@Basic
@@ -801,40 +814,15 @@ public class Buzam extends GameObject{
 	}
 	
 	/**
-	 * The window will move along with mazub
-	 * @throws PositionOutOfBoundsException
-	 * 		the window has illegal borders
-	 * @effect Depending on the situation the window will be moved down, up, to the right or to the left
-	 * 			|double[] perimeters = getPerimeters(); // in meters
-				|if(world.getVisibleWindow()[0]/100.0d+2>perimeters[0])
-				|		world.moveWindowTo(perimeters[0]-2.0d, world.getVisibleWindow()[1]/100.0d)
-				|if(world.getVisibleWindow()[1]/100.0d+2>perimeters[1])
-				|		world.moveWindowTo(world.getVisibleWindow()[0]/100.0d,(perimeters[1]-2.0d))
-				|if(world.getVisibleWindow()[2]/100.0d-2<perimeters[2])
-				|		world.moveWindowTo((perimeters[2]+2.0d)-world.viewWidth/100.0d, world.getVisibleWindow()[1]/100.0d)
-	 *			|if(world.getVisibleWindow()[3]/100.0d-2<perimeters[3])
-	 *			|		world.moveWindowTo(world.getVisibleWindow()[0]/100.0d,(perimeters[3]+2.0d)-world.viewHeight/100.0d)
-	 *	
-	 */
-	public void moveWindow() throws PositionOutOfBoundsException{
-		double[] perimeters = getPerimeters(); // in meters
-		if(getWorld().getVisibleWindow()[0]/100.0d+2>perimeters[0]){
-			getWorld().moveWindowTo(perimeters[0]-2.0d, getWorld().getVisibleWindow()[1]/100.0d);
-		}if(getWorld().getVisibleWindow()[1]/100.0d+2>perimeters[1]){
-			getWorld().moveWindowTo(getWorld().getVisibleWindow()[0]/100.0d,(perimeters[1]-2.0d));
-		}if(getWorld().getVisibleWindow()[2]/100.0d-2<perimeters[2]){
-			getWorld().moveWindowTo((perimeters[2]+2.0d)-getWorld().viewWidth/100.0d, getWorld().getVisibleWindow()[1]/100.0d);
-		}if(getWorld().getVisibleWindow()[3]/100.0d-2<perimeters[3]){
-			getWorld().moveWindowTo(getWorld().getVisibleWindow()[0]/100.0d,(perimeters[3]+2.0d)-getWorld().viewHeight/100.0d);
-		}
-	}
-	
-	/**
 	 * checks if the collision with a given gameobject has an effect
-	 * @effect if mazub isn't immune to the gameobject and if it doesn't overlap on top of it, it will lose Hp and it will have an imunityTime of 0.6 seconds
+	 * @effect if buzam isn't immune to the gameobject and if it doesn't overlap on top of it, it will lose Hp and it will have an imunityTime of 0.6 seconds
+	 * 		   if it collides with an unknown object (e.g. an object that is added later on) the effect of the collision will be checked in the class of the unknown object
 	 * 			|if !Immune() && if(getPerimeters()[1]<gameObject.getPerimeters()[3])
 	 * 			|  then loseHp(50)
 	 * 			|		new.imunityTime = 0.6d
+	 * 			|else
+	 * 			|  then gameObject.EffectOnCollisionWithReversed(this)
+	 * 			
 	 */
 	//TODO controleer na merge
 	public void EffectOnCollisionWith(GameObject gameObject){
@@ -852,20 +840,43 @@ public class Buzam extends GameObject{
 		}
 	}
 	
+	/**
+	 * checks if buzam is ducking
+	 * @return true if buzam is ducking, false otherwise 
+	 * 			| duckState == DuckState.DUCKED || duckState == DuckState.TRY_STRAIGHT
+	 */
 	@Override
 	public boolean isDucking(){
 		return duckState == DuckState.DUCKED || duckState == DuckState.TRY_STRAIGHT;
 	}
+	
+	/**
+	 * checks if buzam is jumping
+	 * @return true if buzam is jumping, false otherwise 
+	 * 			| (groundState != GroundState.GROUNDED && getVerticalVelocity()>0)
+	 */
 	
 	@Override
 	public boolean isJumping(){
 		return groundState != GroundState.GROUNDED && getVerticalVelocity()>0;
 	}
 	
+	/**
+	 * 
+	 * @param groundstate | the groundstate to which the groundstate of buzam needs to be set
+	 * @Post the groundstate of buzam will be changed to the given groudstate | new.groundState == groundstate
+	 */
+	
 	protected void setGroundState(GroundState groundstate){
 		this.groundState = groundstate;
 	}
 	
+	/**
+	 * checks if buzam is moving in the given direction
+	 * @return true if ... , false otherwise
+	 * 			|
+	 */
+	//TODO waarom zijn UP en LEFT leeg???
 	public boolean isMoving(Program.Direction direction){
 		switch(direction){
 		case UP:
@@ -878,6 +889,21 @@ public class Buzam extends GameObject{
 		return false;
 	}
 
+	/**
+	 * checks the consequences of a collision between this object and the given object. This method is only used when 
+	 * the class doesn't recognise this gameobject because it is added before Buzam.
+	 * @param gameObject | the gameobject with which Buzam seems to collide
+	 * @effect if the gameobject is a shark or slime, the gameobject will lose 50 hp and its immuntiTime will be set to 0.6d
+	 * 		   if the gameobject is a mazub and if mazub doesn't collide above Buzam, the same will be done
+	 * 			|if (gameObject instanceof Shark || gameObject instanceof Slime)
+				|		then gameObject.loseHp(50)
+				|			 gameObject.imunityTime = 0.6d
+				|else {
+				|if (gameObject instanceof Mazub) && (gameObject.getPerimeters()[1]<this.getPerimeters()[3]))
+						then gameObject.loseHp(50)
+							 gameObject.imunityTime = 0.6d
+	 */
+	
 	@Override
 	public void EffectOnCollisionWithReversed(GameObject gameObject) {
 		if (gameObject instanceof Shark || gameObject instanceof Slime){
@@ -895,7 +921,18 @@ public class Buzam extends GameObject{
 		}
 	}
 	
-	
+	/**
+	 * Adds the character Buzam to the given world if this is a valid world for it
+	 * @Post if the given world is valid, a buzam will be added
+	 * 		  | if this.world == null && canHaveAsWorld(world)
+	 * 		  |   then new.world = world
+	 *        |        world.addBuzam(this)
+	 * @Post if the character overlaps with a wall at the bottom, his groundstate will be set to GROUNDED, otherwise he is in the air
+	 * 		  |if (overlapsWithWall()[0])
+	 * 		  | 	then new.getGroundState()==GroundState.GROUNDED
+	 * 	      |else
+	 * 		  |		then new.getGroundState() == GroundState.AIR
+	 */
 	
 	@Override
 	public void addToWorld(World world){
