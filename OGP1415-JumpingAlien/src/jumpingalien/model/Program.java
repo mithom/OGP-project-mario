@@ -103,7 +103,18 @@ public class Program {
 	}
 	
 	public void resetGlobals(){
-		//TODO: implement this function
+		for(String key:booleans.keySet()){
+			booleans.put(key,null);
+		}
+		for(String key:doubles.keySet()){
+			doubles.put(key,null);
+		}
+		for(String key:objects.keySet()){
+			objects.put(key,null);
+		}
+		for(String key:directions.keySet()){
+			directions.put(key,null);
+		}
 	}
 	
 	
