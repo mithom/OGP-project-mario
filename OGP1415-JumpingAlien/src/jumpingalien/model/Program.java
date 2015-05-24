@@ -176,19 +176,12 @@ public class Program {
 	}
 	
 	public boolean isWellFormed(){
-		if(allVariablesInitiated()){
-			return isStatementChainAllowed(0, statement,null);
-		}
-		return false;
+		return isStatementChainWellFormed(0, 0,statement, null);
 	}
 	
-	public boolean allVariablesInitiated(){//TODO: implement this function
-		return false;
-	}
-	
-	public boolean isStatementChainAllowed(int amountOfLoops, Statement toCheck,Statement prevStatement){
+	public boolean isStatementChainWellFormed(int amountOfLoops, int amountOfFors,Statement toCheck, Statement prevStatement){
 		if(toCheck.getCategory()==null){
-			if(! (prevStatement.getCategory() == Category.IF && toCheck != prevStatement.getNextStatements()[1]))
+			if(! (prevStatement.getCategory() == Category.IF && toCheck == prevStatement.getNextStatements()[1]))
 				return false;
 		}else{
 			switch(toCheck.getCategory()){
@@ -201,11 +194,17 @@ public class Program {
 						return false;
 				}
 				break;
-			case WHILE:
-				if(! (toCheck.getExpressions()[0].evaluate(new double[]{Double.POSITIVE_INFINITY}) instanceof Boolean))
-					return false;
-			case FOREACH://doorloop van while
+			case FOREACH:
+				amountOfFors += 1;
+			case WHILE://doorloop van while
 				amountOfLoops+=1;
+				break;
+			case ACTION:
+				if(amountOfFors>0)
+					return false;
+				break;
+			default:
+				break;
 			}
 		}
 		for(int i=0;i<3;i++){
@@ -213,14 +212,18 @@ public class Program {
 			if(nextStatement != null){
 				if(toCheck.getCategory() == Category.WHILE || toCheck.getCategory()==Category.FOREACH){
 					if(i==0){
-						if(! isStatementChainAllowed(amountOfLoops, nextStatement,toCheck))
+						if(! isStatementChainWellFormed(amountOfLoops, amountOfFors,nextStatement, toCheck))
 							return false;
 					}else{
-						if(! isStatementChainAllowed(amountOfLoops-1, nextStatement,toCheck))
-							return false;
+						if(toCheck.getCategory()==Category.FOREACH){
+							if(! isStatementChainWellFormed(amountOfLoops-1, amountOfFors-1,nextStatement, toCheck))
+								return false;
+						}else
+							if(! isStatementChainWellFormed(amountOfLoops-1, amountOfFors,nextStatement, toCheck))
+								return false;
 					}
 				}else{
-					if(! isStatementChainAllowed(amountOfLoops, nextStatement,toCheck))
+					if(! isStatementChainWellFormed(amountOfLoops, amountOfFors,nextStatement, toCheck))
 						return false;
 				}
 			}

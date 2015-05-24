@@ -269,7 +269,7 @@ public class Statement {
 			if(expr != null)
 				str += expr.toString();
 		}
-		return category.toString()+","+action+","+str+",done?: "+isDone();
+		return category+","+action+","+str+",done?: "+isDone();
 	}
 	
 	public void BreakDone(){
