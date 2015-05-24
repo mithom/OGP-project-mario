@@ -900,8 +900,8 @@ public class Buzam extends GameObject{
 				|			 gameObject.imunityTime = 0.6d
 				|else {
 				|if (gameObject instanceof Mazub) && (gameObject.getPerimeters()[1]<this.getPerimeters()[3]))
-						then gameObject.loseHp(50)
-							 gameObject.imunityTime = 0.6d
+				|		then gameObject.loseHp(50)
+				|			 gameObject.imunityTime = 0.6d
 	 */
 	
 	@Override

@@ -846,9 +846,12 @@ public class Mazub extends GameObject{
 	/**
 	 * checks if the collision with a given gameobject has an effect
 	 * @effect if mazub isn't immune to the gameobject and if it doesn't overlap on top of it, it will lose Hp and it will have an imunityTime of 0.6 seconds
+	 * 		   if it collides with an unknown object (e.g. an object that is added later on) the effect of the collision will be checked in the class of the unknown object
 	 * 			|if !Immune() && if(getPerimeters()[1]<gameObject.getPerimeters()[3])
 	 * 			|  then loseHp(50)
 	 * 			|		new.imunityTime = 0.6d
+	 * 			|else
+	 * 			|  then gameObject.EffectOnCollisionWithReversed(this)
 	 */
 	//TODO controleer na merge
 	public void EffectOnCollisionWith(GameObject gameObject){
@@ -867,21 +870,43 @@ public class Mazub extends GameObject{
 			}
 		}
 	}
-	
+	/**
+	 * checks if mazub is ducking
+	 * @return true if mazub is ducking, false otherwise 
+	 * 			| duckState == DuckState.DUCKED || duckState == DuckState.TRY_STRAIGHT
+	 */
 	@Override
 	public boolean isDucking(){
 		return duckState == DuckState.DUCKED || duckState == DuckState.TRY_STRAIGHT;
 	}
+	
+	/**
+	 * checks if mazub is jumping
+	 * @return true if mazub is jumping, false otherwise 
+	 * 			| (groundState != GroundState.GROUNDED && getVerticalVelocity()>0)
+	 */
 	
 	@Override
 	public boolean isJumping(){
 		return groundState != GroundState.GROUNDED && getVerticalVelocity()>0;
 	}
 	
+	/**
+	 * 
+	 * @param groundstate | the groundstate to which the groundstate of mazub needs to be set
+	 * @Post the groundstate of mazub will be changed to the given groudstate | new.groundState == groundstate
+	 */
+	
 	protected void setGroundState(GroundState groundstate){
 		this.groundState = groundstate;
 	}
 	
+	/**
+	 * checks if mazub is moving in the given direction
+	 * @return true if ... , false otherwise
+	 * 			|
+	 */
+	//TODO same question as Buzam
 	public boolean isMoving(Program.Direction direction){
 		switch(direction){
 		case UP:
@@ -893,6 +918,11 @@ public class Mazub extends GameObject{
 		}
 		return false;
 	}
+	/**
+	 * checks the consequences of a collision between this object and the given object. This method is only used when 
+	 * the class doesn't recognise this gameobject because it is added before Mazub.
+	 * Since Mazub is a character that every class knows, nothing needs to be done here.
+	 */
 
 	@Override
 	public void EffectOnCollisionWithReversed(GameObject gameObject) {
