@@ -13,6 +13,25 @@ import jumpingalien.state.DuckState;
 import jumpingalien.state.GroundState;
 import jumpingalien.util.Sprite;
 
+/**
+ * Buzam is a class representing a character/GameObject of the game. 
+ * @author Meerten Wouter & Michiels Thomas (both 2de fase ingenieurswetenschappen)
+ * @version 1.0
+ * @Invar 	the position of the lower left pixel will always be valid. 
+ * 			This means it will never be outside of the boundaries of the game.
+ * 			|hasValidPosition()
+ * @Invar	both the groundState, the Orientation and the duckState have a valid value at
+ * 			all time in the game.
+ * 			|isValidState(this.getOrientation(),this.getGroundState(),this.getDuckState())
+ * @Invar 	at all time in the game, the acceleration and velocity must have valid values
+ * 			|Double.isNaN(this.getHorizontalVelocity())==false
+ * 			|Double.isNaN(this.getVerticalVelocity())==false
+ * 			|Double.isNaN(this.getHorizontalAcceleration())==false
+ * 			|Double.isNaN(this.getVerticalAcceleration())==false
+ * @Invar	the currentSpriteNumber must always be valid
+ * 			|isValidSpriteNumber(currentSpriteNumber)
+ */
+
 public class Buzam extends GameObject{
 	private double horizontalVelocity;
 	private final static double horizontalAcceleration = 0.9d;
@@ -37,17 +56,16 @@ public class Buzam extends GameObject{
 	 * 
 	 * @param pixelLeftX	|the most left position that is part from the currently showing Sprite.
 	 * @param pixelBottomY	|the lowest position that is part of the currently showing Sprite.
-	 * @param sprites		|a list of Sprites that mazub will use to rotate trough, to make
-	 * 						|animations. The first eight Sprites are predefined, while the next 2*m
-	 * 						|amount of Sprites will be used for the walking animation.
+	 * @param sprites		|a list of Sprites that buzam will use to rotate trough, to make
+	 * 						|animations.
 	 * @throws PositionOutOfBoundsExeption 
-	 * 			mazub has an illegal position (error can be in X and/or Y position)
+	 * 			buzam has an illegal position (error can be in X and/or Y position)
 	 * 			| !hasValidPosition()
-	 * @Post	if the Mazub instance isn't located on the ground, he will know he is in the air.
+	 * @Post	if the Buzam instance isn't located on the ground, he will know he is in the air.
 	 * 			|if(pixelBottomY>0):
 	 * 			|	then new.groundState == GroundState.AIR
 	 * 			|	else new.groundState == GroundState.GROUNDED; 
-	 * @Post  Mazub will be automatically standing still and not ducking when the game starts 
+	 * @Post  Buzam will be automatically standing still and not ducking when the game starts 
 	 * 			| new.direction == Direction.STALLED
 	 * 			| new.duckstate == DuckState.STRAIGHT
 	 */
@@ -68,16 +86,14 @@ public class Buzam extends GameObject{
 	 * @param sprites		|a list of Sprites that mazub will use to rotate trough, to make
 	 * 						|animations. The first eight Sprites are predefined, while the next 2*m
 	 * 						|amount of Sprites will be used for the walking animation.
-	 * @param initHorVel	|the initial velocity at which the Mazub instance will walk when starting to move horizontally.
-	 * @param maxHorVel		|the maximum velocity at which the Mazub instance will walk.
-	 * @Post	if the Mazub instance isn't located on the ground, he will know he is in the air.
+	 * @param program		|the program that the Buzam istance will run
+	 * @Post	if the Buzam instance isn't located on the ground, he will know he is in the air.
 	 * 			|if(pixelBottomY>0):
 	 * 			|	then new.groundState == GroundState.AIR
 	 * 			|	else new.groundState == GroundState.GROUNDED; 
-	 * @Post 	right after initiation, the maximum horizontal velocity of the Mazub instance will be equal to the given parameter maxHorVel.
-	 * 			|new.getMaximumHorizontalVelocity()== maxHorVel
-	 * @Pre		the initial velocity can never be greater then the maximum velocity in horizontal direction.
-	 * 			|initHorVel <= maxHorVel
+	 * @Post  Buzam will be automatically standing still and not ducking when the game starts 
+	 * 			| new.direction == Direction.STALLED
+	 * 			| new.duckstate == DuckState.STRAIGHT
 	 */
 
 	
@@ -90,6 +106,26 @@ public class Buzam extends GameObject{
 		horizontalVelocity=0.0d;
 		verticalVelocity = 0.0d;
 	}
+	
+	/**
+	 * 
+	 * @param pixelLeftX	|the most left position that is part from the currently showing Sprite.
+	 * @param pixelBottomY	|the lowest position that is part of the currently showing Sprite.
+	 * @param sprites		|a list of Sprites that mazub will use to rotate trough, to make
+	 * 						|animations. The first eight Sprites are predefined, while the next 2*m
+	 * 						|amount of Sprites will be used for the walking animation.
+	 * @param program 		|the program that the Buzam istance will run
+	 * @param minHp			|the minimum number of Hp	
+	 * @param maxHp			|the maximmum number of Hp
+	 * @param currentHp		|the current number of Hp
+	 * @Post	if the Mazub instance isn't located on the ground, he will know he is in the air.
+	 * 			|if(pixelBottomY>0):
+	 * 			|	then new.groundState == GroundState.AIR
+	 * 			|	else new.groundState == GroundState.GROUNDED; 
+	 * @Post  Buzam will be automatically standing still and not ducking when the game starts 
+	 * 			| new.direction == Direction.STALLED
+	 * 			| new.duckstate == DuckState.STRAIGHT
+	 */
 	
 	public Buzam(int pixelLeftX, int pixelBottomY, Sprite[] sprites,Program program,int minHp,int currentHp,int maxHp) throws PositionOutOfBoundsException{
 		super(pixelLeftX, pixelBottomY, sprites,minHp,currentHp,maxHp,program);
