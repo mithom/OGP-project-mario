@@ -40,18 +40,22 @@ public class AlienInputMode<TG extends JumpingAlienGame, TGUI extends JumpingAli
 		case KeyEvent.VK_SPACE:
 		case KeyEvent.VK_UP:
 		case KeyEvent.VK_KP_UP:
+		case KeyEvent.VK_Z:
 			jump.end();
 			break;
 		case KeyEvent.VK_LEFT:
 		case KeyEvent.VK_KP_LEFT:
+		case KeyEvent.VK_Q:
 			moveLeft.end();
 			break;
 		case KeyEvent.VK_RIGHT:
 		case KeyEvent.VK_KP_RIGHT:
+		case KeyEvent.VK_D:
 			moveRight.end();
 			break;
 		case KeyEvent.VK_DOWN:
 		case KeyEvent.VK_KP_DOWN:
+		case KeyEvent.VK_S:
 			duck.end();
 			break;
 		}
@@ -68,18 +72,22 @@ public class AlienInputMode<TG extends JumpingAlienGame, TGUI extends JumpingAli
 		case KeyEvent.VK_SPACE:
 		case KeyEvent.VK_UP:
 		case KeyEvent.VK_KP_UP:
+		case KeyEvent.VK_Z:
 			jump.start();
 			break;
 		case KeyEvent.VK_LEFT:
 		case KeyEvent.VK_KP_LEFT:
+		case KeyEvent.VK_Q:	
 			moveLeft.start();
 			break;
 		case KeyEvent.VK_RIGHT:
 		case KeyEvent.VK_KP_RIGHT:
+		case KeyEvent.VK_D:
 			moveRight.start();
 			break;
 		case KeyEvent.VK_DOWN:
 		case KeyEvent.VK_KP_DOWN:
+		case KeyEvent.VK_S:
 			duck.start();
 			break;
 		}
