@@ -109,4 +109,10 @@ public class Expression<R,G extends Value<?>> extends Value<R> {
 	public String toString(){
 		return action.toString();
 	}
+	
+	@Override
+	public void setDoneTrue(double[] dt){
+		dt[0]-= 0.001d; //base values don't need to consume time to read
+		super.setDoneTrue(dt);
+	}
 }

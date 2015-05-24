@@ -8,6 +8,7 @@ import jumpingalien.part3.programs.IProgramFactory;
 import jumpingalien.program.internal.Statement;
 import jumpingalien.program.internal.Type;
 import jumpingalien.program.internal.Value;
+import jumpingalien.program.statement.util.Category;
 
 public class Program {
 	private GameObject gameObject;
@@ -175,6 +176,55 @@ public class Program {
 	}
 	
 	public boolean isWellFormed(){
+		if(allVariablesInitiated()){
+			return isStatementChainAllowed(0, statement,null);
+		}
+		return false;
+	}
+	
+	public boolean allVariablesInitiated(){//TODO: implement this function
+		return false;
+	}
+	
+	public boolean isStatementChainAllowed(int amountOfLoops, Statement toCheck,Statement prevStatement){
+		if(toCheck.getCategory()==null){
+			if(! (prevStatement.getCategory() == Category.IF && toCheck != prevStatement.getNextStatements()[1]))
+				return false;
+		}else{
+			switch(toCheck.getCategory()){
+			case BREAK://break moet in loop en einde van sequence zijn (anders heb je unreachable code)
+				if(amountOfLoops<=0){
+					return false;
+				}
+				for(Statement mustBeNull:toCheck.getNextStatements()){
+					if(mustBeNull != null)
+						return false;
+				}
+				break;
+			case WHILE:
+				if(! (toCheck.getExpressions()[0].evaluate(new double[]{Double.POSITIVE_INFINITY}) instanceof Boolean))
+					return false;
+			case FOREACH://doorloop van while
+				amountOfLoops+=1;
+			}
+		}
+		for(int i=0;i<3;i++){
+			Statement nextStatement = toCheck.getNextStatements()[i];
+			if(nextStatement != null){
+				if(toCheck.getCategory() == Category.WHILE || toCheck.getCategory()==Category.FOREACH){
+					if(i==0){
+						if(! isStatementChainAllowed(amountOfLoops, nextStatement,toCheck))
+							return false;
+					}else{
+						if(! isStatementChainAllowed(amountOfLoops-1, nextStatement,toCheck))
+							return false;
+					}
+				}else{
+					if(! isStatementChainAllowed(amountOfLoops, nextStatement,toCheck))
+						return false;
+				}
+			}
+		}
 		return true;
 	}
 }

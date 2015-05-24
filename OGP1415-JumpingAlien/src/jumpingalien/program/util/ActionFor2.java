@@ -29,7 +29,7 @@ public enum ActionFor2{//TODO check for overflow errors etc
 			Double variable2 = (Double)right.evaluate(dt);
 			if(dt[0]>0.0){
 				expression.setDoneTrue(dt);
-				return new Value<Double>(variable1 -variable2);
+				return new Value<Double>(variable1 - variable2);
 			}else
 				return new Value<Object>(null);
 		}

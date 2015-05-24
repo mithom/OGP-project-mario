@@ -36,7 +36,7 @@ public enum Category {
 	ASSIGNMENT{
 		public void execute(Statement statement, double[] dt){
 			//System.out.println("assignment: "+ (String)statement.getExpressions()[0].evaluate(dt)+":="+statement.getType().getType());
-			String variable1 = (String)statement.getExpressions()[0].evaluate(dt);
+			String variable1 = (String)statement.getExpressions()[0].evaluate(new double[]{Double.POSITIVE_INFINITY});
 			switch(statement.getType().getType()){
 			case BOOL:
 				Boolean variable2 = (Boolean)statement.getExpressions()[1].evaluate(dt);

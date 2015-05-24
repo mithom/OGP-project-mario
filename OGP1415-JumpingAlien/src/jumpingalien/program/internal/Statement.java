@@ -221,7 +221,6 @@ public class Statement {
 	}*/
 	
 	private void execute(double[] dt){
-		//System.out.println(dt[0]);
 		//System.out.println(category);
 		category.execute(this, dt);
 	}
