@@ -8,6 +8,7 @@ import jumpingalien.part3.programs.IProgramFactory;
 import jumpingalien.program.internal.Statement;
 import jumpingalien.program.internal.Type;
 import jumpingalien.program.internal.Value;
+import jumpingalien.program.statement.util.Category;
 
 public class Program {
 	private GameObject gameObject;
@@ -103,7 +104,18 @@ public class Program {
 	}
 	
 	public void resetGlobals(){
-		//TODO: implement this function
+		for(String key:booleans.keySet()){
+			booleans.put(key,null);
+		}
+		for(String key:doubles.keySet()){
+			doubles.put(key,null);
+		}
+		for(String key:objects.keySet()){
+			objects.put(key,null);
+		}
+		for(String key:directions.keySet()){
+			directions.put(key,null);
+		}
 	}
 	
 	
@@ -137,7 +149,6 @@ public class Program {
 		this.doubles.put(key, value);
 	}
 	
-
 	@Override
 	public String toString(){
 		String str = "globals... ";
@@ -162,5 +173,61 @@ public class Program {
 		if(objects.containsKey(key))
 			return new Value<GameObject>(objects.get(key));
 		return new Value<Object>(null);
+	}
+	
+	public boolean isWellFormed(){
+		return isStatementChainWellFormed(0, 0,statement, null);
+	}
+	
+	public boolean isStatementChainWellFormed(int amountOfLoops, int amountOfFors,Statement toCheck, Statement prevStatement){
+		if(toCheck.getCategory()==null){
+			if(! (prevStatement.getCategory() == Category.IF && toCheck == prevStatement.getNextStatements()[1]))
+				return false;
+		}else{
+			switch(toCheck.getCategory()){
+			case BREAK://break moet in loop en einde van sequence zijn (anders heb je unreachable code)
+				if(amountOfLoops<=0){
+					return false;
+				}
+				for(Statement mustBeNull:toCheck.getNextStatements()){
+					if(mustBeNull != null)
+						return false;
+				}
+				break;
+			case FOREACH:
+				amountOfFors += 1;
+			case WHILE://doorloop van while
+				amountOfLoops+=1;
+				break;
+			case ACTION:
+				if(amountOfFors>0)
+					return false;
+				break;
+			default:
+				break;
+			}
+		}
+		for(int i=0;i<3;i++){
+			Statement nextStatement = toCheck.getNextStatements()[i];
+			if(nextStatement != null){
+				if(toCheck.getCategory() == Category.WHILE || toCheck.getCategory()==Category.FOREACH){
+					if(i==0){
+						if(! isStatementChainWellFormed(amountOfLoops, amountOfFors,nextStatement, toCheck))
+							return false;
+					}else{
+						if(toCheck.getCategory()==Category.FOREACH){
+							if(! isStatementChainWellFormed(amountOfLoops-1, amountOfFors-1,nextStatement, toCheck))
+								return false;
+						}else
+							if(! isStatementChainWellFormed(amountOfLoops-1, amountOfFors,nextStatement, toCheck))
+								return false;
+					}
+				}else{
+					if(! isStatementChainWellFormed(amountOfLoops, amountOfFors,nextStatement, toCheck))
+						return false;
+				}
+			}
+		}
+		return true;
 	}
 }

@@ -229,7 +229,6 @@ public class Mazub extends GameObject{
 			if(getProgram() != null){
 				if(actionTime>0){
 					actionTime = getProgram().executeTime(actionTime);
-					//actionTime = getProgram().executeTime(0.002d);
 				}
 			}
 			double correctDt=this.calculateCorrectDt(dt);

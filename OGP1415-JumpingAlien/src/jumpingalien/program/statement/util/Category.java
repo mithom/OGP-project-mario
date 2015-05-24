@@ -14,19 +14,15 @@ import jumpingalien.program.internal.Value;
 public enum Category {
 	WHILE{
 		public void execute(Statement statement, double[] dt){
-			//System.out.println(dt[0]+","+statement);
 			while( dt[0]>0 && ! statement.isDone() && statement.getNoBreak()){
 				Boolean variable = (Boolean)statement.getExpressions()[0].evaluate(dt);
 				if(variable != null ){
 					if(variable){
-					//System.out.println("begin in while"+ dt[0]+","+statement);
 					statement.getNextStatements()[0].addPreviousStatement(statement);
 					statement.getNextStatements()[0].executeNext(dt);
-					//System.out.println("einde in while: "+dt[0]+","+statement);
 					}
 					else{
 						statement.setDoneTrue();
-						//System.out.println("einde van de while lus");
 						break;
 					}
 				}
@@ -35,8 +31,7 @@ public enum Category {
 	},
 	ASSIGNMENT{
 		public void execute(Statement statement, double[] dt){
-			//System.out.println("assignment: "+ (String)statement.getExpressions()[0].evaluate(dt)+":="+statement.getType().getType());
-			String variable1 = (String)statement.getExpressions()[0].evaluate(dt);
+			String variable1 = (String)statement.getExpressions()[0].evaluate(new double[]{Double.POSITIVE_INFINITY});
 			switch(statement.getType().getType()){
 			case BOOL:
 				Boolean variable2 = (Boolean)statement.getExpressions()[1].evaluate(dt);
@@ -55,7 +50,6 @@ public enum Category {
 				}
 				break;
 			case OBJECT:
-				//System.out.println("printing in object: "+statement.getExpressions()[1].evaluate(dt));
 				GameObject variable4 = (GameObject)statement.getExpressions()[1].evaluate(dt);
 				if(dt[0]>0){
 					statement.setDoneTrue();
@@ -73,7 +67,6 @@ public enum Category {
 				break;
 			}
 			if(statement.getType()==null){
-				//System.out.println("invalid type in assignment evaluation");
 			}
 		};
 	},
@@ -137,14 +130,11 @@ public enum Category {
 				});
 				iterator = gameObjects.iterator();
 				statement.setIterObjects(iterator);
-				//System.out.println("gameObjects: "+gameObjects.toString());
 				if(iterator.hasNext()){
 					assignVariable(variable,iterator.next(),statement);
 				}
 			}
 			dt[0]-=0.001d;
-			//int i = 0;
-			//while(i< gameObjects.size() && dt[0]>0.0d && ! statement.isDone()){
 			while(dt[0]>0 && !statement.isDone() && statement.getNoBreak()){
 				
 				statement.getNextStatements()[0].addPreviousStatement(statement);
@@ -155,7 +145,6 @@ public enum Category {
 					}
 					else{
 						statement.setDoneTrue();
-						//System.out.println("foreachlus gedaan");
 					}
 				}
 			}
@@ -164,24 +153,19 @@ public enum Category {
 	BREAK{
 		public void execute(Statement statement, double[] dt){
 			if(dt[0]>0){
-				//System.out.println("break");
 				statement.setDoneTrue();
 				dt[0]-=0.001d;
 				Statement prev = statement.getPreviousStatement();
 				while(prev.getCategory() != Category.WHILE && prev.getCategory() != Category.FOREACH){
 					if(prev.getCategory()==Category.IF)
 						prev.setDoneTrue();
-					//System.out.println(prev);
 					prev = prev.getPreviousStatement();
 				}
-				//System.out.println(prev);
-				//prev.setDoneTrue();
 				prev.BreakDone();
 				Statement next = prev.getNextStatements()[1];
 				next.addPreviousStatement(statement);
 				next.executeNext(dt);
-			}//else
-				//System.out.println("no time-> no break");
+			}
 		};
 	},
 	IF{
@@ -191,21 +175,16 @@ public enum Category {
 				if(variable){
 					statement.getNextStatements()[0].addPreviousStatement(statement);
 					boolean done =statement.getNextStatements()[0].executeNext(dt);
-					//if(dt[0]>0)
 					if(done)
 						statement.setDoneTrue();
-					//System.out.println("einde van de if,true");
 				}else{
 					if(statement.getNextStatements()[1].getCategory() != null){
 						statement.getNextStatements()[1].addPreviousStatement(statement);
 						boolean done =statement.getNextStatements()[1].executeNext(dt);
-						//if(dt[0]>0)
 						if(done)
 							statement.setDoneTrue();
-						//System.out.println("einde van de if,false");
 					}else{
 						statement.setDoneTrue();
-						//System.out.println("einde van de if, none");
 					}
 				}
 			}
@@ -216,7 +195,7 @@ public enum Category {
 			Object variable = statement.getExpressions()[0].evaluate(dt);
 			if(dt[0]>0){
 				statement.setDoneTrue();
-				System.out.print(variable);
+				System.out.println(variable);
 				dt[0]-=0.001d;
 			}
 		};
@@ -224,15 +203,8 @@ public enum Category {
 	ACTION{
 		public void execute(Statement statement, double[] dt){
 			statement.getAction().execute(statement,dt);
-			//System.out.println("action: "+statement.getAction());
 		};
-	}/*,
-	SEQUENCE{
-		public void execute(Statement statement, double[] dt){
-			statement.setDoneTrue();
-			dt[0]-=0.001d;
-		};
-	}*/;
+	};
 	public abstract void execute(Statement statement, double[] dt);
 	
 	protected void assignVariable(String variable, GameObject p,Statement statement){

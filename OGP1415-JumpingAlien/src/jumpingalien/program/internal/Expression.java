@@ -46,32 +46,22 @@ public class Expression<R,G extends Value<?>> extends Value<R> {
 	//TODO: only works if correct program, still need to catch errors
 	public R evaluate(double[] dt){//TODO: aanpassen voor previousStatement en dt!
 		if(isDone()){
-			//if(getProgram().getGameObject() instanceof Buzam)
-				//System.out.println("reeds klaar ("+action+") , returned lastState: "+ lastState.evaluate(new double[]{Double.POSITIVE_INFINITY}));
 			return lastState.evaluate(dt);
 		}else{
-			//if(getProgram().getGameObject() instanceof Buzam)
-				//System.out.println("expr: "+action);
 			if(expressions.length==1){
 				if(action == null){
 					System.out.println("error want geen action?");
 					lastState = ((Value<R>)((G)expressions[0])).Copy();
 					lastState.addProgram(getProgram());
-					//if(lastState!=null)
-						//setDoneTrue(dt);
 					return lastState.evaluate(dt);
 				}else{
 					lastState=((Value<R>)((ActionFor1)action).evaluate(this, dt)).Copy();
 					lastState.addProgram(getProgram());
-					//if(lastState!=null)
-						//setDoneTrue(dt);
 					return lastState.evaluate(dt);
 				}
 			}else{
 				lastState=((Value<R>)((ActionFor2)action).evaluate(this,dt)).Copy();
 				lastState.addProgram(getProgram());
-				//if(lastState!=null)
-					//setDoneTrue(dt);
 				return lastState.evaluate(dt);
 			}
 		}
@@ -108,5 +98,11 @@ public class Expression<R,G extends Value<?>> extends Value<R> {
 	
 	public String toString(){
 		return action.toString();
+	}
+	
+	@Override
+	public void setDoneTrue(double[] dt){
+		dt[0]-= 0.001d;
+		super.setDoneTrue(dt);
 	}
 }

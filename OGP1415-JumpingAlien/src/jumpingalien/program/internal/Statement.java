@@ -14,13 +14,7 @@ public class Statement {
 	private boolean done;
 	private final Statement[] nextStatements = new Statement[3];
 	private final Value<?>[] expressions = new Value<?>[3]; 
-	//private final Value<?>[] nextExpression = new Expression[2];
 	private Statement previousStatement;
-	//private Value<?> previousExpression;
-	//private enum next{
-	//	STATEMENT,EXPRESSION;
-	//}
-	//private next firstNext;
 	
 	private Category category;
 	private Action action;
@@ -110,13 +104,6 @@ public class Statement {
 		this.setAction(action);
 	}
 	
-	/*public Statement(Kind kind,SortCriteria sortCriteria,ValidCriteria validCriteria){//when foreach
-		setKind(kind);
-		setCategory(Category.FOREACH);
-		setSortCriteria(sortCriteria);
-		setValidCriteria(validCriteria);
-	}*/
-	
 	public Statement(Kind kind){
 		setKind(kind);
 		setCategory(Category.FOREACH);
@@ -135,15 +122,6 @@ public class Statement {
 	}
 	
 	public void addNextStatement(Statement statement){//TODO: add checkers
-		/*if(firstNext==null){
-			firstNext = next.STATEMENT;
-			nextStatement[0]= statement;
-		}else{
-			if(firstNext == next.STATEMENT)
-				nextStatement[1] = statement;
-			else
-				nextStatement[0] = statement;
-		}*/
 		if(nextStatements[0]==null){
 			nextStatements[0] = statement;
 		}else{
@@ -157,19 +135,6 @@ public class Statement {
 			}
 		}
 	}
-	/*
-	public void addNextExpression(Value<?> expression){
-		if(firstNext==null){
-			firstNext = next.EXPRESSION;
-			nextExpression[0] = expression;
-		}else{
-			if(firstNext== next.EXPRESSION){
-				nextExpression[1]= expression;
-			}else
-				nextExpression[0] = expression;
-				
-		}
-	}*/
 	
 	public boolean isDone(){
 		return done;
@@ -179,12 +144,8 @@ public class Statement {
 		if(dt[0]<=0.0)
 			return false;
 		if(!isDone()){
-			//if(getProgram().getGameObject() instanceof Buzam)
-				//System.out.println("not done -> category: "+category);
 			execute(dt);
-		}//else
-			//if(getProgram().getGameObject() instanceof Buzam)
-				//System.out.println("it was done ("+category+")");
+		}
 		int nextNb;
 		if(getCategory()==Category.WHILE || getCategory()==Category.FOREACH)
 			nextNb=1;
@@ -205,7 +166,6 @@ public class Statement {
 			return true;
 		}
 		return false;
-		//return dt;
 	}
 	
 	public void noReset(){
@@ -216,18 +176,11 @@ public class Statement {
 		previousStatement = statement;
 	}
 	
-	/*public void addPreviousExpression(Value<?> expression){
-		previousExpression = expression;
-	}*/
-	
 	private void execute(double[] dt){
-		//System.out.println(dt[0]);
-		//System.out.println(category);
 		category.execute(this, dt);
 	}
 	
 	void reset(double[] dt){
-		//System.out.println("resetting");
 		if(isDone()){
 			done = false;
 			timeToWait=null;
@@ -290,7 +243,7 @@ public class Statement {
 		this.kind = kind;
 	}
 	
-	public Value<?>[] getExpressions() {//TODO: check if stil works
+	public Value<?>[] getExpressions() {//TODO: check if still works
 		return expressions.clone();
 	}
 	
@@ -316,7 +269,7 @@ public class Statement {
 			if(expr != null)
 				str += expr.toString();
 		}
-		return category.toString()+","+action+","+str+",done?: "+isDone();
+		return category+","+action+","+str+",done?: "+isDone();
 	}
 	
 	public void BreakDone(){
