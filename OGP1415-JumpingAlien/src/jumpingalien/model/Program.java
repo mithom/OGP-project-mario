@@ -148,7 +148,6 @@ public class Program {
 		this.doubles.put(key, value);
 	}
 	
-
 	@Override
 	public String toString(){
 		String str = "globals... ";
@@ -173,5 +172,9 @@ public class Program {
 		if(objects.containsKey(key))
 			return new Value<GameObject>(objects.get(key));
 		return new Value<Object>(null);
+	}
+	
+	public boolean isWellFormed(){
+		return true;
 	}
 }
