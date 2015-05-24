@@ -610,11 +610,16 @@ public class Slime extends GameObject{
 				}
 			}
 		}
-		if(gameObject instanceof Mazub || gameObject instanceof Shark){
-			if(!isImmune()){
-				this.schoolHpLoss();
-				this.loseHp(50);
-				this.imunityTime = 0.6d;
+		else {
+			if(gameObject instanceof Mazub || gameObject instanceof Shark){
+				if(!isImmune()){
+					this.schoolHpLoss();
+					this.loseHp(50);
+					this.imunityTime = 0.6d;
+				}
+			}
+			else {
+				gameObject.EffectOnCollisionWithReversed(gameObject);
 			}
 		}
 	}
@@ -660,5 +665,10 @@ public class Slime extends GameObject{
 			return Math.signum(getHorizontalVelocity())==direction.getSign();
 		}
 		return false;
+	}
+
+	@Override
+	public void EffectOnCollisionWithReversed(GameObject gameObject) {
+		return ;
 	}
 }

@@ -854,6 +854,11 @@ public class Mazub extends GameObject{
 				}
 			}
 		}
+		else{
+			if(!isImmune()){
+				gameObject.EffectOnCollisionWithReversed(this);
+			}
+		}
 	}
 	
 	@Override
@@ -880,6 +885,11 @@ public class Mazub extends GameObject{
 			return Math.signum(getHorizontalVelocity())==direction.getSign();
 		}
 		return false;
+	}
+
+	@Override
+	public void EffectOnCollisionWithReversed(GameObject gameObject) {
+		return ;
 	}
 	
 }

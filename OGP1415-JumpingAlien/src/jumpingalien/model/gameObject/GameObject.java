@@ -35,7 +35,7 @@ public abstract class GameObject {//TODO: make TileObject
 	private boolean terminated = false;
 	private final HitPoint hitPoint;
 	protected int m;
-	protected double imunityTime;
+	public double imunityTime;
 	protected double lastWaterHit;
 	protected double lastLavaHit;
 	private Program program;
@@ -513,6 +513,7 @@ public abstract class GameObject {//TODO: make TileObject
 	}
 	
 	public abstract void EffectOnCollisionWith(GameObject gameObject);
+	public abstract void EffectOnCollisionWithReversed(GameObject gameObject);
 	
 	//left,bottom,right,top, need to be checked after position has been resetted
 	public boolean[] sideOverlappingBetween(GameObject bounceAgainst){

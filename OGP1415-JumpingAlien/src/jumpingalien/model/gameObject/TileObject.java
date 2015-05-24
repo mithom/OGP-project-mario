@@ -112,4 +112,9 @@ public class TileObject extends GameObject {
 	public String toString(){
 		return "tile of type: "+geologicalFeature.toString();
 	}
+
+	@Override
+	public void EffectOnCollisionWithReversed(GameObject gameObject) {
+		return ;
+	}
 }

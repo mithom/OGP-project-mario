@@ -655,17 +655,14 @@ public class Shark extends GameObject{
 	 */
 	
 	public void EffectOnCollisionWith(GameObject gameObject){
-		boolean done = false;
 		if(gameObject instanceof Mazub || gameObject instanceof Slime){
-			done = true;
 			if(!isImmune()){
 				this.loseHp(50);
 				this.imunityTime = 0.6d;
 			}
 		}
-		if(!done){
-			//doe nieuwe functie van andere
-			//gameObject.nieuwefunctie(this);
+		else{
+			gameObject.EffectOnCollisionWithReversed(this);
 		}
 	}
 
@@ -701,5 +698,10 @@ public class Shark extends GameObject{
 			return Math.signum(getHorizontalVelocity())==direction.getSign();
 		}
 		return false;
+	}
+
+	@Override
+	public void EffectOnCollisionWithReversed(GameObject gameObject) {
+		return ;
 	}
 }

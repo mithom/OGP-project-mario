@@ -234,4 +234,9 @@ public class Plant extends GameObject{
 		}
 		return false;
 	}
+
+	@Override
+	public void EffectOnCollisionWithReversed(GameObject gameObject) {
+		return ;
+	}
 }
