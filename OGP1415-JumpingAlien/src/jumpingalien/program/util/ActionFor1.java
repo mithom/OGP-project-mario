@@ -25,8 +25,6 @@ public enum ActionFor1 {
 		public Value<?> evaluate(Expression<?,? extends Value<?>> expression, double[] dt){
 			
 			Value<?> value = (Value<?>)expression.getExpressions()[0];
-			//if(value.getProgram().getGameObject().toString().contains("nr:2"))
-				//System.out.println(value.evaluate(dt)+": "+value.getProgram().getVariable((String)value.evaluate(dt)).evaluate(dt));
 			String variableName = (String)value.evaluate(new double[]{Double.POSITIVE_INFINITY});
 			if(dt[0]>0.0){
 				expression.setDoneTrue(dt);

@@ -182,7 +182,7 @@ public enum ActionFor2{//TODO check for overflow errors etc
 			}else
 				return new Value<Object>(null);
 		}
-	},// 2different types(e and class)
+	},
 	ISMOVING{
 		public Value<?> evaluate(Expression<?,? extends Value<?>> expression,double[] dt){
 			Value<?> left = (Value<?>)expression.getExpressions()[0];
