@@ -11,12 +11,8 @@ public enum Action {//TODO eerst evalueren, dan tijd controleren, dan pas uitvoe
 			Program.Direction variable = (Program.Direction)statement.getExpressions()[0].evaluate(dt);
 			if(dt[0]>0){
 				if(variable ==Program.Direction.LEFT){
-					if(statement.getProgram().getGameObject() instanceof Buzam)
-						System.out.println("startrun LEFT");
 					statement.getProgram().getGameObject().startMove(Direction.LEFT);
 				}else{
-					if(statement.getProgram().getGameObject() instanceof Buzam)
-						System.out.println("startrun RIGHT");
 					statement.getProgram().getGameObject().startMove(Direction.RIGHT);
 				}
 				statement.setDoneTrue();
@@ -27,15 +23,11 @@ public enum Action {//TODO eerst evalueren, dan tijd controleren, dan pas uitvoe
 	STOPRUN{
 		public void execute(Statement statement, double[] dt){
 			if(statement.getExpressions()[0].evaluate(dt)==Program.Direction.LEFT && dt[0]>0){
-				if(statement.getProgram().getGameObject() instanceof Buzam)
-					System.out.println("stoprun LEFT: "+statement.getProgram().getGameObject().toString());
 				statement.getProgram().getGameObject().endMove(Direction.LEFT);
 				statement.setDoneTrue();
 				dt[0]-=0.001;
 			}else{
 				if(dt[0]>0){
-					if(statement.getProgram().getGameObject() instanceof Buzam)
-						System.out.println("stoprun RIGHT: "+statement.getProgram().getGameObject().toString());
 					statement.getProgram().getGameObject().endMove(Direction.RIGHT);
 					statement.setDoneTrue();
 					dt[0]-=0.001;

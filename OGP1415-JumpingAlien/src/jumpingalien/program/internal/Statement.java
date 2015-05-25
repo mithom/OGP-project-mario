@@ -1,5 +1,6 @@
 package jumpingalien.program.internal;
 
+import java.security.KeyException;
 import java.util.Iterator;
 
 import jumpingalien.model.Buzam;
@@ -25,6 +26,11 @@ public class Statement {
 	private Double timeToWait;
 	private Iterator<? extends GameObject> iterObjects;
 	private boolean noBreak = true;
+	private boolean hardResetted=false;
+	
+	public boolean isHardResetted(){
+		return hardResetted;
+	}
 	
 	public Type getType() {
 		return type;
@@ -83,9 +89,7 @@ public class Statement {
 					expression.addProgram(program);
 			}
 		}else{
-			//System.out.println(this.program);
 			System.out.println("oops had al een program");
-			//System.out.println(category +","+ expressions[0].evaluate(new double[]{100}));
 		}		
 	}
 	
@@ -141,29 +145,33 @@ public class Statement {
 	}
 	
 	public boolean executeNext(double[] dt){
+		hardResetted = false;
 		if(dt[0]<=0.0)
 			return false;
 		if(!isDone()){
 			execute(dt);
 		}
-		int nextNb;
-		if(getCategory()==Category.WHILE || getCategory()==Category.FOREACH)
-			nextNb=1;
-		else{
-			if(getCategory()==Category.IF)
-				nextNb = 2;
-			else
-				nextNb=0;
-		}
-		if(nextStatements[nextNb] != null && noBreak){
-			nextStatements[nextNb].addPreviousStatement(this);
-			return nextStatements[nextNb].executeNext(dt);
-		}
-		if(!noBreak)
-			setDoneTrue();
-		if(resetOnEnd && isDone()){
-			reset(dt);
-			return true;
+		if(!hardResetted){
+			int nextNb;
+			if(getCategory()==Category.WHILE || getCategory()==Category.FOREACH)
+				nextNb=1;
+			else{
+				if(getCategory()==Category.IF)
+					nextNb = 2;
+				else
+					nextNb=0;
+			}
+			if(nextStatements[nextNb] != null){
+				nextStatements[nextNb].addPreviousStatement(this);
+				return nextStatements[nextNb].executeNext(dt);
+			}
+			//if(!noBreak)
+				//setDoneTrue();
+			if(resetOnEnd && isDone()){
+				reset();
+				return true;
+			}
+			return false;
 		}
 		return false;
 	}
@@ -177,10 +185,16 @@ public class Statement {
 	}
 	
 	private void execute(double[] dt){
-		category.execute(this, dt);
+		try{
+			category.execute(this,dt);
+		}catch(Exception e){//TODO: make a specific error for this!
+			System.out.println("error catched");
+			dt[0] -= 0.001d;
+			hardReset();
+		}
 	}
 	
-	void reset(double[] dt){
+	void reset(){
 		if(isDone()){
 			done = false;
 			timeToWait=null;
@@ -190,7 +204,7 @@ public class Statement {
 				if(expression != null)
 					expression.reset();
 			if(previousStatement != null){
-				previousStatement.reset(dt);
+				previousStatement.reset();
 				previousStatement=null;
 			}else{
 					program.resetGlobals();
@@ -201,16 +215,34 @@ public class Statement {
 				for(Value<?> expression:expressions)
 					if(expression != null)
 						expression.reset();
-			}else
-			{
+			}else{
 				System.out.println("had nooit mogen gebeuren in reset.");
 				System.out.println(category.toString());
+				if(getProgram().getGameObject() instanceof Buzam)
+					System.out.println("ja het was buzam");
 				if(category==Category.ACTION)
 					System.out.println(action.toString());
 				if(category==Category.FOREACH)
 					System.out.println(kind.toString());
 			}
 			//else: gaat verder in while/foreach/if lus (zou anders al op isDone hebben gestaan)
+		}
+	}
+	
+	private void hardReset(){
+		done = false;
+		timeToWait=null;
+		iterObjects = null;
+		noBreak = true;
+		hardResetted=true;
+		for(Value<?> expression:expressions)
+			if(expression != null)
+				expression.reset();
+		if(previousStatement != null){
+			previousStatement.hardReset();
+			previousStatement=null;
+		}else{
+				program.resetGlobals();
 		}
 	}
 

@@ -1,9 +1,11 @@
 package jumpingalien.program.statement.util;
 
+import java.security.KeyException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
 
+import jumpingalien.model.Buzam;
 import jumpingalien.model.Program.Direction;
 import jumpingalien.model.World;
 import jumpingalien.model.gameObject.GameObject;
@@ -14,14 +16,18 @@ import jumpingalien.program.internal.Value;
 public enum Category {
 	WHILE{
 		public void execute(Statement statement, double[] dt){
-			while( dt[0]>0 && ! statement.isDone() && statement.getNoBreak()){
+			while( dt[0]>0 && ! statement.isDone() && !statement.isHardResetted()){
+				if(!statement.getNoBreak()){
+					statement.setDoneTrue();
+					break;
+				}
 				Boolean variable = (Boolean)statement.getExpressions()[0].evaluate(dt);
+				dt[0]-=0.001d;
 				if(variable != null ){
 					if(variable){
-					statement.getNextStatements()[0].addPreviousStatement(statement);
-					statement.getNextStatements()[0].executeNext(dt);
-					}
-					else{
+						statement.getNextStatements()[0].addPreviousStatement(statement);
+						statement.getNextStatements()[0].executeNext(dt);
+					}else{
 						statement.setDoneTrue();
 						break;
 					}
@@ -30,7 +36,7 @@ public enum Category {
 		};
 	},
 	ASSIGNMENT{
-		public void execute(Statement statement, double[] dt){
+		public void execute(Statement statement, double[] dt) throws KeyException{
 			String variable1 = (String)statement.getExpressions()[0].evaluate(new double[]{Double.POSITIVE_INFINITY});
 			switch(statement.getType().getType()){
 			case BOOL:
@@ -115,28 +121,34 @@ public enum Category {
 						statement.getExpressions()[2].reset();
 						assignVariable(variable,b,statement);
 						double valueB = (double)statement.getExpressions()[2].evaluate(new double[]{Double.POSITIVE_INFINITY});
-						if(valueA>valueB){
-							if(statement.getSortAscending())
-								return -1;
-							else
+						if(statement.getSortAscending()){
+							if(valueA>valueB){
 								return 1;
-						}if(valueB>valueA){
-							if(statement.getSortAscending())
-								return 1;
-							else
+							}if(valueB>valueA)
 								return -1;
-						}return 0;
+							return 0;
+						}
+						if(valueA>valueB)
+							return -1;
+						if(valueB>valueA)
+							return 1;
+						return 0;
 					}
 				});
 				iterator = gameObjects.iterator();
 				statement.setIterObjects(iterator);
 				if(iterator.hasNext()){
 					assignVariable(variable,iterator.next(),statement);
+				}else{
+					statement.setDoneTrue();
 				}
 			}
 			dt[0]-=0.001d;
-			while(dt[0]>0 && !statement.isDone() && statement.getNoBreak()){
-				
+			while(dt[0]>0 && !statement.isDone() && !statement.isHardResetted()){
+				if(!statement.getNoBreak()){
+					statement.setDoneTrue();
+					break;
+				}
 				statement.getNextStatements()[0].addPreviousStatement(statement);
 				boolean done = statement.getNextStatements()[0].executeNext(dt);
 				if(done){
@@ -162,9 +174,9 @@ public enum Category {
 					prev = prev.getPreviousStatement();
 				}
 				prev.BreakDone();
-				Statement next = prev.getNextStatements()[1];
-				next.addPreviousStatement(statement);
-				next.executeNext(dt);
+				//Statement next = prev.getNextStatements()[1];
+				//next.addPreviousStatement(statement);
+				//next.executeNext(dt);
 			}
 		};
 	},
@@ -205,7 +217,7 @@ public enum Category {
 			statement.getAction().execute(statement,dt);
 		};
 	};
-	public abstract void execute(Statement statement, double[] dt);
+	public abstract void execute(Statement statement, double[] dt) throws KeyException;
 	
 	protected void assignVariable(String variable, GameObject p,Statement statement){
 		Statement assignment = new Statement(ASSIGNMENT);
@@ -214,6 +226,7 @@ public enum Category {
 		assignment.setType(new Type(Type.type.OBJECT));
 		assignment.noReset();
 		assignment.addProgram(statement.getProgram());
+		assignment.addPreviousStatement(statement);
 		assignment.executeNext(new double[]{Double.POSITIVE_INFINITY});
 	}
 }

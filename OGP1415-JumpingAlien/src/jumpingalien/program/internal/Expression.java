@@ -102,7 +102,7 @@ public class Expression<R,G extends Value<?>> extends Value<R> {
 	
 	@Override
 	public void setDoneTrue(double[] dt){
-		dt[0]-= 0.001d;
+		//dt[0]-= 0.001d; //expressions don't consume time
 		super.setDoneTrue(dt);
 	}
 }

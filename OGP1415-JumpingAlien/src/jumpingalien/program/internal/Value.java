@@ -6,15 +6,6 @@ public class Value<R extends Object> {
 	private Program program;
 	private boolean done;
 	private R value;
-	/*private Statement previousStatement;
-	private Value<?> previousExpression;
-	private enum next{
-		STATEMENT,EXPRESSION;
-	}
-	private next firstNext;
-	private final Statement[] nextStatement = new Statement[2];
-	private final Value<?>[] nextExpression = new Expression[2];
-	*/
 	
 	public Value(R value){
 		done=false;
@@ -26,67 +17,20 @@ public class Value<R extends Object> {
 	};
 	
 	public R evaluate(double[] dt){
-		//if(getProgram().getGameObject() instanceof Buzam)
-			//System.out.println(dt[0]+",evaluating base value, done: "+done+",value: "+value);
 		if(!isDone()){
 			if(dt[0]>0.0){
 				setDoneTrue(dt);
 				return value;
 			}else{
-				//System.out.println("returned null with time: "+dt[0]);
 				return null;
 			}
 		}
-			/*System.out.println("tijd eraf");
-		else
-			System.out.println("geen tijd eraf");*/
 		return value;
 	}
 	
 	public void reset(){
 		done = false;
-		//System.out.println("value resetted");
-		/*if(previousStatement != null){
-			previousStatement.reset();
-			previousStatement=null;
-		}else{
-			if(previousExpression != null){
-				previousExpression.reset();
-				previousExpression = null;
-			}else
-				program.resetGlobals();
-		}*/
 	}
-	
-	/*
-	public final void addPreviousStatement(Statement statement){//TODO: check if you're next statement from prev one.
-		previousStatement = statement;
-	}
-	
-	public void addNextStatement(Statement statement){//TODO: add checkers
-		if(firstNext==null){
-			firstNext = next.STATEMENT;
-			nextStatement[0]= statement;
-		}else{
-			if(firstNext == next.STATEMENT)
-				nextStatement[1] = statement;
-			else
-				nextStatement[0] = statement;
-		}
-	}
-	
-	public void addNextExpression(Value<?> expression){
-		if(firstNext==null){
-			firstNext = next.EXPRESSION;
-			nextExpression[0] = expression;
-		}else{
-			if(firstNext== next.EXPRESSION){
-				nextExpression[1]= expression;
-			}else
-				nextExpression[0] = expression;
-				
-		}
-	}*/
 	
 	public void addProgram(Program program){
 		this.program = program;
@@ -97,16 +41,9 @@ public class Value<R extends Object> {
 	}
 	
 	protected Value<R> Copy(){
-		//System.out.println("aant kopiëren: "+this);
 		Value<R> copy = new Value<R>(value);
 		copy.addProgram(program);
 		copy.done = done;
-		/*copy.previousStatement = previousStatement;
-		copy.previousExpression = previousExpression;
-		copy.firstNext =firstNext;
-		copy.nextStatement[0] = nextStatement[0];copy.nextStatement[1]=nextStatement[1];
-		copy.nextExpression[0]= nextExpression[0];copy.nextExpression[1] = nextExpression[1];
-		*/
 		return copy;
 	}
 	

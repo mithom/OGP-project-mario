@@ -1,5 +1,6 @@
 package jumpingalien.model;
 
+import java.security.KeyException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -59,19 +60,13 @@ public class Program {
 	}
 	
 	private void executeNext(double[] dt){
-		//System.out.println("tijd bij ingaan"+dt[0]);
 		statement.executeNext(dt);
-		//System.out.println("tijd bij uitgaan:"+dt[0]);
 	}
 	
 	public double executeTime(double dt){
 		double[] dt2 = new double[]{dt};
-		//System.out.println("begin program");
 		while(dt2[0]>0){
-			//System.out.println("tijd niet op");
-			//System.out.println(dt2[0]);
 			executeNext(dt2);
-			//System.out.println("tijd bij buitenkomen"+dt2[0]);
 		}
 		return dt2[0];
 	}
@@ -123,7 +118,9 @@ public class Program {
 		return booleans.get(key);
 	}
 
-	public void setBoolean(String key,Boolean value) {
+	public void setBoolean(String key,Boolean value)throws KeyException {
+		if(!booleans.containsKey(key))
+			throw new KeyException(key + "doesn't exist as boolean variable");
 		this.booleans.put(key, value);
 	}
 
@@ -131,21 +128,27 @@ public class Program {
 		return objects.get(key);
 	}
 
-	public void setObject(String key,GameObject value) {
+	public void setObject(String key,GameObject value)throws KeyException {
+		if(!objects.containsKey(key))
+			throw new KeyException(key + "doesn't exist as gameObject variable");
 		this.objects.put(key, value);
 	}
 	public Direction getDirection(String key) {
 		return directions.get(key);
 	}
 
-	public void setDirection(String key,Direction value) {
+	public void setDirection(String key,Direction value) throws KeyException {
+		if(!directions.containsKey(key))
+			throw new KeyException(key + "doesn't exist as direction variable");
 		this.directions.put(key, value);
 	}
 	public Double getDouble(String key) {
 		return doubles.get(key);
 	}
 
-	public void setDouble(String key,Double value) {
+	public void setDouble(String key,Double value) throws KeyException {
+		if(!doubles.containsKey(key))
+			throw new KeyException(key + "doesn't exist as double variable");
 		this.doubles.put(key, value);
 	}
 	

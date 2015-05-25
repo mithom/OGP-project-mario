@@ -43,12 +43,10 @@ while true do
   if (! isjumping self &&
        ! ispassable(gettile((getx self)-1, (gety self)+1))) then
     newxdir := right;
-    print true;
   fi
   if (! isjumping self &&
       ! ispassable(gettile((getx self) + (getwidth self) , (gety self)+1))) then
     newxdir := left;
-    print false;
   fi
 
   if (isjumping self && (! haveenemy || ismoving (self, down))) then
