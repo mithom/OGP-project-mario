@@ -276,7 +276,6 @@ public class Buzam extends GameObject{
 			if (this.overlapsWithWall()[0]==true && getVerticalVelocity()<0.0d){
 				this.setVerticalVelocity(0.0d);
 				groundState = GroundState.GROUNDED;
-				//System.out.println("back to grounded");
 				setPositionY(oldPosition.getPositions()[1]-0.01d);
 			}else{
 				if(this.overlapsWithWall()[0]==false){
@@ -284,7 +283,6 @@ public class Buzam extends GameObject{
 				}
 			}
 			if(overlapsWithWall()[2]== true && getVerticalVelocity()>0.0d){
-				//System.out.println("against roof");
 				setVerticalVelocity(0.0d);
 				setPositionY(oldPosition.getPositions()[1]);
 			}
@@ -452,14 +450,12 @@ public class Buzam extends GameObject{
 			return 0.0d;
 		}else{
 			if(newPositiony>(getWorld().getHeight()-1)/100.0d){
-				//System.out.println("bovenkant wereld");
 				this.setVerticalVelocity(newSpeed);
 				return ((getWorld().getHeight()-1)/100.0d);
 			}//else{
 				//throw new PositionOutOfBoundsException(getPositionX(), getPositionY());
 			//}
 		}
-		//System.out.println("newspeed set: "+getVerticalVelocity());
 		this.setVerticalVelocity(newSpeed);
 		return newPositiony;
 	}
@@ -832,7 +828,6 @@ public class Buzam extends GameObject{
 					//indien bazum niet boven zijn vijand staat (na de botsing) zal hij damage nemen. 
 					this.loseHp(50);
 					this.imunityTime = 0.6d;
-					System.out.println("buzam damaged by slime shark or mauzub");
 				}
 			}
 		}
