@@ -865,9 +865,8 @@ public class Mazub extends GameObject{
 			}
 		}
 		else{
-			if(!isImmune()){
+				System.out.println("unknown type of gameobject");
 				gameObject.EffectOnCollisionWithReversed(this);
-			}
 		}
 	}
 	/**

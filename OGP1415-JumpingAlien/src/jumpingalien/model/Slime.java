@@ -149,7 +149,7 @@ public class Slime extends GameObject{
 			}
 			animate(smallDt);
 			for(GameObject gameObject:getOverlappingGameObjects()){
-				if(gameObject instanceof Slime || gameObject instanceof Mazub || gameObject instanceof Shark){
+				if(gameObject instanceof Slime || gameObject instanceof Mazub || gameObject instanceof Shark || gameObject instanceof Buzam){
 					setPositionX(oldPosition.getPositions()[0]);
 					setPositionY(oldPosition.getPositions()[1]);
 				}//don't bounce with plants
@@ -619,6 +619,7 @@ public class Slime extends GameObject{
 				}
 			}
 			else {
+				System.out.println("unknown type of gameobject");
 				gameObject.EffectOnCollisionWithReversed(gameObject);
 			}
 		}
