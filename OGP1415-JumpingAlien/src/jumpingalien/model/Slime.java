@@ -149,7 +149,7 @@ public class Slime extends GameObject{
 			}
 			animate(smallDt);
 			for(GameObject gameObject:getOverlappingGameObjects()){
-				if(gameObject instanceof Slime || gameObject instanceof Mazub || gameObject instanceof Shark){
+				if(gameObject instanceof Slime || gameObject instanceof Mazub || gameObject instanceof Shark || gameObject instanceof Buzam){
 					setPositionX(oldPosition.getPositions()[0]);
 					setPositionY(oldPosition.getPositions()[1]);
 				}//don't bounce with plants
@@ -610,11 +610,17 @@ public class Slime extends GameObject{
 				}
 			}
 		}
-		if(gameObject instanceof Mazub || gameObject instanceof Shark){
-			if(!isImmune()){
-				this.schoolHpLoss();
-				this.loseHp(50);
-				this.imunityTime = 0.6d;
+		else {
+			if(gameObject instanceof Mazub || gameObject instanceof Shark){
+				if(!isImmune()){
+					this.schoolHpLoss();
+					this.loseHp(50);
+					this.imunityTime = 0.6d;
+				}
+			}
+			else {
+				if(!(gameObject instanceof Plant))
+					gameObject.EffectOnCollisionWithReversed(this);
 			}
 		}
 	}
@@ -660,5 +666,11 @@ public class Slime extends GameObject{
 			return Math.signum(getHorizontalVelocity())==direction.getSign();
 		}
 		return false;
+	}
+
+	@Override
+	public void EffectOnCollisionWithReversed(GameObject gameObject) {
+		System.out.println("unknown type of gameobject");
+		return ;
 	}
 }

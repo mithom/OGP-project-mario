@@ -178,7 +178,7 @@ public class Shark extends GameObject{
 			}
 			animate(smallDt);
 			for(GameObject gameObject:getOverlappingGameObjects()){
-				if(gameObject instanceof Slime || gameObject instanceof Mazub|| gameObject instanceof Shark){
+				if(gameObject instanceof Slime || gameObject instanceof Mazub|| gameObject instanceof Shark || gameObject instanceof Buzam){
 					setPositionX(oldPosition.getPositions()[0]);
 					setPositionY(oldPosition.getPositions()[1]);
 				}//don't bounce with plants
@@ -655,17 +655,15 @@ public class Shark extends GameObject{
 	 */
 	
 	public void EffectOnCollisionWith(GameObject gameObject){
-		boolean done = false;
 		if(gameObject instanceof Mazub || gameObject instanceof Slime){
-			done = true;
 			if(!isImmune()){
 				this.loseHp(50);
 				this.imunityTime = 0.6d;
 			}
 		}
-		if(!done){
-			//doe nieuwe functie van andere
-			//gameObject.nieuwefunctie(this);
+		else{
+			if(!(gameObject instanceof Plant || gameObject instanceof Shark))
+				gameObject.EffectOnCollisionWithReversed(this);
 		}
 	}
 
@@ -701,5 +699,11 @@ public class Shark extends GameObject{
 			return Math.signum(getHorizontalVelocity())==direction.getSign();
 		}
 		return false;
+	}
+
+	@Override
+	public void EffectOnCollisionWithReversed(GameObject gameObject) {
+		System.out.println("unknown type of gameobject");
+		return ;
 	}
 }

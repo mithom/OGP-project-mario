@@ -152,7 +152,7 @@ public class Plant extends GameObject{
 				|		 loseHp(1)
 
 	 */
-	public void consume(Mazub alien){
+	public void consume(GameObject alien){
 		if(alien.hasMaxHp()==false && isTerminated() == false){
 			alien.addHp(50);
 			loseHp(1);
@@ -183,6 +183,10 @@ public class Plant extends GameObject{
 	public void EffectOnCollisionWith(GameObject gameObject){
 		if(gameObject instanceof Mazub){
 			consume((Mazub)gameObject);
+		}
+		else{
+			if(!(gameObject instanceof Plant || gameObject instanceof Shark || gameObject instanceof Slime))
+					gameObject.EffectOnCollisionWithReversed(this);
 		}
 	}
 
@@ -233,5 +237,11 @@ public class Plant extends GameObject{
 			return this.direction ==Direction.RIGHT;
 		}
 		return false;
+	}
+
+	@Override
+	public void EffectOnCollisionWithReversed(GameObject gameObject) {
+		System.out.println("unknown type of gameobject");
+		return ;
 	}
 }

@@ -106,6 +106,8 @@ public class Mazub extends GameObject{
 		direction= Direction.STALLED;
 	}*/
 	
+	//TODO waarom is het vorige in commentaar? moet ge de snelheden niet meer kunnen meegeven???
+	
 	public Mazub(int pixelLeftX, int pixelBottomY, Sprite[] sprites,Program program) throws PositionOutOfBoundsException{
 		super(pixelLeftX, pixelBottomY, sprites,0,500,100,program);
 		this.maxHorizontalVelocity = 3d;
@@ -273,7 +275,7 @@ public class Mazub extends GameObject{
 			}
 			executeEndDuck();
 			for(GameObject gameObject:getOverlappingGameObjects()){
-				if(gameObject instanceof Slime || gameObject instanceof Shark){
+				if(gameObject instanceof Slime || gameObject instanceof Shark || gameObject instanceof Buzam){//TODO: implement function "public boolean bounceagainst()"
 					setPositionX(oldPosition.getPositions()[0]);
 					setPositionY(oldPosition.getPositions()[1]);
 					boolean[] sides = sideOverlappingBetween(gameObject);
@@ -792,6 +794,11 @@ public class Mazub extends GameObject{
 	 * 		  | if this.world == null && canHaveAsWorld(world)
 	 * 		  |   then new.world = world
 	 *        |        world.addMazub(this)
+	 * @Post if the character overlaps with a wall at the bottom, his groundstate will be set to GROUNDED, otherwise he is in the air
+	 * 		  |if (overlapsWithWall()[0])
+	 * 		  | 	then new.getGroundState()==GroundState.GROUNDED
+	 * 	      |else
+	 * 		  |		then new.getGroundState() == GroundState.AIR
 	 */
 	@Override
 	public void addToWorld(World world){
@@ -838,9 +845,12 @@ public class Mazub extends GameObject{
 	/**
 	 * checks if the collision with a given gameobject has an effect
 	 * @effect if mazub isn't immune to the gameobject and if it doesn't overlap on top of it, it will lose Hp and it will have an imunityTime of 0.6 seconds
+	 * 		   if it collides with an unknown object (e.g. an object that is added later on) the effect of the collision will be checked in the class of the unknown object
 	 * 			|if !Immune() && if(getPerimeters()[1]<gameObject.getPerimeters()[3])
 	 * 			|  then loseHp(50)
 	 * 			|		new.imunityTime = 0.6d
+	 * 			|else
+	 * 			|  then gameObject.EffectOnCollisionWithReversed(this)
 	 */
 	//TODO controleer na merge
 	public void EffectOnCollisionWith(GameObject gameObject){
@@ -853,22 +863,48 @@ public class Mazub extends GameObject{
 				}
 			}
 		}
+		else{
+			if(!(gameObject instanceof Plant))
+				gameObject.EffectOnCollisionWithReversed(this);
+		}
 	}
-	
+	/**
+	 * checks if mazub is ducking
+	 * @return true if mazub is ducking, false otherwise 
+	 * 			| duckState == DuckState.DUCKED || duckState == DuckState.TRY_STRAIGHT
+	 */
 	@Override
 	public boolean isDucking(){
 		return duckState == DuckState.DUCKED || duckState == DuckState.TRY_STRAIGHT;
 	}
+	
+	/**
+	 * checks if mazub is jumping
+	 * @return true if mazub is jumping, false otherwise 
+	 * 			| (groundState != GroundState.GROUNDED && getVerticalVelocity()>0)
+	 */
 	
 	@Override
 	public boolean isJumping(){
 		return groundState != GroundState.GROUNDED && getVerticalVelocity()>0;
 	}
 	
+	/**
+	 * 
+	 * @param groundstate | the groundstate to which the groundstate of mazub needs to be set
+	 * @Post the groundstate of mazub will be changed to the given groudstate | new.groundState == groundstate
+	 */
+	
 	protected void setGroundState(GroundState groundstate){
 		this.groundState = groundstate;
 	}
 	
+	/**
+	 * checks if mazub is moving in the given direction
+	 * @return true if ... , false otherwise
+	 * 			|
+	 */
+	//TODO same question as Buzam
 	public boolean isMoving(Program.Direction direction){
 		switch(direction){
 		case UP:
@@ -879,6 +915,17 @@ public class Mazub extends GameObject{
 			return Math.signum(getHorizontalVelocity())==direction.getSign();
 		}
 		return false;
+	}
+	/**
+	 * checks the consequences of a collision between this object and the given object. This method is only used when 
+	 * the class doesn't recognise this gameobject because it is added before Mazub.
+	 * Since Mazub is a character that every class knows, nothing needs to be done here.
+	 */
+
+	@Override
+	public void EffectOnCollisionWithReversed(GameObject gameObject) {
+		System.out.println("unknown type of gameobject");
+		return ;
 	}
 	
 }
