@@ -276,7 +276,7 @@ public class Mazub extends GameObject{
 			}
 			executeEndDuck();
 			for(GameObject gameObject:getOverlappingGameObjects()){
-				if(gameObject instanceof Slime || gameObject instanceof Shark || gameObject instanceof Buzam){
+				if(gameObject instanceof Slime || gameObject instanceof Shark || gameObject instanceof Buzam){//TODO: implement function "public boolean bounceagainst()"
 					setPositionX(oldPosition.getPositions()[0]);
 					setPositionY(oldPosition.getPositions()[1]);
 					boolean[] sides = sideOverlappingBetween(gameObject);
@@ -865,7 +865,7 @@ public class Mazub extends GameObject{
 			}
 		}
 		else{
-				System.out.println("unknown type of gameobject");
+			if(!(gameObject instanceof Plant))
 				gameObject.EffectOnCollisionWithReversed(this);
 		}
 	}
@@ -925,6 +925,7 @@ public class Mazub extends GameObject{
 
 	@Override
 	public void EffectOnCollisionWithReversed(GameObject gameObject) {
+		System.out.println("unknown type of gameobject");
 		return ;
 	}
 	

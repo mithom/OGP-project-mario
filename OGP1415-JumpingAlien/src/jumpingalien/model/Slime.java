@@ -619,8 +619,8 @@ public class Slime extends GameObject{
 				}
 			}
 			else {
-				System.out.println("unknown type of gameobject");
-				gameObject.EffectOnCollisionWithReversed(gameObject);
+				if(!(gameObject instanceof Plant))
+					gameObject.EffectOnCollisionWithReversed(this);
 			}
 		}
 	}
@@ -670,6 +670,7 @@ public class Slime extends GameObject{
 
 	@Override
 	public void EffectOnCollisionWithReversed(GameObject gameObject) {
+		System.out.println("unknown type of gameobject");
 		return ;
 	}
 }

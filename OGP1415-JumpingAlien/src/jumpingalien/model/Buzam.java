@@ -832,12 +832,13 @@ public class Buzam extends GameObject{
 					//indien bazum niet boven zijn vijand staat (na de botsing) zal hij damage nemen. 
 					this.loseHp(50);
 					this.imunityTime = 0.6d;
+					System.out.println("buzam damaged by slime shark or mauzub");
 				}
 			}
 		}
 		else{
-			System.out.println("unknown type of gameobject");
-			gameObject.EffectOnCollisionWithReversed(this);
+			if(!(gameObject instanceof Plant))
+				gameObject.EffectOnCollisionWithReversed(this);
 		}
 	}
 	
@@ -923,6 +924,9 @@ public class Buzam extends GameObject{
 							gameObject.loseHp(50);
 							gameObject.imunityTime = 0.6d;
 						}
+					}else{
+						System.out.println("unknown type of gameobject");
+						System.out.println(gameObject.getClass());
 					}
 				}
 			}
