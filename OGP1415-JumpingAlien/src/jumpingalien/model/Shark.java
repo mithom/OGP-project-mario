@@ -2,11 +2,8 @@ package jumpingalien.model;
 
 import java.util.Random;
 
-import org.hamcrest.core.IsInstanceOf;
-
 import be.kuleuven.cs.som.annotate.Basic;
 import jumpingalien.exception.IllegalMovementException;
-import jumpingalien.exception.IllegalSizeException;
 import jumpingalien.exception.PositionOutOfBoundsException;
 import jumpingalien.model.gameObject.GameObject;
 import jumpingalien.model.gameObject.Position;
@@ -130,7 +127,7 @@ public class Shark extends GameObject{
 	 */
 
 	@Override
-	public void advanceTime(double dt) throws PositionOutOfBoundsException, IllegalSizeException{
+	public void advanceTime(double dt) throws PositionOutOfBoundsException{
 		while(!isTerminated() && dt >0){
 			decideAction();
 			double smallDt;

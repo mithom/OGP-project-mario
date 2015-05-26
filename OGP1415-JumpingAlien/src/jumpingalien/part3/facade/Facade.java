@@ -2,7 +2,6 @@ package jumpingalien.part3.facade;
 
 import java.util.Optional;
 
-import jumpingalien.exception.IllegalSizeException;
 import jumpingalien.exception.PositionOutOfBoundsException;
 import jumpingalien.model.Buzam;
 import jumpingalien.model.Plant;
@@ -111,8 +110,6 @@ public class Facade extends jumpingalien.part2.facade.Facade implements IFacadeP
 			return alien.getSize();
 		}catch(NullPointerException e){
 			throw new ModelException(e.getMessage());
-		}catch(IllegalSizeException ex){
-			throw new ModelException("illegal size of currentSprite: "+ ex.getSize().toString());
 		}
 	}
 

@@ -4,7 +4,6 @@ import java.util.Collection;
 
 import jumpingalien.exception.IllegalMazubStateException;
 import jumpingalien.exception.IllegalMovementException;
-import jumpingalien.exception.IllegalSizeException;
 import jumpingalien.exception.IllegalTimeException;
 import jumpingalien.exception.PositionOutOfBoundsException;
 import jumpingalien.model.Mazub;
@@ -16,7 +15,6 @@ import jumpingalien.model.World;
 import jumpingalien.util.ModelException;
 import jumpingalien.util.Sprite;
 
-//zou zonder implements werken mss, niet in opgave, valt noch te bezien
 public class Facade extends jumpingalien.part1.facade.Facade implements IFacadePart2 {
 
 	@Override
@@ -31,10 +29,7 @@ public class Facade extends jumpingalien.part1.facade.Facade implements IFacadeP
 			throw new ModelException("illegalTime");
 		}catch(PositionOutOfBoundsException exce){
 			throw new ModelException("positionOutOfBounds" + exce.getLocation()[0] + " ," + exce.getLocation()[1]);
-		}catch(IllegalSizeException exce){
-			throw new ModelException("illegalSizeException (in collision between objects)");
 		}
-
 	}
 
 	@Override

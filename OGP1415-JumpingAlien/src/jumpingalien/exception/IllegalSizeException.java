@@ -1,5 +1,6 @@
 package jumpingalien.exception;
 
+@Deprecated
 public class IllegalSizeException extends Exception{
 	  private final double width;
 	  private final double height;

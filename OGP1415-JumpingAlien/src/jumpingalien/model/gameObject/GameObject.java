@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import be.kuleuven.cs.som.annotate.*;
 import jumpingalien.exception.IllegalMazubStateException;
 import jumpingalien.exception.IllegalMovementException;
-import jumpingalien.exception.IllegalSizeException;
 import jumpingalien.exception.IllegalTimeException;
 import jumpingalien.exception.PositionOutOfBoundsException;
 import jumpingalien.model.Program;
@@ -59,7 +58,7 @@ public abstract class GameObject {
 	 */
 	@Raw @Model
 	protected GameObject(int pixelLeftX, int pixelBottomY, Sprite[] sprites){
-		assert sprites.length>=1;
+		assert checkValidSprites(sprites);
 		position = new Position(new double[]{pixelLeftX/100.0d,pixelBottomY/100.0d});
 		this.spriteList = sprites;
 		this.m = (spriteList.length-8)/2;
@@ -68,7 +67,6 @@ public abstract class GameObject {
 		lastWaterHit =0.2d;
 		lastLavaHit=0.0d;
 	};
-	
 	
 	/**
 	 * 
@@ -89,7 +87,7 @@ public abstract class GameObject {
 	 */
 	@Raw @Model
 	protected GameObject(int pixelLeftX, int pixelBottomY, Sprite[] sprites,int minHp,int maxHp,int currentHp) throws PositionOutOfBoundsException{
-		assert sprites.length>=1;
+		assert checkValidSprites(sprites);
 		position = new Position(new double[]{pixelLeftX/100.0d,pixelBottomY/100.0d});
 		this.spriteList = sprites;
 		this.m = (spriteList.length-8)/2;
@@ -102,7 +100,7 @@ public abstract class GameObject {
 	
 	@Raw @Model
 	protected GameObject(int pixelLeftX, int pixelBottomY, Sprite[] sprites,int minHp,int maxHp,int currentHp,Program program) throws PositionOutOfBoundsException{
-		assert sprites.length>=1;
+		assert checkValidSprites(sprites);
 		position = new Position(new double[]{pixelLeftX/100.0d,pixelBottomY/100.0d});
 		this.spriteList = sprites;
 		this.m = (spriteList.length-8)/2;
@@ -113,6 +111,16 @@ public abstract class GameObject {
 		this.program=program;
 		program.setGameObject(this);
 	};
+	
+	public boolean checkValidSprites(Sprite[] sprites){
+		if(sprites.length<1)
+			return false;
+		for(Sprite sprite:sprites){
+			if(sprite.getHeight()<0||sprite.getWidth()<0)
+				return false;
+		}
+		return true;
+	}
 	
 	/**
 	 * removes the given amount of Hp
@@ -333,11 +341,11 @@ public abstract class GameObject {
 	 * @return 	|[getCurrentSprite().getWidth(),getCurrentSprite().getHeight()]
 	 */
 	@Basic
-	public int[] getSize() throws IllegalSizeException {//TODO: check spriteSize on creation, not in getter!
+	public int[] getSize(){
 		Sprite currentSprite = getCurrentSprite();
 		//if(currentSprite == null) throw new NullPointerException("currentSprite isn't pointing toward any Sprite"); //dit gebeurt in de assert van setCurrentSprite
-		if(currentSprite.getWidth() <= 0 || currentSprite.getHeight() <= 0) throw new IllegalSizeException(currentSprite.getWidth(),currentSprite.getHeight());
-		return new int[]{getCurrentSprite().getWidth(),getCurrentSprite().getHeight()};
+		//if(currentSprite.getWidth() <= 0 || currentSprite.getHeight() <= 0) throw new IllegalSizeException(currentSprite.getWidth(),currentSprite.getHeight()); //wordt gecontrolleerd in instantiator nu
+		return new int[]{currentSprite.getWidth(),currentSprite.getHeight()};
 	}
 	
 	/**
@@ -352,7 +360,7 @@ public abstract class GameObject {
 	}
 	
 
-	public abstract void advanceTime(double dt) throws NullPointerException,IllegalMovementException,IllegalMazubStateException,IllegalTimeException,PositionOutOfBoundsException, IllegalSizeException;
+	public abstract void advanceTime(double dt) throws NullPointerException,IllegalMovementException,IllegalMazubStateException,IllegalTimeException,PositionOutOfBoundsException;
 	
 	/**
 	 * checks if the gameobject overlaps with a wall and where it overlaps
@@ -429,10 +437,8 @@ public abstract class GameObject {
 	 * @return an array with 4 booleans.  First slot describes if gameobject overlaps to the left, the second at the bottom, third to the right and last at the top.
 	 * @throws NullPointerException
 	 * 			trying to take the size of the value null as if it was an array
-	 * @throws IllegalSizeException
-	 * 			the array has an illegal size
 	 */
-	public boolean[] placeOverlapsWithGameObject() throws NullPointerException, IllegalSizeException{
+	public boolean[] placeOverlapsWithGameObject() throws NullPointerException{//TODO check if nullpointer can be removed
 		boolean[] overlap = new boolean[]{false,false,false,false};//left,bot,right,top
 		ArrayList<GameObject> overlappingObjects = getOverlappingGameObjects();
 		for (int  i=0 ; i < overlappingObjects.size() ; i++){

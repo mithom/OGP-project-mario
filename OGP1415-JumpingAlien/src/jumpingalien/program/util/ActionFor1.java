@@ -3,7 +3,6 @@ package jumpingalien.program.util;
 import java.util.ArrayList;
 import java.util.Random;
 
-import jumpingalien.exception.IllegalSizeException;
 import jumpingalien.model.gameObject.GameObject;
 import jumpingalien.model.gameObject.TileObject;
 import jumpingalien.model.Program.Direction;
@@ -81,33 +80,23 @@ public enum ActionFor1 {
 	GETWIDTH{
 		public Value<?> evaluate(Expression<?,? extends Value<?>> expression, double[] dt){
 			Value<?> value = (Value<?>)expression.getExpressions()[0];
-			try{//TODO: remove try catch zodra getter gefixed is
-				GameObject variable =(GameObject)value.evaluate(dt);
-				if(dt[0]>0){
-					expression.setDoneTrue(dt);
-					return new Value<Double>((Double)(double)(variable).getSize()[0]);
-				}else
-					return new Value<Object>(null);
-			}catch(IllegalSizeException e){
-				System.out.println("getter moet nog gefixed worden");
-				return new Value<Double>();
-			}
+			GameObject variable =(GameObject)value.evaluate(dt);
+			if(dt[0]>0){
+				expression.setDoneTrue(dt);
+				return new Value<Double>((Double)(double)(variable).getSize()[0]);
+			}else
+				return new Value<Object>(null);
 		}
 	},
 	GETHEIGHT{
 		public Value<?> evaluate(Expression<?,? extends Value<?>> expression, double[] dt){
 			Value<?> value = (Value<?>)expression.getExpressions()[0];
-			try{//TODO: remove try catch zodra getter gefixed is
-				GameObject variable = (GameObject)value.evaluate(dt);
-				if(dt[0]>0){
-					expression.setDoneTrue(dt);
-					return new Value<Double>((Double)(double)(variable).getSize()[1]);
-				}else
-					return new Value<Object>(null);
-			}catch(IllegalSizeException e){
-				System.out.println("getter moet nog gefixed worden");
-				return new Value<Double>();
-			}
+			GameObject variable = (GameObject)value.evaluate(dt);
+			if(dt[0]>0){
+				expression.setDoneTrue(dt);
+				return new Value<Double>((Double)(double)(variable).getSize()[1]);
+			}else
+				return new Value<Object>(null);
 		}
 	},
 	GETHP{

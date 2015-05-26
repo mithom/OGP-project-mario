@@ -2,7 +2,6 @@ package jumpingalien.part1.facade;
 
 import jumpingalien.exception.IllegalMazubStateException;
 import jumpingalien.exception.IllegalMovementException;
-import jumpingalien.exception.IllegalSizeException;
 import jumpingalien.exception.IllegalTimeException;
 import jumpingalien.exception.PositionOutOfBoundsException;
 import jumpingalien.model.Mazub;
@@ -51,8 +50,6 @@ public class Facade implements IFacade{
 			return alien.getSize();
 		}catch(NullPointerException e){
 			throw new ModelException(e.getMessage());
-		}catch(IllegalSizeException ex){
-			throw new ModelException("illegal size of currentSprite: "+ ex.getSize().toString());
 		}
 	};
 

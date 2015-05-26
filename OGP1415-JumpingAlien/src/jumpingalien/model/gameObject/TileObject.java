@@ -2,7 +2,6 @@ package jumpingalien.model.gameObject;
 
 import jumpingalien.exception.IllegalMazubStateException;
 import jumpingalien.exception.IllegalMovementException;
-import jumpingalien.exception.IllegalSizeException;
 import jumpingalien.exception.IllegalTimeException;
 import jumpingalien.exception.PositionOutOfBoundsException;
 import jumpingalien.model.Program;
@@ -25,8 +24,7 @@ public class TileObject extends GameObject {
 	@Override @Deprecated
 	public void advanceTime(double dt) throws NullPointerException,
 			IllegalMovementException, IllegalMazubStateException,
-			IllegalTimeException, PositionOutOfBoundsException,
-			IllegalSizeException {
+			IllegalTimeException, PositionOutOfBoundsException {
 	}
 
 	@Override @Deprecated
