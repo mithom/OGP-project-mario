@@ -27,7 +27,7 @@ import jumpingalien.util.Sprite;
  * @Invar	each gameObject has at least 1 sprite
  * 			|spriteList.length()>=1 
  */
-public abstract class GameObject {//TODO: make TileObject
+public abstract class GameObject {
 	private Position position;
 	private final Sprite[] spriteList;
 	private int currentSpriteNumber=0;
@@ -333,9 +333,9 @@ public abstract class GameObject {//TODO: make TileObject
 	 * @return 	|[getCurrentSprite().getWidth(),getCurrentSprite().getHeight()]
 	 */
 	@Basic
-	public int[] getSize() throws NullPointerException, IllegalSizeException {//TODO: check spriteSize on creation, not in getter!
+	public int[] getSize() throws IllegalSizeException {//TODO: check spriteSize on creation, not in getter!
 		Sprite currentSprite = getCurrentSprite();
-		if(currentSprite == null) throw new NullPointerException("currentSprite isn't pointing toward any Sprite");
+		//if(currentSprite == null) throw new NullPointerException("currentSprite isn't pointing toward any Sprite"); //dit gebeurt in de assert van setCurrentSprite
 		if(currentSprite.getWidth() <= 0 || currentSprite.getHeight() <= 0) throw new IllegalSizeException(currentSprite.getWidth(),currentSprite.getHeight());
 		return new int[]{getCurrentSprite().getWidth(),getCurrentSprite().getHeight()};
 	}

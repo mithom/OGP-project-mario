@@ -69,51 +69,35 @@ public class TileObject extends GameObject {
 		return false;
 	}
 
-	@Override
-	public void startJump() {
-		// TODO Auto-generated method stub
-		
-	}
+	@Override @Deprecated
+	public void startJump() {}
 
-	@Override
-	public void endJump() {
-		// TODO Auto-generated method stub
-		
-	}
+	@Override @Deprecated
+	public void endJump() {}
 
-	@Override
-	public void startDuck() {
-		// TODO Auto-generated method stub
-		
-	}
+	@Override @Deprecated
+	public void startDuck() {}
 
-	@Override
-	public void endDuck() {
-		// TODO Auto-generated method stub
-		
-	}
+	@Override @Deprecated
+	public void endDuck() {}
 
-	@Override
-	public void startMove(Direction direction) {
-		// TODO Auto-generated method stub
-		
-	}
+	@Override @Deprecated
+	public void startMove(Direction direction) {}
 
-	@Override
-	public void endMove(Direction direction) {
-		// TODO Auto-generated method stub
-		
-	}
+	@Override @Deprecated
+	public void endMove(Direction direction) {}
 	
+	@Override
 	public boolean isMoving(Program.Direction direction){
 		return false;
 	}
 	
+	@Override
 	public String toString(){
 		return "tile of type: "+geologicalFeature.toString();
 	}
 
-	@Override
+	@Override @Deprecated
 	public void EffectOnCollisionWithReversed(GameObject gameObject) {
 		return ;
 	}

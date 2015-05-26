@@ -14,6 +14,7 @@ import jumpingalien.program.statement.util.Category;
 public class Program {
 	private GameObject gameObject;
 	private Statement statement;
+	private boolean error = false;
 	public enum Direction {
 		UP{
 			public int getSign(){return 1;};
@@ -51,6 +52,14 @@ public class Program {
 		
 	}
 	
+	public void setError(){
+		error = true;
+	}
+	
+	public boolean hasError(){
+		return error;
+	}
+	
 	public void setGameObject(GameObject gameObject){//TODO add checkers
 		this.gameObject = gameObject;
 	}
@@ -65,7 +74,7 @@ public class Program {
 	
 	public double executeTime(double dt){
 		double[] dt2 = new double[]{dt};
-		while(dt2[0]>0){
+		while(dt2[0]>0 && !hasError()){
 			executeNext(dt2);
 		}
 		return dt2[0];

@@ -1,5 +1,6 @@
 package jumpingalien.program.statement.util;
 import jumpingalien.model.gameObject.GameObject;
+import jumpingalien.model.gameObject.TileObject;
 import jumpingalien.part3.programs.IProgramFactory;
 import jumpingalien.model.*;
 
@@ -31,7 +32,7 @@ public enum Kind {
 	},
 	TERRAIN{
 		public Class<? extends GameObject> getCorrespondingClass(){
-			return GameObject.class;//TODO: terrain must be implemented
+			return TileObject.class;
 		}
 	},
 	ANY{

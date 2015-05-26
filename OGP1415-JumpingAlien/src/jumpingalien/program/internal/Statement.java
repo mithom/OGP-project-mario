@@ -1,6 +1,5 @@
 package jumpingalien.program.internal;
 
-import java.security.KeyException;
 import java.util.Iterator;
 
 import jumpingalien.model.Buzam;
@@ -26,11 +25,11 @@ public class Statement {
 	private Double timeToWait;
 	private Iterator<? extends GameObject> iterObjects;
 	private boolean noBreak = true;
-	private boolean hardResetted=false;
+	//private boolean hardResetted=false;
 	
-	public boolean isHardResetted(){
-		return hardResetted;
-	}
+	//public boolean isHardResetted(){
+		//return hardResetted;
+	//}
 	
 	public Type getType() {
 		return type;
@@ -145,13 +144,12 @@ public class Statement {
 	}
 	
 	public boolean executeNext(double[] dt){
-		hardResetted = false;
 		if(dt[0]<=0.0)
 			return false;
 		if(!isDone()){
 			execute(dt);
 		}
-		if(!hardResetted){
+		if(!getProgram().hasError()){
 			int nextNb;
 			if(getCategory()==Category.WHILE || getCategory()==Category.FOREACH)
 				nextNb=1;
@@ -189,8 +187,9 @@ public class Statement {
 			category.execute(this,dt);
 		}catch(Exception e){//TODO: make a specific error for this!
 			System.out.println("error catched");
-			dt[0] -= 0.001d;
-			hardReset();
+			getProgram().setError();
+			//dt[0] -= 0.001d;
+			//hardReset();
 		}
 	}
 	
@@ -228,7 +227,7 @@ public class Statement {
 			//else: gaat verder in while/foreach/if lus (zou anders al op isDone hebben gestaan)
 		}
 	}
-	
+	/*
 	private void hardReset(){
 		done = false;
 		timeToWait=null;
@@ -244,7 +243,7 @@ public class Statement {
 		}else{
 				program.resetGlobals();
 		}
-	}
+	}*/
 
 	public Category getCategory() {
 		return category;
@@ -275,7 +274,7 @@ public class Statement {
 		this.kind = kind;
 	}
 	
-	public Value<?>[] getExpressions() {//TODO: check if still works
+	public Value<?>[] getExpressions() {
 		return expressions.clone();
 	}
 	

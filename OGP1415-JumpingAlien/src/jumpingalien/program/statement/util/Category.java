@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
 
-import jumpingalien.model.Buzam;
 import jumpingalien.model.Program.Direction;
 import jumpingalien.model.World;
 import jumpingalien.model.gameObject.GameObject;
@@ -16,7 +15,7 @@ import jumpingalien.program.internal.Value;
 public enum Category {
 	WHILE{
 		public void execute(Statement statement, double[] dt){
-			while( dt[0]>0 && ! statement.isDone() && !statement.isHardResetted()){
+			while( dt[0]>0 && ! statement.isDone() && !statement.getProgram().hasError()){
 				if(!statement.getNoBreak()){
 					statement.setDoneTrue();
 					break;
@@ -144,7 +143,7 @@ public enum Category {
 				}
 			}
 			dt[0]-=0.001d;
-			while(dt[0]>0 && !statement.isDone() && !statement.isHardResetted()){
+			while(dt[0]>0 && !statement.isDone() && !statement.getProgram().hasError()){
 				if(!statement.getNoBreak()){
 					statement.setDoneTrue();
 					break;

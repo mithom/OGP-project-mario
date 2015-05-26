@@ -1,6 +1,5 @@
 package jumpingalien.program.statement.util;
 
-import jumpingalien.model.Buzam;
 import jumpingalien.model.Program;
 import jumpingalien.program.internal.Statement;
 import jumpingalien.state.Direction;

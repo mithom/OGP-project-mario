@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import jumpingalien.exception.IllegalSizeException;
-import jumpingalien.model.Buzam;
 import jumpingalien.model.gameObject.GameObject;
 import jumpingalien.model.gameObject.TileObject;
 import jumpingalien.model.Program.Direction;
@@ -292,13 +291,13 @@ public enum ActionFor1 {
 			GameObject variable = (GameObject)value.evaluate(dt);
 			if(dt[0]>0){
 				expression.setDoneTrue(dt);
-				return new Value<Boolean>((variable).isDucking());//TODO: check if this has to be reversed or not (Wouter did this)
+				return new Value<Boolean>((variable).isDucking());
 			}else
 				return new Value<Object>(null);
 		}
 	},
 	ISJUMPING{
-		public Value<?> evaluate(Expression<?,? extends Value<?>> expression, double[] dt){//TODO: check if this has to be reversed or not (Wouter did this)
+		public Value<?> evaluate(Expression<?,? extends Value<?>> expression, double[] dt){
 			Value<?> value = (Value<?>)expression.getExpressions()[0];
 			GameObject variable = (GameObject)value.evaluate(dt);
 			if(dt[0]>0){
