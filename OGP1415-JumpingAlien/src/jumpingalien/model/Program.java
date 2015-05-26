@@ -48,8 +48,10 @@ public class Program {
 	private HashMap<String,Direction> directions = new HashMap<>();
 	private HashMap<String,Double> doubles = new HashMap<>();
 
-	public Program(){
-		
+	public Program(Statement statement){
+		assert statement != null;
+		this.statement = statement;
+		statement.addProgram(this);
 	}
 	
 	public void setError(){
@@ -60,7 +62,8 @@ public class Program {
 		return error;
 	}
 	
-	public void setGameObject(GameObject gameObject){//TODO add checkers
+	public void setGameObject(GameObject gameObject){
+		assert gameObject != null && gameObject.getProgram()==this;//elk gameObject mag, zelfs een reeds dode.
 		this.gameObject = gameObject;
 	}
 	
@@ -78,11 +81,6 @@ public class Program {
 			executeNext(dt2);
 		}
 		return dt2[0];
-	}
-	
-	public void addStatement(Statement statement){//TODO add checkers
-		this.statement = statement;
-		statement.addProgram(this);
 	}
 
 	public void addGlobal(String text, Type type){

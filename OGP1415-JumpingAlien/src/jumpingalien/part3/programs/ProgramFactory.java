@@ -393,12 +393,8 @@ public class ProgramFactory implements IProgramFactory<Value<?>, Statement, Type
 
 	@Override
 	public Program createProgram(Statement mainStatement, Map<String, Type> globalVariables) {
-		// TODO complete, think it's done XD,not shure
-		Program program = new Program();
+		Program program = new Program(mainStatement);
 		program.addAllGlobals(globalVariables);
-		//addStatements after they are created
-		program.addStatement(mainStatement);
-		//mainStatement.addProgram(program);
 		return program;
 	}
 
