@@ -852,7 +852,6 @@ public class Mazub extends GameObject{
 	 * 			|else
 	 * 			|  then gameObject.EffectOnCollisionWithReversed(this)
 	 */
-	//TODO controleer na merge
 	public void EffectOnCollisionWith(GameObject gameObject){
 		if(gameObject instanceof Shark || gameObject instanceof Slime){
 			if(!isImmune()){
@@ -904,7 +903,6 @@ public class Mazub extends GameObject{
 	 * @return true if ... , false otherwise
 	 * 			|
 	 */
-	//TODO same question as Buzam
 	public boolean isMoving(Program.Direction direction){
 		switch(direction){
 		case UP:

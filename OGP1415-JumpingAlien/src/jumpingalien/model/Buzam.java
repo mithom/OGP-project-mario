@@ -247,8 +247,6 @@ public class Buzam extends GameObject{
 				|if isInWater
 				|	then loseHp(2)
 	 */			
-
-	//TODO de move window moet toch weg hier he? ik heb die verwijderd in ieder geval
 	public void advanceTime(double dt)throws PositionOutOfBoundsException, IllegalMazubStateException, IllegalTimeException,IllegalMovementException{
 		double dt2 = dt;
 		while(dt>0 && !isTerminated()){
@@ -820,7 +818,6 @@ public class Buzam extends GameObject{
 	 * 			|  then gameObject.EffectOnCollisionWithReversed(this)
 	 * 			
 	 */
-	//TODO controleer na merge
 	public void EffectOnCollisionWith(GameObject gameObject){
 		if(gameObject instanceof Shark || gameObject instanceof Slime || gameObject instanceof Mazub){
 			if(!isImmune()){
@@ -873,7 +870,6 @@ public class Buzam extends GameObject{
 	 * @return true if ... , false otherwise
 	 * 			|
 	 */
-	//TODO waarom zijn UP en LEFT leeg???
 	public boolean isMoving(Program.Direction direction){
 		switch(direction){
 		case UP:
@@ -953,7 +949,6 @@ public class Buzam extends GameObject{
 			}
 		}
 	}
-	//TODO: implement bouncing with mazub etc!
 	
 
 

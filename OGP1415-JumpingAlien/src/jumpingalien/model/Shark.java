@@ -72,14 +72,11 @@ public class Shark extends GameObject{
 		actionTime = 0.0d;actionDuration = 0.0d;
 		direction = Direction.STALLED;
 		}
-	//TODO Nullpointer?????
 	/**
 	 * @param dt	|the time passed since the last frame.
 	 * @throws PositionOutOfBoundsExeption
 	 * 			shark has an illegal position
 	 * 				| ! hasValidPosition()
-	 * @throws NullpointerException
-	 * 			if double dt
 	 * @throws IllegalSizeException
 	 * 			The size of shark isn't a legal value
 	 * @Post 	the position and velocity of shark can be changed depending on the situation. 
@@ -133,7 +130,7 @@ public class Shark extends GameObject{
 	 */
 
 	@Override
-	public void advanceTime(double dt) throws PositionOutOfBoundsException, NullPointerException, IllegalSizeException{
+	public void advanceTime(double dt) throws PositionOutOfBoundsException, IllegalSizeException{
 		while(!isTerminated() && dt >0){
 			decideAction();
 			double smallDt;

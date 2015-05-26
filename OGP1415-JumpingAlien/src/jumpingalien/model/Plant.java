@@ -191,38 +191,26 @@ public class Plant extends GameObject{
 	}
 
 	@Override
-	public void startJump() {
-		// TODO Auto-generated method stub
-		
-	}
+	public void startJump() {}
 
 	@Override
-	public void endJump() {
-		// TODO Auto-generated method stub
-		
-	}
+	public void endJump() {}
 
 	@Override
-	public void startDuck() {
-		// TODO Auto-generated method stub
-		
-	}
+	public void startDuck() {}
 
 	@Override
-	public void endDuck() {
-		// TODO Auto-generated method stub
-		
-	}
+	public void endDuck() {}
 
 	@Override
 	public void startMove(Direction direction) {
-		// TODO Auto-generated method stub
+		// TODO implement this functions!
 		
 	}
 
 	@Override
 	public void endMove(Direction direction) {
-		// TODO Auto-generated method stub
+		// TODO implement this functions!
 		
 	}
 	

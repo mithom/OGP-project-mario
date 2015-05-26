@@ -626,34 +626,20 @@ public class Slime extends GameObject{
 	}
 
 	@Override
-	public void startJump() {
-		// TODO Auto-generated method stub
-		
-	}
+	public void startJump() {}
 
 	@Override
-	public void endJump() {
-		// TODO Auto-generated method stub
-		
-	}
+	public void endJump() {}
 
 	@Override
-	public void startDuck() {
-		// TODO Auto-generated method stub
-		
-	}
+	public void startDuck() {}
 
 	@Override
-	public void endDuck() {
-		// TODO Auto-generated method stub
-		
-	}
+	public void endDuck() {}
 
 	@Override
-	public void endMove(Direction direction) {
+	public void endMove(Direction direction) {//TODO: make direction specific for program
 		endMove();
-		// TODO Auto-generated method stub
-		
 	};
 	
 	public boolean isMoving(Program.Direction direction){
