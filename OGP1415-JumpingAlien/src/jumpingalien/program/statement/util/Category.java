@@ -20,8 +20,13 @@ public enum Category {
 					statement.setDoneTrue();
 					break;
 				}
+				boolean wasdone=false;;
+				if(statement.getExpressions()[0].isDone()){
+					wasdone = true;
+				}
 				Boolean variable = (Boolean)statement.getExpressions()[0].evaluate(dt);
-				dt[0]-=0.001d;
+				if(!wasdone)
+					dt[0]-=0.001d;
 				if(variable != null ){
 					if(variable){
 						statement.getNextStatements()[0].addPreviousStatement(statement);
@@ -141,8 +146,8 @@ public enum Category {
 				}else{
 					statement.setDoneTrue();
 				}
+				dt[0]-=0.001d;
 			}
-			dt[0]-=0.001d;
 			while(dt[0]>0 && !statement.isDone() && !statement.getProgram().hasError()){
 				if(!statement.getNoBreak()){
 					statement.setDoneTrue();
@@ -181,7 +186,12 @@ public enum Category {
 	},
 	IF{
 		public void execute(Statement statement, double[] dt){
+			boolean wasdone=false;
+			if(statement.getExpressions()[0].isDone())
+				wasdone =true;
 			Boolean variable = (Boolean)statement.getExpressions()[0].evaluate(dt);
+			if(!wasdone)
+				dt[0]-=0.001d;
 			if(dt[0]>0){
 				if(variable){
 					statement.getNextStatements()[0].addPreviousStatement(statement);

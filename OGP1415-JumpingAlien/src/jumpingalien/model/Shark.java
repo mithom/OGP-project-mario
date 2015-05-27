@@ -444,7 +444,8 @@ public class Shark extends GameObject{
 		//dirsign is used in here to compensate for the current direction of the mazub.
 		if(newSpeed*dirSign > this.getMaxHorizontalVelocity()){//overgangsverschijnsel (1keer bij berijken max speed)
 			if(getHorizontalAcceleration()==0)throw new IllegalMovementException("impossible to divide by zero");
-			double accDt = (this.getMaxHorizontalVelocity()- this.getHorizontalVelocity()*dirSign)/(getHorizontalAcceleration()*dirSign);
+			double accDt = Math.max(0,(this.getMaxHorizontalVelocity()- this.getHorizontalVelocity()*dirSign)/(getHorizontalAcceleration()*dirSign));
+			//double accDt = (this.getMaxHorizontalVelocity()- this.getHorizontalVelocity()*dirSign)/(getHorizontalAcceleration()*dirSign);
 			s= travelledHorizontalDistance(accDt)+getMaxHorizontalVelocity()*(dt-accDt)*dirSign;
 			this.setHorizontalVelocity(this.getMaxHorizontalVelocity()*dirSign);
 		}
@@ -453,8 +454,7 @@ public class Shark extends GameObject{
 			this.setHorizontalVelocity(newSpeed);
 		}
 		if(((getPositionX()+s <=0d || s<0)&& dirSign>0 )|| (s>0 && dirSign<0)){
-			System.out.println("shark error");
-			//throw new IllegalMovementException("positionX overflowed");
+			throw new IllegalMovementException("positionX overflowed");
 		}
 		//correct position if out of window
 		if(getPositionX()+s <0){

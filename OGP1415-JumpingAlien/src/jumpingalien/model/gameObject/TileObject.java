@@ -87,7 +87,7 @@ public class TileObject extends GameObject {
 	
 	@Override
 	public boolean isMoving(Program.Direction direction){
-		return false;
+		throw new UnsupportedOperationException();
 	}
 	
 	@Override
@@ -99,4 +99,30 @@ public class TileObject extends GameObject {
 	public void EffectOnCollisionWithReversed(GameObject gameObject) {
 		return ;
 	}
+	
+	@Override
+	public int[] getSize(){
+		throw new UnsupportedOperationException();
+	}
+	
+	@Override
+	public int getNbHitPoints(){
+		throw new UnsupportedOperationException();
+	}
+	
+	@Override
+	public boolean isDead(){
+		throw new UnsupportedOperationException();
+	}
+	
+	@Override
+	public boolean isJumping(){
+		throw new UnsupportedOperationException();
+	}
+	
+	@Override
+	public boolean isDucking(){
+		throw new UnsupportedOperationException();
+	}
+	
 }

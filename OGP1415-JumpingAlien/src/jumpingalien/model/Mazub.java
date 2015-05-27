@@ -383,14 +383,11 @@ public class Mazub extends GameObject{
 			this.setHorizontalVelocity(newSpeed);
 		}
 		if(((getPositionX()+s <=0d || s<0)&& dirSign>0 )|| (s>0 && dirSign<0)){
-			//System.out.println(s +","+ dirSign+","+getPositionX());
-			//System.out.println(dt+","+newSpeed);
 			throw new IllegalMovementException("positionX overflowed");
 		}
 		//correct position if out of window
 		if(getPositionX()+s <0){
 			return 0.0d;
-			//setPositionX(0); //ELKE SITUATIE VERANDEREN HE
 		}
 		if(getPositionX()+s>(getWorld().getWidth()-1)/100d)
 			return (getWorld().getWidth()-1)/100.0d;

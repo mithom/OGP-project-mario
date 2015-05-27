@@ -186,10 +186,8 @@ public class Statement {
 		try{
 			category.execute(this,dt);
 		}catch(Exception e){//TODO: make a specific error for this!
-			System.out.println("error catched");
+			//System.out.println("error catched: "+ Arrays.toString(getExpressions()));
 			getProgram().setError();
-			//dt[0] -= 0.001d;
-			//hardReset();
 		}
 	}
 	

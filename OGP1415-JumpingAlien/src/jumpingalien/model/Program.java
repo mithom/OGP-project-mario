@@ -119,11 +119,6 @@ public class Program {
 			directions.put(key,null);
 		}
 	}
-	
-	
-	public Boolean getBoolean(String key) {
-		return booleans.get(key);
-	}
 
 	public void setBoolean(String key,Boolean value)throws KeyException {
 		if(!booleans.containsKey(key))
@@ -131,26 +126,16 @@ public class Program {
 		this.booleans.put(key, value);
 	}
 
-	public GameObject getObject(String key) {
-		return objects.get(key);
-	}
-
 	public void setObject(String key,GameObject value)throws KeyException {
 		if(!objects.containsKey(key))
 			throw new KeyException(key + "doesn't exist as gameObject variable");
 		this.objects.put(key, value);
-	}
-	public Direction getDirection(String key) {
-		return directions.get(key);
 	}
 
 	public void setDirection(String key,Direction value) throws KeyException {
 		if(!directions.containsKey(key))
 			throw new KeyException(key + "doesn't exist as direction variable");
 		this.directions.put(key, value);
-	}
-	public Double getDouble(String key) {
-		return doubles.get(key);
 	}
 
 	public void setDouble(String key,Double value) throws KeyException {
@@ -173,7 +158,7 @@ public class Program {
 		return str;
 	}
 
-	public Value<?> getVariable(String key){
+	public Value<?> getVariable(String key) {
 		if(doubles.containsKey(key))
 			return new Value<Double>(doubles.get(key));
 		if(directions.containsKey(key))
@@ -182,14 +167,14 @@ public class Program {
 			return new Value<Boolean>(booleans.get(key));
 		if(objects.containsKey(key))
 			return new Value<GameObject>(objects.get(key));
-		return new Value<Object>(null);
+		throw new UnsupportedOperationException();
 	}
 	
 	public boolean isWellFormed(){
 		return isStatementChainWellFormed(0, 0,statement, null);
 	}
 	
-	public boolean isStatementChainWellFormed(int amountOfLoops, int amountOfFors,Statement toCheck, Statement prevStatement){
+	private boolean isStatementChainWellFormed(int amountOfLoops, int amountOfFors,Statement toCheck, Statement prevStatement){
 		if(toCheck.getCategory()==null){
 			if(! (prevStatement.getCategory() == Category.IF && toCheck == prevStatement.getNextStatements()[1]))
 				return false;

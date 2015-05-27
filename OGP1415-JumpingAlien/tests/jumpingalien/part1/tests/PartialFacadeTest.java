@@ -2,7 +2,7 @@ package jumpingalien.part1.tests;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
-import jumpingalien.part1.facade.Facade;
+import jumpingalien.part3.facade.Facade;
 import jumpingalien.part1.facade.IFacade;
 import jumpingalien.model.Mazub;
 import jumpingalien.util.Sprite;

@@ -36,30 +36,38 @@ public enum Action {//TODO eerst evalueren, dan tijd controleren, dan pas uitvoe
 	},
 	STARTJUMP{
 		public void execute(Statement statement, double[] dt){
-			statement.getProgram().getGameObject().startJump();
-			dt[0]-=0.001;
-			statement.setDoneTrue();
+			if(dt[0]>0){
+				statement.getProgram().getGameObject().startJump();
+				dt[0]-=0.001;
+				statement.setDoneTrue();
+			}
 		};
 	},
 	STOPJUMP{
 		public void execute(Statement statement, double[] dt){
-			statement.getProgram().getGameObject().endJump();
-			dt[0]-=0.001;
-			statement.setDoneTrue();
+			if(dt[0]>0){
+				statement.getProgram().getGameObject().endJump();
+				dt[0]-=0.001;
+				statement.setDoneTrue();
+			}
 		};
 	},
 	STARTDUCK{
 		public void execute(Statement statement, double[] dt){
-			statement.getProgram().getGameObject().startDuck();
-			dt[0]-=0.001;
-			statement.setDoneTrue();
+			if(dt[0]>0){
+				statement.getProgram().getGameObject().startDuck();
+				dt[0]-=0.001;
+				statement.setDoneTrue();
+			}
 		};
 	},
 	STOPDUCK{
 		public void execute(Statement statement, double[] dt){
-			statement.getProgram().getGameObject().endDuck();
-			dt[0]-=0.001;
-			statement.setDoneTrue();
+			if(dt[0]>0){
+				statement.getProgram().getGameObject().endDuck();
+				dt[0]-=0.001;
+				statement.setDoneTrue();
+			}
 		};
 	},
 	WAIT{
