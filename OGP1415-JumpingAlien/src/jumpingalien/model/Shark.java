@@ -183,11 +183,14 @@ public class Shark extends GameObject{
 				setPositionX(oldPosition.getPositions()[0]);
 			}
 			animate(smallDt);
+			System.out.println(getOverlappingGameObjects());
 			for(GameObject gameObject:getOverlappingGameObjects()){
+				System.out.println(gameObject);
 				if(gameObject instanceof Slime || gameObject instanceof Mazub|| gameObject instanceof Shark || gameObject instanceof Buzam){
 					setPositionX(oldPosition.getPositions()[0]);
 					setPositionY(oldPosition.getPositions()[1]);
 				}//don't bounce with plants
+				System.out.println("botsing met:"+gameObject);
 				EffectOnCollisionWith(gameObject);
 				gameObject.EffectOnCollisionWith(this);
 			}
@@ -660,6 +663,7 @@ public class Shark extends GameObject{
 	 */
 	
 	public void EffectOnCollisionWith(GameObject gameObject){
+		System.out.println("bots:"+gameObject);
 		if(gameObject instanceof Mazub || gameObject instanceof Slime){
 			if(!isImmune()){
 				this.loseHp(50);

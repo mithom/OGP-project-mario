@@ -936,15 +936,45 @@ public class MazubTestPart2 {
 		world.removeGameObject(mazub4);
 		
 		//one buzam test
-		Shark shark6 = facade.createSharkWithProgram(0, 70, spriteArrayForSize(70, 40, 2),(Program)facade.parse("skip;").getResult());
-		Buzam buzam = facade.createBuzamWithProgram(100,70, spriteArrayForSize(70, 40, 20),(Program)facade.parse("start_run left;").getResult());
+		Shark shark6 = facade.createSharkWithProgram(100, 70, spriteArrayForSize(70, 40, 2),(Program)facade.parse("start_run left;").getResult());
+		Buzam buzam = facade.createBuzamWithProgram(0,70, spriteArrayForSize(70, 40, 20),(Program)facade.parse("skip;").getResult());
 		facade.addShark(world, shark6);
 		facade.addBuzam(world, buzam);
+		System.out.println("1");
 		facade.advanceTime(world, 0.2d);
 		facade.advanceTime(world, 0.2d);
 		assertEquals(450,buzam.getNbHitPoints());
 		assertTrue(shark6.getNbHitPoints()>30 && shark6.getNbHitPoints()<=50);
 	
+	}
+	
+	@Test 
+	public void test(){
+		IFacadePart3 facade = new jumpingalien.part3.facade.Facade();
+		World world = facade.createWorld(70, 10, 10, 1, 1, 0, 1);
+		for(int i=0;i<10;i++){
+			for(int j=0;j<10;j++){
+				facade.setGeologicalFeature(world, i, j, 0);//all air
+			}
+		}
+		for(int i=0;i<10;i++){
+				facade.setGeologicalFeature(world, i, 0, 1);//to Walk On
+		}
+		Shark shark6 = facade.createSharkWithProgram(75, 70, spriteArrayForSize(70, 40, 2),(Program)facade.parse("start_run left;").getResult());
+		Mazub buzam = facade.createMazub(0,70, spriteArrayForSize(70, 40, 20));
+		facade.addShark(world, shark6);
+		facade.addBuzam(world, buzam);
+		System.out.println("1");
+		facade.advanceTime(world, 0.2d);
+		System.out.println(buzam.getNbHitPoints());
+		facade.advanceTime(world, 0.2d);
+		System.out.println(buzam.getNbHitPoints());
+		facade.advanceTime(world, 0.2d);
+		System.out.println(buzam.getNbHitPoints());
+		facade.advanceTime(world, 0.2d);
+		System.out.println(buzam.getNbHitPoints());
+		assertEquals(50,buzam.getNbHitPoints());
+		assertTrue(shark6.getNbHitPoints()>30 && shark6.getNbHitPoints()<=50);
 	}
 	
 }
