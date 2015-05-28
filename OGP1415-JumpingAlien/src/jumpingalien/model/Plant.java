@@ -40,6 +40,18 @@ public class Plant extends GameObject{
 		direction = Direction.RIGHT;
 	}
 	
+	/**
+	 * 
+	 * @param x |the most left position that is part from the currently showing Sprite.
+	 * @param y |the lowest position that is part of the currently showing Sprite.
+	 * @param sprites |a list of Sprites that plant will use to rotate trough
+	 * @param program |the program that plant should be running
+	 * @throws PositionOutOfBoundsException
+	 * 			plant has an illegal position
+	 * 			| ! hasValidPosition()
+	 * @Post The plant will be automatically moving to the right when the game starts
+	 * 			| direction = Direction.RIGHT
+	 */
 	public Plant(int x, int y, Sprite[] sprites,Program program) throws PositionOutOfBoundsException{
 		super(x,y,sprites,0,1,1,program);
 		actionTime=0.0d;
@@ -57,6 +69,7 @@ public class Plant extends GameObject{
 	 * 		| gameObject.EffectOnCollisionWith(this)
 	 * @effect The movement of plant will be animated
 	 * 		| animate()
+	 * @effect an action will be picked | decideAction()
 	 */
 	
 	@Override
@@ -69,7 +82,6 @@ public class Plant extends GameObject{
 			else
 				smallDt= Math.min(0.01d/Math.abs(horizontalVelocity),dt);
 			actionTime += smallDt;
-			System.out.println(dt+","+smallDt);
 			dt-= smallDt;
 			
 			moveHorizontal(smallDt);
@@ -81,13 +93,18 @@ public class Plant extends GameObject{
 		}
 	}
 	
+	/**
+	 * 
+	 * @effect | if(getProgram() == null && (actionTime>=actionDuration) ) 
+	 * 		       		then endMove(direction.LEFT) || endMove(direction.RIGHT)
+	 * 						 startMove(direction.RIGHT) || startMove(direction.LEFT)
+	 */
 	public void decideAction(){
 		if(getProgram() != null){
 			if(actionTime>0){
 				actionTime = getProgram().executeTime(actionTime);
 			}
 		}else{
-			System.out.println("1");
 			if(actionTime>=actionDuration){
 				actionTime=0.0d;
 				if(direction == Direction.LEFT){
@@ -98,7 +115,6 @@ public class Plant extends GameObject{
 					startMove(Direction.LEFT);
 				}
 			}
-			System.out.println("2");
 		}
 	}
 	
@@ -151,29 +167,8 @@ public class Plant extends GameObject{
 			if( overlapsWithWall()[3]==true && direction.getMultiplier()>0){
 				setPositionX(oldPositionX);
 			}
-		/*}else{
-			double oldDirTime = (0.5-actionTime);
-			actionTime = (actionTime+dt)-0.5d;
-			double realMovementDt = oldDirTime - actionTime;//can be negative, this means moving to the new side instead of the old one.
 			
-			//make the movement
-			double oldPositionX = getPositionX();
-			setPositionX(oldPositionX +realMovementDt*direction.getMultiplier()*horizontalVelocity);
-			if(this.overlapsWithWall()[1]==true && direction.getMultiplier()*Math.signum(realMovementDt)<0){
-				setPositionX(oldPositionX);
-			}
-			if( overlapsWithWall()[3]==true && direction.getMultiplier()*Math.signum(realMovementDt)>0){
-				setPositionX(oldPositionX);
-			}
 			
-			//change the direction
-			if(direction == Direction.RIGHT){
-				direction = Direction.LEFT;
-			}
-			else{
-				direction = Direction.RIGHT;
-			}
-		}*/
 	}
 	/**
 	 * 
@@ -234,12 +229,24 @@ public class Plant extends GameObject{
 	@Override
 	public void endDuck() {}
 
+	/**
+	 * 
+	 * start the movement in a given direction
+	 * 
+	 */
+	
 	@Override
 	public void startMove(Direction direction) {
 		this.direction=direction;
 		
 	}
 
+	/**
+	 * 
+	 * ends the movement in a given direction
+	 * 
+	 */
+	
 	@Override
 	public void endMove(Direction direction) {
 		assert direction != null && direction != Direction.STALLED;
@@ -261,6 +268,13 @@ public class Plant extends GameObject{
 		this.direction=Direction.STALLED;
 		
 	}
+	
+	/**
+	 * checks if Plant is moving in the given direction
+	 * @param direction
+	 * @return  Math.signum(getVerticalVelocity())==direction.getSign() || return Math.signum(getHorizontalVelocity())==direction.getSign()
+	 *			|| false
+	 */
 	
 	public boolean isMoving(Program.Direction direction){
 		switch(direction){

@@ -946,8 +946,9 @@ public class Mazub extends GameObject{
 	
 	/**
 	 * checks if mazub is moving in the given direction
-	 * @return true if ... , false otherwise
-	 * 			|
+	 * @param direction
+	 * @return  Math.signum(getVerticalVelocity())==direction.getSign() || return Math.signum(getHorizontalVelocity())==direction.getSign()
+	 *			|| false
 	 */
 	public boolean isMoving(Program.Direction direction){
 		switch(direction){

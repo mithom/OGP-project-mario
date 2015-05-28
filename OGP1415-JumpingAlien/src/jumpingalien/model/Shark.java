@@ -125,8 +125,7 @@ public class Shark extends GameObject{
 	 * 			|for(GameObject gameObject:getOverlappingGameObjects())
 	 * 			|	EffectOnCollisionWith(gameObject);
 				|	gameObject.EffectOnCollisionWith(this);
-	 * @effect	if the time of the action is the duration of the action, a random action will be needed to be decided
-	 * 			|if(actionTime == actionDuration)
+	 * @effect	if the time of the action is the duration of the action, a random action will be needed to be decided (but this is checked in the decideaction())
 	 * 			|	decideAction()
 	 * @effect	the shown Sprite is updated according to the changed state of mazub.
 	 * 			|double smallDt = Math.min(calculateCorrectDt(dt),actionDuration-actionTime)
@@ -696,7 +695,7 @@ public class Shark extends GameObject{
 	}
 	
 	/**
-	 * checks if slime is moving in the given direction
+	 * checks if shark is moving in the given direction
 	 * @param direction
 	 * @return  Math.signum(getVerticalVelocity())==direction.getSign() || return Math.signum(getHorizontalVelocity())==direction.getSign()
 	 *			|| false
