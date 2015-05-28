@@ -9,7 +9,7 @@ import jumpingalien.model.World;
 import jumpingalien.state.Direction;
 import jumpingalien.util.Sprite;
 
-public class TileObject extends GameObject {
+public class TileObject extends GameObject implements ITile{
 	private GeologicalFeature geologicalFeature;
 
 	public TileObject(int pixelX, int pixelY,GeologicalFeature geologicalFeature){
@@ -31,14 +31,17 @@ public class TileObject extends GameObject {
 	public void EffectOnCollisionWith(GameObject gameObject) {
 	}
 	
+	@Override
 	public GeologicalFeature getGeologicalFeature(){
 		return geologicalFeature;
 	}
 	
+	@Override
 	public int getGeologicalFeatureNr(){
 		return geologicalFeature.getEquivalentNumberType();
 	}
-
+	
+	@Override
 	public boolean isPassable(){
 		if (getGeologicalFeature() != GeologicalFeature.solidGround){
 			return true;
@@ -46,6 +49,7 @@ public class TileObject extends GameObject {
 		return false;
 	}
 	
+	@Override
 	public boolean isWater(){
 		if (getGeologicalFeature() != GeologicalFeature.water){
 			return true;
@@ -53,6 +57,7 @@ public class TileObject extends GameObject {
 		return false;
 	}
 	
+	@Override
 	public boolean isMagma(){
 		if (getGeologicalFeature() != GeologicalFeature.magma){
 			return true;
@@ -60,6 +65,7 @@ public class TileObject extends GameObject {
 		return false;
 	}
 	
+	@Override
 	public boolean isAir(){
 		if (getGeologicalFeature() != GeologicalFeature.air){
 			return true;

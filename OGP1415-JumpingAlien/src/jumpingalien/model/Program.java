@@ -123,6 +123,8 @@ public class Program {
 	public void setBoolean(String key,Boolean value)throws KeyException {
 		if(!booleans.containsKey(key))
 			throw new KeyException(key + "doesn't exist as boolean variable");
+		if(value == null)
+			throw new UnsupportedOperationException();
 		this.booleans.put(key, value);
 	}
 
@@ -135,12 +137,16 @@ public class Program {
 	public void setDirection(String key,Direction value) throws KeyException {
 		if(!directions.containsKey(key))
 			throw new KeyException(key + "doesn't exist as direction variable");
+		if(value == null)
+			throw new UnsupportedOperationException();
 		this.directions.put(key, value);
 	}
 
 	public void setDouble(String key,Double value) throws KeyException {
 		if(!doubles.containsKey(key))
 			throw new KeyException(key + "doesn't exist as double variable");
+		if(value == null)
+			throw new UnsupportedOperationException();
 		this.doubles.put(key, value);
 	}
 	

@@ -1,5 +1,4 @@
 import static org.junit.Assert.*;
-import static org.junit.Assume.assumeTrue;
 
 import org.junit.Test;
 
@@ -9,7 +8,6 @@ import jumpingalien.model.World;
 import jumpingalien.part3.facade.Facade;
 import jumpingalien.part3.facade.IFacadePart3;
 import jumpingalien.part3.programs.ParseOutcome;
-import jumpingalien.part3.programs.ProgramFactory;
 import jumpingalien.tests.util.TestUtils;
 import jumpingalien.util.Util;
 
@@ -234,11 +232,39 @@ public class ProgramTest {
 		program.executeTime(5.0d);
 		assertTrue(program.hasError());
 		
-		//TODO errors in getters!
+		outcome = facade.parse("double o; o:=null;");
+		program = (Program) outcome.getResult();
+		shark = facade.createSharkWithProgram(0, 0, TestUtils.spriteArrayForSize(10, 10, 2),program);
+		facade.addShark(world, shark);
+		program.executeTime(5.0d);
+		assertTrue(program.hasError());
+		
+		outcome = facade.parse("bool o; o:=null;");
+		program = (Program) outcome.getResult();
+		shark = facade.createSharkWithProgram(0, 0, TestUtils.spriteArrayForSize(10, 10, 2),program);
+		facade.addShark(world, shark);
+		program.executeTime(5.0d);
+		assertTrue(program.hasError());
+		
+		outcome = facade.parse("direction o; o:=null;");
+		program = (Program) outcome.getResult();
+		shark = facade.createSharkWithProgram(0, 0, TestUtils.spriteArrayForSize(10, 10, 2),program);
+		facade.addShark(world, shark);
+		program.executeTime(5.0d);
+		assertTrue(program.hasError());
+		
+		outcome = facade.parse("object o; o:=null;");
+		program = (Program) outcome.getResult();
+		shark = facade.createSharkWithProgram(0, 0, TestUtils.spriteArrayForSize(10, 10, 2),program);
+		facade.addShark(world, shark);
+		program.executeTime(5.0d);
+		assertFalse(program.hasError());//object is allowed to have a null value.
+		
+		//non-existing variables are forbidden by the parser.
 	}
 	
 	@Test
-	public void testExecuteTime() {//the easyest way to time this is evaluating when an error occurs.
+	public void testExecuteTime() {//the easiest way to time this is evaluating when an error occurs.
 		IFacadePart3 facade = new Facade();
 		ParseOutcome<?> outcome = facade.parse("double t := 0;"
 				+ "while true do\n"
@@ -255,7 +281,7 @@ public class ProgramTest {
 		facade.addShark(world, shark);
 		for(int i=0;i<1010;i++){
 			program.executeTime(0.001);
-			if(i<305)//after 306 time consumptions, the printstatement that will error, is executed
+			if(i<305)//after 306 time consumptions, the print statement that will error, is executed
 				assertFalse(program.hasError());
 			else
 				assertTrue(program.hasError());
@@ -315,33 +341,65 @@ public class ProgramTest {
 		for(int i=0;i<100;i++){
 			program.executeTime(0.001);
 			if(i>=3){
-				assertEquals((double)((i-3)/2), (double)program.getVariable("t").evaluate(new double[1]),Util.DEFAULT_EPSILON);
-				assertEquals(shark,program.getVariable("o").evaluate(new double[1]));
-				assertEquals(false,program.getVariable("b").evaluate(new double[1]));
-				assertEquals(Program.Direction.LEFT,program.getVariable("d").evaluate(new double[1]));
+				assertEquals((double)((i-3)/2), (double)program.getVariable("t").evaluate(new double[]{1}),Util.DEFAULT_EPSILON);
+				assertEquals(shark,program.getVariable("o").evaluate(new double[]{1}));
+				assertEquals(false,program.getVariable("b").evaluate(new double[]{1}));
+				assertEquals(Program.Direction.LEFT,program.getVariable("d").evaluate(new double[]{1}));
 			}
 		}
 		program.resetGlobals();
-		assertNull(program.getVariable("t").evaluate(new double[1]));
-		assertNull(program.getVariable("b").evaluate(new double[1]));
-		assertNull(program.getVariable("d").evaluate(new double[1]));
-		assertNull(program.getVariable("o").evaluate(new double[1]));
+		assertNull(program.getVariable("t").evaluate(new double[]{1}));
+		assertNull(program.getVariable("b").evaluate(new double[]{1}));
+		assertNull(program.getVariable("d").evaluate(new double[]{1}));
+		assertNull(program.getVariable("o").evaluate(new double[]{1}));
 	}
-	/*
-
-	@Test
-	public void testGetVariable() {
-		fail("Not yet implemented"); // TODO
-	}
-
+	
 	@Test
 	public void testIsWellFormed() {
-		fail("Not yet implemented"); // TODO
+		IFacadePart3 facade = new Facade();
+		ParseOutcome<?> outcome = facade.parse("break;");
+		assertTrue(outcome.isSuccess());
+		Program program = (Program) outcome.getResult();
+		assertFalse(program.isWellFormed());
+		
+		outcome = facade.parse("if true then break; fi");
+		assertTrue(outcome.isSuccess());
+		program = (Program) outcome.getResult();
+		assertFalse(program.isWellFormed());
+		
+		outcome = facade.parse("while true do skip; done break;");
+		assertTrue(outcome.isSuccess());
+		program = (Program) outcome.getResult();
+		assertFalse(program.isWellFormed());
+		
+		outcome = facade.parse("while true do while true do skip; done break; done");
+		assertTrue(outcome.isSuccess());
+		program = (Program) outcome.getResult();
+		assertTrue(program.isWellFormed());
+		
+		outcome = facade.parse("while true do if true then break; fi done");
+		assertTrue(outcome.isSuccess());
+		program = (Program) outcome.getResult();
+		assertTrue(program.isWellFormed());
+		
+		outcome = facade.parse("object o; foreach (mazub, o) do if true then break; else break; fi break; done");//multiple breaks inside 1 loop should be allowed
+		assertTrue(outcome.isSuccess());
+		program = (Program) outcome.getResult();
+		assertTrue(program.isWellFormed());
+		
+		outcome = facade.parse("while true do break; skip; done"); // unreachable code
+		assertTrue(outcome.isSuccess());
+		program = (Program) outcome.getResult();
+		assertFalse(program.isWellFormed());
+		
+		outcome = facade.parse("while true do if true then break; else skip; fi done");
+		assertTrue(outcome.isSuccess());
+		program = (Program) outcome.getResult();
+		assertTrue(program.isWellFormed());
+		
+		outcome = facade.parse("object o; foreach (mazub,o) do skip; done break;");
+		assertTrue(outcome.isSuccess());
+		program = (Program) outcome.getResult();
+		assertFalse(program.isWellFormed());
 	}
-
-	@Test
-	public void testIsStatementChainWellFormed() {
-		fail("Not yet implemented"); // TODO
-	}
-*/
 }
