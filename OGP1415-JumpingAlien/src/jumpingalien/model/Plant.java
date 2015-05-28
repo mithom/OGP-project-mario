@@ -61,7 +61,6 @@ public class Plant extends GameObject{
 	
 	@Override
 	public void advanceTime(double dt)throws PositionOutOfBoundsException{
-		System.out.println("begin");
 		while(dt>0 && !isTerminated()){
 			decideAction();
 			double smallDt;
@@ -80,15 +79,12 @@ public class Plant extends GameObject{
 			}
 			animate();
 		}
-		System.out.println("einde");
 	}
 	
 	public void decideAction(){
 		if(getProgram() != null){
 			if(actionTime>0){
-				System.out.println("1");
 				actionTime = getProgram().executeTime(actionTime);
-				System.out.println("2");
 			}
 		}else{
 			System.out.println("1");
