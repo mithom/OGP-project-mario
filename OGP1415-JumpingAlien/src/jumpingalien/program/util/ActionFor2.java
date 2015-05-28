@@ -188,7 +188,7 @@ public enum ActionFor2{
 			Object variable2 = (Object)right.evaluate(dt);
 			if(dt[0]>0.0){
 				expression.setDoneTrue(dt);
-				return new Value<Boolean>(!variable1.equals(variable2));
+				return new Value<Boolean>(variable1 != variable2);
 			}else
 				return new Value<Object>(null);
 		}
