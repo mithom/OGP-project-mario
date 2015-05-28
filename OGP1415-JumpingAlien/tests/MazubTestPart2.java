@@ -832,11 +832,12 @@ public class MazubTestPart2 {
 		world.removeGameObject(slime1);
 		world.removeGameObject(slime2);
 		//slime and Mazub
-		Slime slime3 = facade.createSlime(0, 70, spriteArrayForSize(70, 40, 2), facade.createSchool());
+		Slime slime3 = facade.createSlimeWithProgram(0, 70, spriteArrayForSize(70, 40, 2), facade.createSchool(),(Program)facade.parse("skip;").getResult());
 		Mazub mazub = facade.createMazub(100, 70, spriteArrayForSize(70, 40, 20));
 		facade.addSlime(world, slime3);
 		facade.setMazub(world, mazub);
 		mazub.startMove(Direction.LEFT);
+		facade.advanceTime(world, 0.2d);
 		facade.advanceTime(world, 0.2d);
 		facade.advanceTime(world, 0.2d);
 		assertEquals(50,slime3.getNbHitPoints());
@@ -848,7 +849,7 @@ public class MazubTestPart2 {
 		assertTrue(outcome3.isSuccess());
 		Program program3 = (Program) outcome3.getResult();
 		Slime slime4  = facade.createSlimeWithProgram(0, 70, spriteArrayForSize(70, 40, 2), facade.createSchool(),program3);
-		Shark shark = facade.createShark(100, 70, spriteArrayForSize(70, 40, 2));
+		Shark shark = facade.createSharkWithProgram(100, 70, spriteArrayForSize(70, 40, 2),(Program)facade.parse("skip;").getResult());
 		facade.addSlime(world, slime4);
 		facade.addShark(world, shark);
 		facade.advanceTime(world, 0.2d);
@@ -862,58 +863,69 @@ public class MazubTestPart2 {
 		world.removeGameObject(shark);
 		//mazub en shark
 		Mazub mazub2 = facade.createMazub(0,70,spriteArrayForSize(70, 70, 20));
-		Shark shark2 = facade.createShark(100, 70, spriteArrayForSize(70, 40, 2));
+		Shark shark2 = facade.createSharkWithProgram(100, 70, spriteArrayForSize(70, 40, 2),(Program)facade.parse("skip;").getResult());
 		facade.addShark(world, shark2);
 		facade.setMazub(world, mazub2);
 		mazub2.startMove(Direction.RIGHT);
+		facade.advanceTime(world,0.2d);
+		facade.advanceTime(world,0.2d);
 		facade.advanceTime(world,0.2d);
 		//shark loses hp in air, so to be sure, we test if its hp is between 30 and 50
 		assertTrue(shark2.getNbHitPoints()>30 && shark2.getNbHitPoints()<=50);
 		assertEquals(50,mazub2.getNbHitPoints());
 		world.removeGameObject(mazub2);
 		world.removeGameObject(shark2);
-		//shark en shark (we let them fall on each other, cause there isn't any water in the world in which they can move
-		Shark shark3 = facade.createShark(0, 70, spriteArrayForSize(70, 40, 2));
-		Shark shark4 = facade.createShark(0, 150, spriteArrayForSize(70, 40, 2));
+		//shark en shark (we let them fall on each other)
+		Shark shark3 = facade.createSharkWithProgram(0, 70, spriteArrayForSize(70, 40, 2),(Program)facade.parse("skip;").getResult());
+		Shark shark4 = facade.createSharkWithProgram(0, 150, spriteArrayForSize(70, 40, 2),(Program)facade.parse("skip;").getResult());
 		facade.addShark(world, shark3);
 		facade.addShark(world, shark4);
 		facade.advanceTime(world, 0.2d);
-		assertTrue(shark3.getNbHitPoints()>90 && shark3.getNbHitPoints()<=100);
-		assertTrue(shark4.getNbHitPoints()>90 && shark4.getNbHitPoints()<=100);
+		facade.advanceTime(world, 0.2d);
+		facade.advanceTime(world, 0.2d);
+		assertTrue(shark3.getNbHitPoints()>80 && shark3.getNbHitPoints()<=100);
+		assertTrue(shark4.getNbHitPoints()>80 && shark4.getNbHitPoints()<=100);
 		world.removeGameObject(shark3);
 		world.removeGameObject(shark4);
 		
 		//all possible and useful collisions have been tested, only thing to check is the immunity time, since this is the 
 		//same for all gameobjects, we will test one case (mazub against a slime)
-		Slime slime5 = facade.createSlimeWithProgram(0, 70, spriteArrayForSize(70, 40, 2), facade.createSchool(),program);
+		Slime slime5 = facade.createSlimeWithProgram(0, 70, spriteArrayForSize(70, 40, 2), facade.createSchool(),(Program)facade.parse("start_run right;").getResult());
 		Mazub mazub3 = facade.createMazub(100, 70, spriteArrayForSize(70, 40, 20));
+		slime5.addHp(50);
+		mazub3.addHp(50);
 		facade.addSlime(world, slime5);
 		facade.setMazub(world, mazub3);
+		mazub3.startMove(Direction.LEFT);
+		facade.advanceTime(world, 0.2d);
+		facade.advanceTime(world, 0.2d);
+		//they have collided with each other
+		assertEquals(100,slime5.getNbHitPoints());
+		assertEquals(100,mazub3.getNbHitPoints());
+		facade.advanceTime(world, 0.2d);
+		assertEquals(100,slime5.getNbHitPoints());
+		assertEquals(100,mazub3.getNbHitPoints());
+		facade.advanceTime(world, 0.2d);
+		//the 0.5 immunitytime of slime has expired, so it loses again 50 hp
+		assertEquals(50,slime5.getNbHitPoints());
+		assertEquals(100,mazub3.getNbHitPoints());
+		//the 0.6 immunitytime of mazub has expired, so it loses again 50 hp
 		facade.advanceTime(world, 0.2d);
 		assertEquals(50,slime5.getNbHitPoints());
 		assertEquals(50,mazub3.getNbHitPoints());
-		facade.advanceTime(world, 0.2d);
-		assertEquals(50,slime5.getNbHitPoints());
-		assertEquals(50,mazub3.getNbHitPoints());
-		facade.advanceTime(world, 0.2d);
-		assertEquals(50,slime5.getNbHitPoints());
-		assertEquals(50,mazub3.getNbHitPoints());
-		facade.advanceTime(world, 0.2d);
-		assertEquals(0,slime5.getNbHitPoints());
-		assertEquals(0,mazub3.getNbHitPoints());
 		world.removeGameObject(slime5);
 		world.removeGameObject(mazub3);
 		
 		//now only one thing to test remains: does mazub lose hp if it lands ON TOP of another gameobject. Since the implementation 
 		//for this is for every object, it doesn't matter on which kind of object mazub lands, so we chose a shark without a program here
-		Shark shark5 = facade.createShark(0, 70, spriteArrayForSize(70, 40, 2));
-		Mazub mazub4 = facade.createMazub(100, 70, spriteArrayForSize(70, 40, 20));
+		Shark shark5 = facade.createSharkWithProgram(0, 70, spriteArrayForSize(70, 40, 2),(Program)facade.parse("skip;").getResult());
+		Mazub mazub4 = facade.createMazub(0, 150, spriteArrayForSize(70, 40, 20));
 		facade.addShark(world, shark5);
 		facade.setMazub(world, mazub4);
 		facade.advanceTime(world, 0.2d);
+		facade.advanceTime(world, 0.2d);
 		assertEquals(100,mazub4.getNbHitPoints());
-		assertTrue(shark5.getNbHitPoints()>30 && shark4.getNbHitPoints()<=50);
-			
+		assertTrue(shark5.getNbHitPoints()>30 && shark5.getNbHitPoints()<=50);
 	}
 	
 }
