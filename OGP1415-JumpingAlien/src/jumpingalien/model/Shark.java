@@ -655,8 +655,10 @@ public class Shark extends GameObject{
 			}
 		}
 		else{
-			if(!(gameObject instanceof Plant || gameObject instanceof Shark))
+			if(!(gameObject instanceof Plant || gameObject instanceof Shark)){
+				System.out.println("bots met buzam");
 				gameObject.EffectOnCollisionWithReversed(this);
+			}
 		}
 	}
 
