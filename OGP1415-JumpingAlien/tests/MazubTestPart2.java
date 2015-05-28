@@ -722,8 +722,10 @@ public class MazubTestPart2 {
 		assertEquals(450, buzamForLava.getNbHitPoints());
 		facade.advanceTime(world, 0.1d);
 		assertEquals(450, buzamForLava.getNbHitPoints());
-		facade.advanceTime(world, 1.8d);
-		assertEquals(0, buzamForLava.getNbHitPoints());
+		for(int i=0;i<9;i++){
+			facade.advanceTime(world, 0.2d);
+			assertEquals(450-(1+i)*50,buzamForLava.getNbHitPoints());
+		}
 		//buzamForLava is dead
 		
 		facade.addBuzam(world,buzamForWater);
