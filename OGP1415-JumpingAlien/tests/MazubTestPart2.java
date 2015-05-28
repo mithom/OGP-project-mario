@@ -811,8 +811,8 @@ public class MazubTestPart2 {
 		assertTrue(outcome.isSuccess());
 		Program program = (Program) outcome.getResult();
 		//two slimes
-		Slime slime1 = facade.createSlime(0, 70, spriteArrayForSize(70, 40, 2), facade.createSchool());
-		Slime slime2 = facade.creatSlimeWithProgram(70, 100, spriteArrayForSize(70, 40, 2), facade.createSchool(),Program program);
+		Slime slime1 = facade.createSlimeWithProgram(0, 70, spriteArrayForSize(70, 40, 2), facade.createSchool(),program);
+		Slime slime2 = facade.createSlimeWithProgram(70, 100, spriteArrayForSize(70, 40, 2), facade.createSchool(),program);
 		
 	}
 	
