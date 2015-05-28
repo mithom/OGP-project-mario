@@ -819,6 +819,8 @@ public class MazubTestPart2 {
 		//two slimes
 		Slime slime1 = facade.createSlimeWithProgram(0, 70, spriteArrayForSize(70, 40, 2), facade.createSchool(),program);
 		Slime slime2 = facade.createSlimeWithProgram(100, 70, spriteArrayForSize(70, 40, 2), facade.createSchool(),program2);
+		facade.addSlime(world, slime1);
+		facade.addSlime(world, slime2);
 		assertEquals(100,slime1.getNbHitPoints());
 		assertEquals(100,slime2.getNbHitPoints());
 		facade.advanceTime(world, 0.2d);
@@ -829,6 +831,10 @@ public class MazubTestPart2 {
 		//slime and Mazub
 		Slime slime3 = facade.createSlimeWithProgram(0, 70, spriteArrayForSize(70, 40, 2), facade.createSchool(),program);
 		Mazub mazub = facade.createMazub(100, 70, spriteArrayForSize(70, 40, 20));
+		facade.addSlime(world, slime3);
+		facade.setMazub(world, mazub);
+		mazub.startMove(Direction.LEFT);
+		facade.advanceTime(world, 0.2d);
 		facade.advanceTime(world, 0.2d);
 		assertEquals(50,slime3.getNbHitPoints());
 		assertEquals(50,mazub.getNbHitPoints());
@@ -837,14 +843,23 @@ public class MazubTestPart2 {
 		//shark and Slime
 		Slime slime4  = facade.createSlimeWithProgram(0, 70, spriteArrayForSize(70, 40, 2), facade.createSchool(),program);
 		Shark shark = facade.createShark(100, 70, spriteArrayForSize(70, 40, 2));
+		facade.addSlime(world, slime4);
+		facade.addShark(world, shark);
 		facade.advanceTime(world, 0.2d);
+		System.out.println(slime4.getNbHitPoints());
+		facade.advanceTime(world, 0.2d);
+		System.out.println(slime4.getNbHitPoints());
+		facade.advanceTime(world, 0.2d);
+		System.out.println(slime4.getNbHitPoints());
 		assertEquals(50,slime4.getNbHitPoints());
-		assertEquals(50,shark.getNbHitPoints());
+		assertTrue(shark.getNbHitPoints()>30 && shark.getNbHitPoints()<=50);
 		world.removeGameObject(slime4);
 		world.removeGameObject(shark);
 		//mazub en shark
 		Mazub mazub2 = facade.createMazub(0,70,spriteArrayForSize(70, 70, 20));
 		Shark shark2 = facade.createShark(100, 70, spriteArrayForSize(70, 40, 2));
+		facade.addShark(world, shark2);
+		facade.setMazub(world, mazub2);
 		mazub2.startMove(Direction.RIGHT);
 		facade.advanceTime(world,0.2d);
 		//shark loses hp in air, so to be sure, we test if its hp is between 40 and 50
@@ -855,6 +870,8 @@ public class MazubTestPart2 {
 		//shark en shark (we let them fall on each other, cause there isn't any water in the world in which they can move
 		Shark shark3 = facade.createShark(0, 70, spriteArrayForSize(70, 40, 2));
 		Shark shark4 = facade.createShark(0, 150, spriteArrayForSize(70, 40, 2));
+		facade.addShark(world, shark3);
+		facade.addShark(world, shark4);
 		facade.advanceTime(world, 0.2d);
 		assertTrue(shark3.getNbHitPoints()>90 && shark3.getNbHitPoints()<=100);
 		assertTrue(shark4.getNbHitPoints()>90 && shark4.getNbHitPoints()<=100);
@@ -865,6 +882,8 @@ public class MazubTestPart2 {
 		//same for all gameobjects, we will test one case (mazub against a slime)
 		Slime slime5 = facade.createSlimeWithProgram(0, 70, spriteArrayForSize(70, 40, 2), facade.createSchool(),program);
 		Mazub mazub3 = facade.createMazub(100, 70, spriteArrayForSize(70, 40, 20));
+		facade.addSlime(world, slime5);
+		facade.setMazub(world, mazub3);
 		facade.advanceTime(world, 0.2d);
 		assertEquals(50,slime5.getNbHitPoints());
 		assertEquals(50,mazub3.getNbHitPoints());
@@ -884,6 +903,8 @@ public class MazubTestPart2 {
 		//for this is for every object, it doesn't matter on which kind of object mazub lands, so we chose a shark without a program here
 		Shark shark5 = facade.createShark(0, 70, spriteArrayForSize(70, 40, 2));
 		Mazub mazub4 = facade.createMazub(100, 70, spriteArrayForSize(70, 40, 20));
+		facade.addShark(world, shark5);
+		facade.setMazub(world, mazub4);
 		facade.advanceTime(world, 0.2d);
 		assertEquals(100,mazub4.getNbHitPoints());
 		assertTrue(shark5.getNbHitPoints()>30 && shark4.getNbHitPoints()<=50);
