@@ -21,7 +21,6 @@ while true do
   if (ismoving (self, left)) then currentxdir := left; fi
   if (ismoving (self, right)) then currentxdir := right; fi
 
-
   if (nearestSS != null && distanceToNearestSS <= 100) then
     haveenemy := true;
     if (gety nearestSS > gety self) then
@@ -69,7 +68,6 @@ while true do
       start_jump;
     fi
   fi
-
 
   x := getx self;
   y := gety self;
