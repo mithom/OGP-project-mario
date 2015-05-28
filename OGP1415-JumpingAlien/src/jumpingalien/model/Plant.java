@@ -61,6 +61,7 @@ public class Plant extends GameObject{
 	
 	@Override
 	public void advanceTime(double dt)throws PositionOutOfBoundsException{
+		System.out.println("begin");
 		while(dt>0 && !isTerminated()){
 			decideAction();
 			double smallDt;
@@ -69,7 +70,9 @@ public class Plant extends GameObject{
 			else
 				smallDt= Math.min(0.01d/Math.abs(horizontalVelocity),dt);
 			actionTime += smallDt;
+			System.out.println(dt+","+smallDt);
 			dt-= smallDt;
+			
 			moveHorizontal(smallDt);
 			for(GameObject gameObject:getOverlappingGameObjects()){
 				EffectOnCollisionWith(gameObject);
@@ -77,15 +80,19 @@ public class Plant extends GameObject{
 			}
 			animate();
 		}
+		System.out.println("einde");
 	}
 	
 	public void decideAction(){
 		if(getProgram() != null){
 			if(actionTime>0){
+				System.out.println("1");
 				actionTime = getProgram().executeTime(actionTime);
+				System.out.println("2");
 			}
 		}else{
-			if(actionTime==actionDuration){
+			System.out.println("1");
+			if(actionTime>=actionDuration){
 				actionTime=0.0d;
 				if(direction == Direction.LEFT){
 					endMove(Direction.LEFT);
@@ -95,6 +102,7 @@ public class Plant extends GameObject{
 					startMove(Direction.LEFT);
 				}
 			}
+			System.out.println("2");
 		}
 	}
 	
@@ -254,6 +262,7 @@ public class Plant extends GameObject{
 				this.direction = Direction.STALLED;
 			}
 		}
+		this.direction=Direction.STALLED;
 		
 	}
 	

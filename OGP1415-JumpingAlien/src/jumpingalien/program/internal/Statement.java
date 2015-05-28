@@ -99,7 +99,7 @@ public class Statement {
 	}
 	
 	public Statement(Category category){
-		if (isValidCategory()){
+		if (isValidCategory(category)){
 			this.setCategory(category);
 		}
 	}
@@ -312,8 +312,8 @@ public class Statement {
 		return noBreak;
 	}
 	
-	public boolean isValidCategory(){
-		if (getCategory()==null || getCategory()==Category.ACTION || getCategory()==Category.FOREACH ){
+	public boolean isValidCategory(Category category){
+		if (category==null || category==Category.ACTION || category==Category.FOREACH ){
 				return false;
 		}
 		return true;

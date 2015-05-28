@@ -905,14 +905,14 @@ public class Buzam extends GameObject{
 			if(! (gameObject.isImmune()) ){
 				if (gameObject instanceof Shark || gameObject instanceof Slime){
 					gameObject.loseHp(50);
-					gameObject.imunityTime = 0.6d;
+					gameObject.imunityTime = 0.5d;
 				}
 				else {
 					if (gameObject instanceof Mazub){
 						//It needs to be checked if mazub collides above Buzam, in this case he won't lose HP.
 						if(gameObject.getPerimeters()[1]<this.getPerimeters()[3]){
 							gameObject.loseHp(50);
-							gameObject.imunityTime = 0.6d;
+							gameObject.imunityTime = 0.5d;
 						}
 					}else{
 						System.out.println("unknown type of gameobject");
