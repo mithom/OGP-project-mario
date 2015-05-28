@@ -5,6 +5,7 @@ import java.security.InvalidKeyException;
 
 import jumpingalien.part2.facade.Facade;
 import jumpingalien.part2.facade.IFacadePart2;
+import jumpingalien.part3.facade.IFacadePart3;
 import jumpingalien.exception.PositionOutOfBoundsException;
 import jumpingalien.model.*;
 import jumpingalien.model.gameObject.GameObject;
@@ -27,6 +28,12 @@ public class MazubTestPart2 {
 	public MazubTestPart2(){
 	}
 	
+	
+	/**
+	 * 
+	 *checks the correct implementation of the construction of a small world
+	 *
+	 */
 	@Test
 	public void testConstantTimeGeologicalFeaturesSmall()throws InvalidKeyException,PositionOutOfBoundsException{
 		smallWorld = new World(1, 100, 100, 10, 10, 1, 1);
@@ -35,6 +42,12 @@ public class MazubTestPart2 {
 			assertEquals(0, smallWorld.getGeologicalFeature(50, 50));
 		}
 	}
+	
+	/**
+	 * 
+	 *checks the correct implementation of the construction of a large world
+	 *
+	 */
 	
 	@Test
 	public void testConstantTimeGeologicalFeaturesLarge()throws InvalidKeyException,PositionOutOfBoundsException{
@@ -45,6 +58,33 @@ public class MazubTestPart2 {
 		}//zijn even snel (draai namen om en tijden wisselen mee om!)
 	}
 
+	/**
+	 * this test checks automatically the correct implementation of:
+	 * 		-the constructor for world and mazub
+	 * 		-setGeologicalFeature(.......) of class World
+	 * 		-advancetime(...) of world and mazub classes
+	 * 		-getHorizontalVelocity() and getVerticalVelocity() of Mazub class
+	 * 
+	 * 
+	 * 		NOTE!: advancetime() of mazub is a very large method in which a lot of other methods 
+	 * 				are also used. So every time advancetime() of mazub is used the following methods will also be used:
+	 * 					-isTerminated()
+	 * 					-calculateCorrectDt(dt)
+	 * 					-animate(dt)
+	 * 					-getOrientation()
+	 * 					-getHorizontalVelocity() and setHorizontalVelocity(...)
+	 * 					-moveHorizontal(dt) and moveVertical(dt)
+	 * 					-getPosition(), setPosition(), getPositions(), getPositionY() and getPositionX()
+	 * 					-getVerticalVelocity() and setVerticalVelocity()
+	 * 					-overlapsWithWall()
+	 * 					-executeEndDuck()
+	 * 					-getOverlappingGameObjects()
+	 * 					-sideOverlappingBetween(...)
+	 * 					-EffectOncollisionWith(...)
+	 * 					-isInLava(), isInWater() and loseHp()
+	 * 					-moveWindow()
+	 * 
+	 */
 	@Test
 	public void testFallingForCorrectTimeAtCorrectSpeed() {
 		IFacadePart2 facade = new Facade();
@@ -72,7 +112,19 @@ public class MazubTestPart2 {
 				assertArrayEquals(new double[]{0.0d,0.0d}, facade.getVelocity(alien),Util.DEFAULT_EPSILON);
 		}
 	}
-
+	
+	/**
+	 * this test checks automatically the correct implementation of:
+	 * 		-the constructor for world and mazub
+	 * 		-setGeologicalFeature(.......) of class World
+	 * 		-advancetime(...) of world and mazub classes
+	 * 		-getMaxHorizontalVelocity(), startDuck(), endDuck(), startMove(Direction dir), endMove(Direction dir)
+	 * 		 and executeEndDuck() of the Mazub class
+	 * 			
+	 * 
+	 * 			NOTE!: same note about advancetime() as by the test testFallingForCorrectTimeAtCorrectSpeed()
+	 */
+	
 	@Test
 	public void testGetMaxHorizontalVelocity() {
 		//this is different when ducking or standing straight. For safety we'll also test the case in witch you try to stand straight,
@@ -111,6 +163,17 @@ public class MazubTestPart2 {
 		
 	}
 
+	/**
+	 * this test checks automatically the correct implementation of:
+	 * 		-the constructor for world and mazub
+	 * 		-setGeologicalFeature(.......) of class World
+	 * 		-advancetime(...) of world and mazub classes
+	 * 		-getHorizontalAcceleration(), startDuck(), endDuck(), startMove(Direction dir), endMove(Direction dir)
+	 * 		 and executeEndDuck() of the Mazub class
+	 * 
+	 * 
+	 * 			NOTE!: same note about advancetime() as by the test testFallingForCorrectTimeAtCorrectSpeed()
+	 */
 	
 	@Test
 	public void testGetHorizontalAcceleration() {
@@ -141,6 +204,37 @@ public class MazubTestPart2 {
 		//still zero because alien is ducked under a rock
 		assertEquals(0.0d, alien.getHorizontalAcceleration(),Util.DEFAULT_EPSILON);
 	}
+	
+	/**
+	 * this test checks automatically the correct implementation of:
+	 * 		-the constructors for world, mazub, slime, school, plant and shark 
+	 * 		-setGeologicalFeature(.......) of class World
+	 * 		-advancetime(...) of world, mazub, slime, plant and shark classes
+	 * 		-addToWorld(...) of school and gameObject, so also of mazub, shark, plant and slime
+	 * 		-getNbHitpoints() or getCurrentHp(), addHp() and loseHp() of gameObject and Hitpoint
+	 * 		-isInlava(), isInAir() and isInWater() of gameObject
+	 * 		-isTerminated() and isDead() of gameObject ( because of loseHp() )
+	 * 		-removeGameObject() of World (because of loseHp() of gameobject) and also getSlimes(), getSharks() and getPlants() of World
+	 * 		-isGameOver() of World
+	 * 
+	 * 
+	 * 			NOTE!: same note about advancetime() of Mazub as by the test testFallingForCorrectTimeAtCorrectSpeed()
+	 * 					but here the advancetime() of slime, shark and plant are also used. In these classes advancetime() also 
+	 * 					uses a lot of methods. Sometimes the same methods as the Mazub advancetime() method uses (at least with the same name, sometimes it
+	 * 					has a slight different implementation, like effectOnCollisionWith(...)),sometimes new ones, these are:
+	 * 
+	 * 						for slime:
+	 * 							-decideAction()
+	 * 						for shark:
+	 * 							-decideAction()
+	 * 							-placeOverlapsWithGameObject(...)
+	 * 							-isInAir()
+	 * 						for plant:
+	 * 							this advancetime() is a lot shorter and doesn't use methods with another name as mazub, it only uses the following methods:
+	 * 								-isTerminated() and getOverlappingObjects of gameObject class
+	 * 								-moveHorizontal(), effectOnCollisionWith(..) and animate() of the Plant class
+	 * 							
+	 */
 	
 	@Test
 	public void testDamageByTerrainAndRemovingOnDeath(){
@@ -195,7 +289,7 @@ public class MazubTestPart2 {
 		facade.advanceTime(world, 0.2d);
 		assertEquals(0, mazubForLava.getNbHitPoints());
 		assertTrue(world.isGameOver());
-		//mazubForLava is death
+		//mazubForLava is dead
 		
 		facade.setMazub(world, mazubForWater);
 		facade.advanceTime(world, 0.00005d);
@@ -268,6 +362,19 @@ public class MazubTestPart2 {
 		assertFalse(world2.getSharks().contains(sharkForWater));
 	}
 	
+	/**
+	 * this test checks automatically the correct implementation of:
+	 * 		-the constructors for world, mazub, slime, school, plant and shark 
+	 * 		-setGeologicalFeature(.......) of class World
+	 * 		-advancetime(...) of world, mazub, slime and shark classes
+	 * 		-addToWorld(...) of school and gameObject, so also of mazub, shark and slime
+ 	 *		-isDead() of gameObject 
+ 	 *		-getAllGameObjects() of World	
+ 	 *		-overlaps() and getOverlappingGameObjects() of GameObject()
+ 	 *			and because of this also getPerimeters()
+ 	 *
+ 	 *			NOTE!: same note about about advancetime() as by the previous tests
+	 */
 	
 	@Test
 	public void testBouncingGameObjects(){
@@ -317,6 +424,19 @@ public class MazubTestPart2 {
 		}
 	}
 	
+	/**
+	 * this test checks automatically the correct implementation of:
+	 * 		-the constructors for world, slime and school
+	 * 		-setGeologicalFeature(.......) of class World
+	 * 		-advancetime(...) of world and slime
+	 * 			here especially the EffectOnCollisionWith(...) in case a slime collides with another slime
+	 * 			then getSchool() and setSchool() will also be tested 
+	 * 		-addToWorld(...) of school and gameObject, so here: only slime
+ 	 *		-startMove(Direction dir) en endMove() of slime
+ 	 *
+ 	 *			NOTE!: same note about about advancetime() as by the previous tests
+	 */
+	
 	@Test
 	public void testChangeSchool(){
 		//setting up a world
@@ -353,6 +473,17 @@ public class MazubTestPart2 {
 		assertEquals(school1, slime3.getSchool());assertEquals(103, slime3.getNbHitPoints());
 		assertEquals(school1, slime4.getSchool());assertEquals(98, slime4.getNbHitPoints());
 	}
+	
+	/**
+	 * this test checks automatically the correct implementation of:
+	 * 		-the constructors for world, Mazub, slime and school
+	 * 		-setGeologicalFeature(.......) of class World
+	 * 		-isGameOver() and didPlayerWin() of class World
+	 * 		-advancetime(...) of world, mazub and slime
+	 * 
+	 * 			NOTE!: same note about about advancetime() as by the previous tests
+	 * 
+	 */
 	
 	@Test public void testGameOverSituations(){
 		IFacadePart2 facade = new Facade();
@@ -392,6 +523,13 @@ public class MazubTestPart2 {
 		assertFalse(facade.didPlayerWin(world));
 	}
 	
+	/**
+	 * this test checks automatically the correct implementation of:
+	 * 		-the constructors for world
+	 * 		-getTileOfPosition() of the class world
+	 * 
+	 */
+	
 	@Test
 	public void testGetTileOfPosition() throws PositionOutOfBoundsException{
 		IFacadePart2 facade = new Facade();
@@ -402,6 +540,18 @@ public class MazubTestPart2 {
 		assertArrayEquals(new int[2],world.getTileOfPosition(new Position(world, new double[]{0.6,0.6})));
 		assertArrayEquals(new int[]{1,1},world.getTileOfPosition(new Position(world, new double[]{0.7,0.7})));
 	}
+	
+	/**
+	 * this test checks automatically the correct implementation of:
+	 * 		-the constructors for world and mazub
+	 * 		-setGeologicalFeature(...) of the class World
+	 * 		-starMove() of Mazub
+	 * 		-getVisibleWindow() of the class world
+	 * 		-advancetime() of Mazub and world				
+	 * 			and because of this the moveWindow() method of mazub, which makes sure getPerimeters() 
+	 * 			and getWorld() of GameObject and moveWindowTo()  of World class are used.
+	 * 
+	 */
 	
 	@Test
 	public void testGetVisibleWindow(){
@@ -418,6 +568,15 @@ public class MazubTestPart2 {
 		//order: left,bottom,right,top
 	}
 
+	/**
+	 * this test checks automatically the correct implementation of:
+	 * 		-the constructors for world, mazub, slime, school and shark 
+	 * 		-setGeologicalFeature(...) of the class World
+	 * 		-getAllGameObjects() of World
+	 * 		-isDead() of gameObject()
+	 * 
+	 */
+	
 	@Test
 	public void noDeathObjectsInGetAllObjects(){
 		IFacadePart2 facade = new Facade();
@@ -446,4 +605,192 @@ public class MazubTestPart2 {
 				assertFalse(gameObject.isDead());
 		}
 	}
+	
+	/**
+	 * 
+	 * this test checks all the speed tests that were use on Mazub, but now for the class Buzam, which is very similar to Mazub
+	 * 
+	 */
+	
+	@Test
+	public void sameSpeedTestForBuzam(){
+		//testFallingForCorrectTimeAtCorrectSpeed
+			IFacadePart3 facade = new jumpingalien.part3.facade.Facade();
+			World world = facade.createWorld(500, 1, 10, 1, 1, 0, 1);
+			facade.setGeologicalFeature(world, 0, 0, 1);
+
+			int m = 310;
+			Sprite[] sprites = spriteArrayForSize(3, 3, 10 + 2 * m);
+			Buzam alien = facade.createBuzam(0, 4990, sprites);
+			facade.addBuzam(world, alien);
+			facade.advanceTime(world, 0.005);
+			for (int i = 0; i < m; i++) {
+				facade.advanceTime(world, 0.01);
+				if(i<(299))
+					assertArrayEquals(new double[]{0.0d,-(i+1)*0.1d-0.05}, facade.getVelocity(alien),Util.DEFAULT_EPSILON);
+				else
+					//Buzam reaches the stone floor after 2,996664812754339secondes.
+					assertArrayEquals(new double[]{0.0d,0.0d}, facade.getVelocity(alien),Util.DEFAULT_EPSILON);
+			}
+
+		//testGetMaxHorizontalVelocity()
+			IFacadePart3 facade2 = new jumpingalien.part3.facade.Facade();
+			World world2 = facade2.createWorld(70, 2, 3, 1, 1, 0, 1);
+			facade2.setGeologicalFeature(world2, 0, 0, 1);
+			facade2.setGeologicalFeature(world2, 1, 0, 1);
+			facade2.setGeologicalFeature(world2, 1, 2, 1);
+				
+			Buzam alien2 = facade2.createBuzam(0, 69, jumpingalien.common.sprites.JumpingAlienSprites.ALIEN_SPRITESET);
+			facade2.addBuzam(world2, alien2);
+			assertEquals(3.0d, alien2.getMaxHorizontalVelocity(),Util.DEFAULT_EPSILON);
+			alien2.startDuck();
+			facade2.advanceTime(world2, 0.005d);
+			assertEquals(1.0d, alien2.getMaxHorizontalVelocity(),Util.DEFAULT_EPSILON);
+			alien2.endDuck();
+			assertEquals(3.0d, alien2.getMaxHorizontalVelocity(),Util.DEFAULT_EPSILON);
+			facade2.advanceTime(world2, 0.1d);
+			assertEquals(3.0d, alien2.getMaxHorizontalVelocity(),Util.DEFAULT_EPSILON);
+				
+			//now going underneath a block, trying to get straight and then test it.
+			alien2.startDuck();
+			alien2.startMove(Direction.RIGHT);
+			facade2.advanceTime(world2, 0.1d);
+			assertEquals(1.0d, alien2.getMaxHorizontalVelocity(),Util.DEFAULT_EPSILON);
+			alien2.endDuck();
+			alien2.endMove(Direction.RIGHT);
+			facade2.advanceTime(world2, 0.1d);
+			//he should still be ducking because he is partially underneath a rock
+			assertEquals(1.0d, alien2.getMaxHorizontalVelocity(),Util.DEFAULT_EPSILON);
+			alien2.startMove(Direction.LEFT);
+			facade2.advanceTime(world2, 0.1d);
+			assertEquals(3.0d, alien2.getMaxHorizontalVelocity(),Util.DEFAULT_EPSILON);	
+
+			//testGetHorizontalAcceleration() {
+			IFacadePart3 facade3 = new jumpingalien.part3.facade.Facade();
+			World world3 = facade3.createWorld(70, 10, 3, 1, 1, 0, 1);
+			for(int i=0;i<10;i++)
+				facade3.setGeologicalFeature(world3, i, 0, 1);//to move normally
+			facade3.setGeologicalFeature(world3, 2, 2, 1);//to duck under
+				
+			Buzam alien3 = facade2.createBuzam(0, 69, JumpingAlienSprites.ALIEN_SPRITESET);
+			facade3.addBuzam(world3, alien3);
+			//should be 0 if not walking
+			assertEquals(0, alien3.getHorizontalAcceleration(),Util.DEFAULT_EPSILON);
+			alien3.startMove(Direction.RIGHT);
+			assertEquals(0.9d, alien3.getHorizontalAcceleration(),Util.DEFAULT_EPSILON);
+			facade3.advanceTime(world3, 0.1);
+			assertEquals(0.9d, alien3.getHorizontalAcceleration(),Util.DEFAULT_EPSILON);
+			for(int i = 0;i<100;i++)
+				facade2.advanceTime(world3, 0.1);
+			//walking against a wall
+			assertEquals(0.0d, alien3.getHorizontalAcceleration(),Util.DEFAULT_EPSILON);
+			alien3.startDuck();
+			//zero when ducking
+			assertEquals(0.0d, alien3.getHorizontalAcceleration(),Util.DEFAULT_EPSILON);
+			facade3.advanceTime(world3, 0.1d);
+			assertEquals(0.0d, alien3.getHorizontalAcceleration(),Util.DEFAULT_EPSILON);
+			alien3.endDuck();
+			//still zero because alien is ducked under a rock
+			assertEquals(0.0d, alien3.getHorizontalAcceleration(),Util.DEFAULT_EPSILON);
+		
+	}
+	
+	/**
+	 * 
+	 * this test checks all the damagebyterrain tests that were use on Mazub, but now for the class Buzam, which is very similar to Mazub
+	 * 
+	 */
+	
+	@Test
+	public void testDamageByTerrainAndRemovingOnDeathForBuzam(){
+		//setting up a world
+		IFacadePart3 facade = new jumpingalien.part3.facade.Facade();
+		World world = facade.createWorld(70, 5, 3, 1, 1, 0, 1);
+		for(int i=0;i<5;i++)
+			facade.setGeologicalFeature(world, i, 0, 1);//to move normally
+		facade.setGeologicalFeature(world, 2, 1, 1);//land
+		facade.setGeologicalFeature(world, 0, 1, 3);//lava
+		facade.setGeologicalFeature(world, 1, 1, 3);//lava
+		facade.setGeologicalFeature(world, 3, 1, 2);//water
+		facade.setGeologicalFeature(world, 4, 1, 2);//water
+		
+		Buzam buzamForWater = facade.createBuzam(280, 75, spriteArrayForSize(70, 40, 20));
+		Buzam buzamForLava = facade.createBuzam(0, 75, spriteArrayForSize(70, 40, 20));
+		facade.addBuzam(world, buzamForLava);
+		assertEquals(500, buzamForLava.getNbHitPoints());
+		facade.advanceTime(world, 0.00005);
+		assertEquals(450, buzamForLava.getNbHitPoints());
+		facade.advanceTime(world, 0.1d);
+		assertEquals(450, buzamForLava.getNbHitPoints());
+		facade.advanceTime(world, 1.8d);
+		assertEquals(0, buzamForLava.getNbHitPoints());
+		//buzamForLava is dead
+		
+		facade.addBuzam(world,buzamForWater);
+		facade.advanceTime(world, 0.00005d);
+		assertEquals(500, buzamForWater.getNbHitPoints());
+		facade.advanceTime(world, 0.1d);
+		assertTrue(buzamForWater.isInWater());
+		assertEquals(500, buzamForWater.getNbHitPoints());
+		assertFalse(world.isGameOver());
+		for(int i=0;i<250;i++){
+			facade.advanceTime(world, 0.2d);
+			assertEquals(500-(1+i)*2,buzamForWater.getNbHitPoints());
+		}
+	}
+	
+	/**
+	 * 
+	 * this test checks the bouncingObject tests that were used with Mazub, but now with the class Buzam
+	 * 
+	 */
+	
+	@Test
+	public void testBouncingGameObjectsWithBuzamInsteadOfMazub(){
+		//since sharks move randomly, we just let them move a lot and will check the result.
+		IFacadePart3 facade = new jumpingalien.part3.facade.Facade();
+		World world = facade.createWorld(70, 10, 10, 1, 1, 0, 1);
+		for(int i=0;i<10;i++)
+			for(int j=0;j<10;j++)
+				facade.setGeologicalFeature(world, i, j, 1);//to move normally
+		for(int i=1;i<9;i++)
+			for(int j=1;j<9;j++)
+				facade.setGeologicalFeature(world, i, j, 2);//water
+		Shark shark1 = facade.createShark(70, 70, spriteArrayForSize(70, 40, 2));
+		Shark shark2 = facade.createShark(200, 200, spriteArrayForSize(70, 40, 2));
+		facade.addShark(world, shark2);
+		facade.addShark(world, shark1);
+		for(int i=0;i<500;i++){
+			facade.advanceTime(world, 0.2d);
+			assertFalse(shark1.overlaps(shark2));
+		}
+		
+		for(int q=0;q<100;q++){//next test a lot of times, due to random movement
+			World world2 = facade.createWorld(70, 10, 10, 1, 1, 0, 1);
+			for(int i=0;i<10;i++)
+				for(int j=0;j<10;j++)
+					facade.setGeologicalFeature(world2, i, j, 1);//to move normally
+			for(int i=1;i<9;i++)
+				for(int j=1;j<9;j++)
+					facade.setGeologicalFeature(world2, i, j, 2);//water
+			Shark shark3 = facade.createShark(70, 70, spriteArrayForSize(70, 40, 2));
+			Shark shark4 = facade.createShark(200, 200, spriteArrayForSize(70, 40, 2));
+			facade.addShark(world, shark3);
+			facade.addShark(world, shark4);
+			Slime slime1 = facade.createSlime(100, 100, spriteArrayForSize(70, 40, 2), facade.createSchool());
+			Slime slime2 = facade.createSlime(170, 100, spriteArrayForSize(70, 40, 2), facade.createSchool());
+			Buzam alien = facade.createBuzam(180, 180, spriteArrayForSize(70, 70, 20));
+			facade.addBuzam(world2, alien);
+			facade.addSlime(world2, slime1);
+			facade.addSlime(world2, slime2);
+			for(int i=0; i<50;i++){
+				facade.advanceTime(world2, 0.2d);
+				for(GameObject gameObject:world2.getAllGameObjects()){//death objects are filtered out of this getter
+					assertEquals(0, gameObject.getOverlappingGameObjects().size());
+					assertFalse(gameObject.isDead());
+				}
+			}
+		}
+	}
+	
 }
