@@ -6,6 +6,7 @@ import java.security.InvalidKeyException;
 import jumpingalien.part2.facade.Facade;
 import jumpingalien.part2.facade.IFacadePart2;
 import jumpingalien.part3.facade.IFacadePart3;
+import jumpingalien.part3.programs.ParseOutcome;
 import jumpingalien.exception.PositionOutOfBoundsException;
 import jumpingalien.model.*;
 import jumpingalien.model.gameObject.GameObject;
@@ -792,6 +793,27 @@ public class MazubTestPart2 {
 				}
 			}
 		}
+	}
+	
+	@Test
+	public void hpLossAtCollision(){
+		IFacadePart3 facade = new jumpingalien.part3.facade.Facade();
+		World world = facade.createWorld(70, 10, 10, 1, 1, 0, 1);
+		for(int i=0;i<10;i++){
+			for(int j=0;j<10;j++){
+				facade.setGeologicalFeature(world, i, j, 0);//all air
+			}
+		}
+		for(int i=0;i<10;i++){
+				facade.setGeologicalFeature(world, i, 0, 1);//to Walk On
+		}
+		ParseOutcome<?> outcome = facade.parse("startrun left;");
+		assertTrue(outcome.isSuccess());
+		Program program = (Program) outcome.getResult();
+		//two slimes
+		Slime slime1 = facade.createSlime(0, 70, spriteArrayForSize(70, 40, 2), facade.createSchool());
+		Slime slime2 = facade.creatSlimeWithProgram(70, 100, spriteArrayForSize(70, 40, 2), facade.createSchool(),Program program);
+		
 	}
 	
 }
