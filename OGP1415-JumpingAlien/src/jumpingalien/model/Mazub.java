@@ -106,6 +106,21 @@ public class Mazub extends GameObject{
 		direction= Direction.STALLED;
 	}*/
 	
+	/**
+	 * 
+	 * @param pixelLeftX	|the most left position that is part from the currently showing Sprite.
+	 * @param pixelBottomY	|the lowest position that is part of the currently showing Sprite.
+	 * @param sprites		|a list of Sprites that mazub will use to rotate trough, to make
+	 * 						|animations. 
+	 * @param program		|the program that the mazub istance will run, so null here, cause mazub won't run a program
+	 * @Post	if the mazub instance isn't located on the ground, he will know he is in the air.
+	 * 			|if(pixelBottomY>0):
+	 * 			|	then new.groundState == GroundState.AIR
+	 * 			|	else new.groundState == GroundState.GROUNDED; 
+	 * @Post  mazub will be automatically standing still and not ducking when the game starts 
+	 * 			| new.direction == Direction.STALLED
+	 * 			| new.duckstate == DuckState.STRAIGHT
+	 */
 	public Mazub(int pixelLeftX, int pixelBottomY, Sprite[] sprites,Program program) throws PositionOutOfBoundsException{
 		super(pixelLeftX, pixelBottomY, sprites,0,500,100,program);
 		this.maxHorizontalVelocity = 3d;
@@ -116,6 +131,24 @@ public class Mazub extends GameObject{
 		verticalVelocity = 0.0d;
 	}
 	
+	/**
+	 * 
+	 * @param pixelLeftX	|the most left position that is part from the currently showing Sprite.
+	 * @param pixelBottomY	|the lowest position that is part of the currently showing Sprite.
+	 * @param sprites		|a list of Sprites that mazub will use to rotate trough, to make
+	 * 						|animations. 
+	 * @param program 		|the program that the buzam istance will run, so null here
+	 * @param minHp			|the minimum number of Hp	
+	 * @param maxHp			|the maximmum number of Hp
+	 * @param currentHp		|the current number of Hp
+	 * @Post	if the Mazub instance isn't located on the ground, he will know he is in the air.
+	 * 			|if(pixelBottomY>0):
+	 * 			|	then new.groundState == GroundState.AIR
+	 * 			|	else new.groundState == GroundState.GROUNDED; 
+	 * @Post  mazub will be automatically standing still and not ducking when the game starts 
+	 * 			| new.direction == Direction.STALLED
+	 * 			| new.duckstate == DuckState.STRAIGHT
+	 */
 	public Mazub(int pixelLeftX, int pixelBottomY, Sprite[] sprites,Program program,int minHp,int currentHp,int maxHp) throws PositionOutOfBoundsException{
 		super(pixelLeftX, pixelBottomY, sprites,minHp,currentHp,maxHp,program);
 		this.maxHorizontalVelocity = 3d;
@@ -125,6 +158,24 @@ public class Mazub extends GameObject{
 		horizontalVelocity=0.0d;
 		verticalVelocity = 0.0d;
 	}
+	
+	/**
+	 * 
+	 * @param pixelLeftX	|the most left position that is part from the currently showing Sprite.
+	 * @param pixelBottomY	|the lowest position that is part of the currently showing Sprite.
+	 * @param sprites		|a list of Sprites that mazub will use to rotate trough, to make
+	 * 						|animations. 
+	 * @param minHp			|the minimum number of Hp	
+	 * @param maxHp			|the maximmum number of Hp
+	 * @param currentHp		|the current number of Hp
+	 * @Post	if the Mazub instance isn't located on the ground, he will know he is in the air.
+	 * 			|if(pixelBottomY>0):
+	 * 			|	then new.groundState == GroundState.AIR
+	 * 			|	else new.groundState == GroundState.GROUNDED; 
+	 * @Post  mazub will be automatically standing still and not ducking when the game starts 
+	 * 			| new.direction == Direction.STALLED
+	 * 			| new.duckstate == DuckState.STRAIGHT
+	 */
 	
 	public Mazub(int pixelLeftX, int pixelBottomY, Sprite[] sprites,int minHp,int maxHp,int currentHp) throws PositionOutOfBoundsException{
 		super(pixelLeftX, pixelBottomY, sprites,minHp,maxHp,currentHp);
@@ -730,7 +781,7 @@ public class Mazub extends GameObject{
 	 */
 	
 	public int getPixel_x()throws PositionOutOfBoundsException{
-		if(!hasValidPosition()) throw new PositionOutOfBoundsException(getPositionX(),getPositionY());
+		if(!hasValidPosition()) throw new PositionOutOfBoundsException(getPositionX(),getPositionY(),getWorld());
 		return (int)(this.getPositionX()*100);//
 	}
 	
@@ -754,7 +805,7 @@ public class Mazub extends GameObject{
 	 */
 	
 	public int getPixel_y() throws PositionOutOfBoundsException{
-		if(! hasValidPosition()) throw new PositionOutOfBoundsException(getPositionX(),getPositionY());
+		if(! hasValidPosition()) throw new PositionOutOfBoundsException(getPositionX(),getPositionY(),getWorld());
 		return (int)(getPositionY()*100);
 	}
 	

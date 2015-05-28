@@ -109,13 +109,13 @@ public class Buzam extends GameObject{
 	 * 
 	 * @param pixelLeftX	|the most left position that is part from the currently showing Sprite.
 	 * @param pixelBottomY	|the lowest position that is part of the currently showing Sprite.
-	 * @param sprites		|a list of Sprites that mazub will use to rotate trough, to make
+	 * @param sprites		|a list of Sprites that buzam will use to rotate trough, to make
 	 * 						|animations. 
 	 * @param program 		|the program that the Buzam istance will run
 	 * @param minHp			|the minimum number of Hp	
 	 * @param maxHp			|the maximmum number of Hp
 	 * @param currentHp		|the current number of Hp
-	 * @Post	if the Mazub instance isn't located on the ground, he will know he is in the air.
+	 * @Post	if the Buzam instance isn't located on the ground, he will know he is in the air.
 	 * 			|if(pixelBottomY>0):
 	 * 			|	then new.groundState == GroundState.AIR
 	 * 			|	else new.groundState == GroundState.GROUNDED; 
@@ -138,12 +138,12 @@ public class Buzam extends GameObject{
 	 * 
 	 * @param pixelLeftX	|the most left position that is part from the currently showing Sprite.
 	 * @param pixelBottomY	|the lowest position that is part of the currently showing Sprite.
-	 * @param sprites		|a list of Sprites that mazub will use to rotate trough, to make
+	 * @param sprites		|a list of Sprites that buzam will use to rotate trough, to make
 	 * 						|animations. 
 	 * @param minHp			|the minimum number of Hp	
 	 * @param maxHp			|the maximmum number of Hp
 	 * @param currentHp		|the current number of Hp
-	 * @Post	if the Mazub instance isn't located on the ground, he will know he is in the air.
+	 * @Post	if the buzam instance isn't located on the ground, he will know he is in the air.
 	 * 			|if(pixelBottomY>0):
 	 * 			|	then new.groundState == GroundState.AIR
 	 * 			|	else new.groundState == GroundState.GROUNDED; 
@@ -169,7 +169,7 @@ public class Buzam extends GameObject{
 	 * 			the time passed since the last frame is illegal.
 	 * 			|dt <0 || dt > 0.2 || Double.NaN == dt
 	 * @throws IllegalMazubStateException
-	 * 			the current State of mazub is null.
+	 * 			the current State of buzam is null.
 	 * 			|getGroundState()==null
 	 * 			|getOrientation()==null
 	 * 			|getDuckState()==null
@@ -180,7 +180,7 @@ public class Buzam extends GameObject{
 	 * 			trying to divide by 0
 	 * 			|newSpeed*dirSign > this.getMaxHorizontalVelocity() && this.getHorizontalAcceleration()==0
 	 * @throws PositionOutOfBoundsException
-	 * 			mazub has an illegal position
+	 * 			buzam has an illegal position
 	 * 			| ! isValidPosition()
 	 * @Post	if buzam isn't standing still and the horizontal velocity is less than the initial velocity, his velocity will be set to the initial velocity
 	 * 			| while(dt>0 && !isTerminated())
@@ -390,7 +390,7 @@ public class Buzam extends GameObject{
 		int dirSign =this.direction.getMultiplier(); 
 		double newSpeed = this.getHorizontalVelocity()+this.getHorizontalAcceleration()*dt;
 		double s;
-		//dirsign is used in here to compensate for the current direction of the mazub.
+		//dirsign is used in here to compensate for the current direction of the buzam.
 		if(newSpeed*dirSign > this.getMaxHorizontalVelocity()){//overgangsverschijnsel (1keer bij berijken max speed)
 			if(getHorizontalAcceleration()==0)throw new IllegalMovementException("impossible to divide by zero");
 			double accDt = Math.max(0,(this.getMaxHorizontalVelocity()- this.getHorizontalVelocity()*dirSign)/(getHorizontalAcceleration()*dirSign));
@@ -475,7 +475,7 @@ public class Buzam extends GameObject{
 	}
 	
 	/**
-	 * checks the current state from the mazub and changes the shown sprite accordingly.
+	 * checks the current state from the buzam and changes the shown sprite accordingly.
 	 * @param dt | the period of time that elapses 
 	*/
 	public void animate(double dt){
@@ -569,7 +569,7 @@ public class Buzam extends GameObject{
 	
 
 	/**
-	 * returns the current acceleration of mazub according to the vertical direction
+	 * returns the current acceleration of buzam according to the vertical direction
 	 * @return |if getHorizontalVelocity()*getOrientation().getMultiplier()==getMaxHorizontalVelocity() || getHorizontalVelocity == 0.0d
 	 * 		   |	then  0
 	 * 		   |else horizontalAcceleration* getOrientation().getMultiplier()
@@ -707,7 +707,7 @@ public class Buzam extends GameObject{
 	
 	/**
 	 * lets buzam duck
-	 * @Post	mazub will duck when time advances
+	 * @Post	buzam will duck when time advances
 	 * 			|new.getDuckState() = DuckState.DUCKED
 	 */
 	public void startDuck(){
@@ -744,7 +744,7 @@ public class Buzam extends GameObject{
 	}
 	
 	/**
-	 * returns the index of the most left pixel used by mazub. Each pixel represents 0.01m
+	 * returns the index of the most left pixel used by buzam. Each pixel represents 0.01m
 	 * @throws PositionOutOfBoundsException
 	 * 			buzam has an illegal position (error can also be in Y position)
 	 * 			| !hasValidPosition()
@@ -752,7 +752,7 @@ public class Buzam extends GameObject{
 	 */
 	
 	public int getPixel_x()throws PositionOutOfBoundsException{
-		if(!hasValidPosition()) throw new PositionOutOfBoundsException(getPositionX(),getPositionY());
+		if(!hasValidPosition()) throw new PositionOutOfBoundsException(getPositionX(),getPositionY(),getWorld());
 		return (int)(this.getPositionX()*100);//
 	}
 	
@@ -776,7 +776,7 @@ public class Buzam extends GameObject{
 	 */
 	
 	public int getPixel_y() throws PositionOutOfBoundsException{
-		if(! hasValidPosition()) throw new PositionOutOfBoundsException(getPositionX(),getPositionY());
+		if(! hasValidPosition()) throw new PositionOutOfBoundsException(getPositionX(),getPositionY(),getWorld());
 		return (int)(getPositionY()*100);
 	}
 	

@@ -59,6 +59,21 @@ public class Slime extends GameObject{
 		direction = Direction.STALLED;
 	}
 	
+	/**
+	 * 
+	 * @param x |the most left position that is part from the currently showing Sprite.
+	 * @param y |the lowest position that is part of the currently showing Sprite.
+	 * @param sprites |a list of Sprites that shark will use to rotate trough
+	 * @param school | the school to which the slime belongs
+	 * @param program| the program which slime needs to be executing
+	 * @throws PositionOutOfBoundsException
+	 * 			slime has an illegal position
+	 * 			| ! hasValidPosition()
+	 * @Post The slime will be automatically standing still when the game starts 
+	 * 			|new.direction = Direction.STALLED
+	 * @Post The slime will be added to the given school
+	 * 			|new.getSchool()=school
+	 */
 	public Slime(int x, int y, Sprite[] sprites,School school,Program program) throws PositionOutOfBoundsException{
 		super(x,y,sprites,0,500,100,program);
 		setSchool(school);
@@ -549,21 +564,7 @@ public class Slime extends GameObject{
 		}
 	}
 	
-	/*
-	 * 
-	 * @return | if !world.isTerminated() && !this.isTerminated() && this.world==null
-	 * 		   | 		then true
-	 * 		   | else        false
-	 *//*
-	@Override
-	protected boolean canHaveAsWorld(World world){
-		if(!world.isTerminated() && !this.isTerminated() && this.getWorld()==null
-				//&& world.getSchools().contains(school)
-				)
-			return true;
-		return false;
-	}*/
-	
+
 	public String toString(){
 		return "slime of( " + getSchool() + ") with hp: " + getNbHitPoints() + " ,using program: "+ (getProgram() != null);
 	}
@@ -642,6 +643,12 @@ public class Slime extends GameObject{
 		endMove();
 	};
 	
+	/**
+	 * checks if slime is moving in the given direction
+	 * @param direction
+	 * @return  Math.signum(getVerticalVelocity())==direction.getSign() || return Math.signum(getHorizontalVelocity())==direction.getSign()
+	 *			|| false
+	 */
 	public boolean isMoving(Program.Direction direction){
 		switch(direction){
 		case UP:
@@ -653,6 +660,12 @@ public class Slime extends GameObject{
 		}
 		return false;
 	}
+	
+	/**
+	 * checks the consequences of a collision between this object and the given object. This method is only used when 
+	 * the class doesn't recognise this gameobject because it is added before Mazub.
+	 * Since Slime is a character that every class knows, nothing needs to be done here.
+	 */
 
 	@Override
 	public void EffectOnCollisionWithReversed(GameObject gameObject) {

@@ -74,6 +74,9 @@ public abstract class GameObject {
 	 * @param pixelBottomY	|the lowest position that is part of the currently showing Sprite.
 	 * @param sprites		|a list of Sprites that a gameobject will use to rotate trough, to make
 	 * 						|animations.
+	 * @param minHp			|minimum number of Hp
+	 * @param maxHp			|maximum number of Hp
+	 * @param currentHp		|current number of Hp
 	 * @throws PositionOutOfBoundsException
 	 * 			the gameobject has an illegal position
 	 * 			| ! hasValidPosition()
@@ -97,6 +100,29 @@ public abstract class GameObject {
 		lastLavaHit=0.0d;
 	};
 	
+	/**
+	 * 
+	 * @param pixelLeftX    |the most left position that is part from the currently showing Sprite.
+	 * @param pixelBottomY	|the lowest position that is part of the currently showing Sprite.
+	 * @param sprites		|a list of Sprites that a gameobject will use to rotate trough, to make
+	 * 						|animations.
+	 * @param minHp			|minimum number of Hp
+	 * @param maxHp			|maximum number of Hp
+	 * @param currentHp		|current number of Hp
+	 * @param Program		|the program that the gameobject will run
+	 * @throws PositionOutOfBoundsException
+	 * 			the gameobject has an illegal position
+	 * 			| ! hasValidPosition()
+	 * @Post the initial position of the Mazub,shark, plant or slime instance instance will be (pixelLeftX,pixelBottomY)
+	 * 			|new.getPosition()== (pixelLeftX,pixelBottomY) 
+	 * @Post the list of Sprites the mazub, shark, plant or slime instance will use, will be stored in spriteList
+	 * 			|new.spriteList == sprites;
+	 * @Post the gameobject will be set to the given program
+	 * 			|((new)program).getGameObject()==this
+	 * @Pre		sprites must at least have 1 sprite
+	 * 			|sprites.lenght>=1
+	 * 
+	 */
 	
 	@Raw @Model
 	protected GameObject(int pixelLeftX, int pixelBottomY, Sprite[] sprites,int minHp,int maxHp,int currentHp,Program program) throws PositionOutOfBoundsException{
@@ -112,6 +138,11 @@ public abstract class GameObject {
 		program.setGameObject(this);
 	};
 	
+	/**
+	 * 
+	 * @param sprites | list of sprites that need to be checked
+	 * @return true if valid, false otherwise
+	 */
 	public boolean checkValidSprites(Sprite[] sprites){
 		if(sprites.length<1)
 			return false;
@@ -181,6 +212,11 @@ public abstract class GameObject {
 		return hitPoint.getCurrent();
 	}
 	
+	/**
+	 * returns the maximum number of hitpoints
+	 * @return maximum number of Hp | hitPoint.getMaximum()
+	 */
+	
 	@Basic 
 	public int getMaxNbHitPoints(){
 		return hitPoint.getMaximum();
@@ -196,11 +232,20 @@ public abstract class GameObject {
 		return this.world;
 	}
 	
+	/**
+	 * sets the world of the gameobject
+	 * @param world 
+	 * 
+	 */
 	public void setWorld(World world){
 		if(canHaveAsWorld(world))
 			this.world = world;
 	}
 	
+	/**
+	 * 
+	 * @return a copy of the spritelist | spriteList.clone()
+	 */
 	public Sprite[] getSpriteList(){
 		return spriteList.clone();
 	}
@@ -438,7 +483,7 @@ public abstract class GameObject {
 	 * @throws NullPointerException
 	 * 			trying to take the size of the value null as if it was an array
 	 */
-	public boolean[] placeOverlapsWithGameObject() throws NullPointerException{//TODO check if nullpointer can be removed
+	public boolean[] placeOverlapsWithGameObject() throws NullPointerException{
 		boolean[] overlap = new boolean[]{false,false,false,false};//left,bot,right,top
 		ArrayList<GameObject> overlappingObjects = getOverlappingGameObjects();
 		for (int  i=0 ; i < overlappingObjects.size() ; i++){
@@ -527,6 +572,12 @@ public abstract class GameObject {
 	public abstract void EffectOnCollisionWith(GameObject gameObject);
 	public abstract void EffectOnCollisionWithReversed(GameObject gameObject);
 	
+	
+	/**
+	 * returns on what side the gameobjects collide
+	 * @param bounceAgainst | the colliding gameobject
+	 * @return overlap: array with true if overlaps (in order: left, bottom, right, top)
+	 */
 	//left,bottom,right,top, need to be checked after position has been resetted
 	public boolean[] sideOverlappingBetween(GameObject bounceAgainst){
 		double[] own = getPerimeters();
@@ -543,14 +594,26 @@ public abstract class GameObject {
 		return overlap;
 	}
 	
+	/**
+	 * 
+	 * @return false
+	 */
 	public boolean isDucking(){
 		return false;
 	}
 	
+	/**
+	 * 
+	 * @return false
+	 */
 	public boolean isJumping(){
 		return false;
 	}
 	
+	/**
+	 * 
+	 * @return program
+	 */
 	public Program getProgram() {
 		return program;
 	}
