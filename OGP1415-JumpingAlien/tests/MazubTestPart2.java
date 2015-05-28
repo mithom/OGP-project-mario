@@ -804,7 +804,7 @@ public class MazubTestPart2 {
 	@Test
 	public void hpLossAtCollision(){
 		
-		//Buzam isn't tested here, cause the hpLoss part of the code of Buzam is EXACTLY the same as Mazub's
+		//Buzam isn't tested much here (only one time in the end), cause the hpLoss part of the code of Buzam is EXACTLY the same as Mazub's
 		
 		IFacadePart3 facade = new jumpingalien.part3.facade.Facade();
 		World world = facade.createWorld(70, 10, 10, 1, 1, 0, 1);
@@ -922,7 +922,7 @@ public class MazubTestPart2 {
 		world.removeGameObject(slime5);
 		world.removeGameObject(mazub3);
 		
-		//now only one thing to test remains: does mazub lose hp if it lands ON TOP of another gameobject. Since the implementation 
+		//another thing to test remains: does mazub lose hp if it lands ON TOP of another gameobject. Since the implementation 
 		//for this is for every object, it doesn't matter on which kind of object mazub lands, so we chose a shark without a program here
 		Shark shark5 = facade.createSharkWithProgram(0, 70, spriteArrayForSize(70, 40, 2),(Program)facade.parse("skip;").getResult());
 		Mazub mazub4 = facade.createMazub(0, 150, spriteArrayForSize(70, 40, 20));
@@ -932,6 +932,19 @@ public class MazubTestPart2 {
 		facade.advanceTime(world, 0.2d);
 		assertEquals(100,mazub4.getNbHitPoints());
 		assertTrue(shark5.getNbHitPoints()>30 && shark5.getNbHitPoints()<=50);
+		world.removeGameObject(shark5);
+		world.removeGameObject(mazub4);
+		
+		//one buzam test
+		Shark shark6 = facade.createSharkWithProgram(0, 70, spriteArrayForSize(70, 40, 2),(Program)facade.parse("skip;").getResult());
+		Buzam buzam = facade.createBuzam(100,70, spriteArrayForSize(70, 40, 20));
+		facade.addShark(world, shark6);
+		facade.addBuzam(world, buzam);
+		facade.advanceTime(world, 0.2d);
+		facade.advanceTime(world, 0.2d);
+		assertEquals(100,buzam.getNbHitPoints());
+		assertTrue(shark5.getNbHitPoints()>30 && shark5.getNbHitPoints()<=50);
+	
 	}
 	
 }

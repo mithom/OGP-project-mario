@@ -227,6 +227,12 @@ public class Plant extends GameObject{
 		return false;
 	}
 
+	/**
+	 * checks the consequences of a collision between this object and the given object. This method is only used when 
+	 * the class doesn't recognise this gameobject because it is added before Mazub.
+	 * Since Plant is a character that every class knows, nothing needs to be done here.
+	 */
+	
 	@Override
 	public void EffectOnCollisionWithReversed(GameObject gameObject) {
 		System.out.println("unknown type of gameobject");

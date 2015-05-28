@@ -64,6 +64,18 @@ public class Shark extends GameObject{
 		direction = Direction.STALLED;
 		}
 	
+	/**
+	 * 
+	 * @param x |the most left position that is part from the currently showing Sprite.
+	 * @param y |the lowest position that is part of the currently showing Sprite.
+	 * @param sprites |a list of Sprites that shark will use to rotate trough
+	 * @param program |the program that shark needs to be executing
+	 * @throws PositionOutOfBoundsException
+	 * 			shark has an illegal position
+	 * 			| ! hasValidPosition()
+	 * @Post The shark will be automatically standing still when the game starts 
+	 * 			| new.direction = Direction.STALLED
+	 */
 	public Shark(int x, int y, Sprite[] sprites,Program program)throws PositionOutOfBoundsException{
 		super(x,y,sprites,0,100,100,program); 
 		actionTime = 0.0d;actionDuration = 0.0d;
@@ -679,9 +691,16 @@ public class Shark extends GameObject{
 
 	@Override
 	public void endMove(Direction direction) {
-		endMove();//TODO: make direction specific for program!
+		endMove();
 		
 	}
+	
+	/**
+	 * checks if slime is moving in the given direction
+	 * @param direction
+	 * @return  Math.signum(getVerticalVelocity())==direction.getSign() || return Math.signum(getHorizontalVelocity())==direction.getSign()
+	 *			|| false
+	 */
 	
 	public boolean isMoving(Program.Direction direction){
 		switch(direction){
@@ -694,7 +713,13 @@ public class Shark extends GameObject{
 		}
 		return false;
 	}
-
+	
+	/**
+	 * checks the consequences of a collision between this object and the given object. This method is only used when 
+	 * the class doesn't recognise this gameobject because it is added before Mazub.
+	 * Since shark is a character that every class knows, nothing needs to be done here.
+	 */
+	
 	@Override
 	public void EffectOnCollisionWithReversed(GameObject gameObject) {
 		System.out.println("unknown type of gameobject");

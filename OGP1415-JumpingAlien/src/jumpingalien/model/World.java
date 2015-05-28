@@ -115,6 +115,13 @@ public class World {
 			this.mazub = mazub;
 	}
 	
+	/**
+	 * 
+	 * @param buzam | the buzam that needs to be added to the world
+	 * @Post if the given buzam belongs to this world, it will be added
+	 * 			| if(buzam.getWorld()==this)
+	 *			|	then this.mazub = buzam
+	 */
 	public void addBuzam(Buzam buzam){
 		if(buzam.getWorld()==this)
 			this.buzam = buzam;
@@ -581,19 +588,41 @@ public class World {
 		}
 	}
 	
+	/**
+	 * 
+	 * @return mazub
+	 */
 	public Mazub getMazub(){
 		return mazub;
 	}
 	
+	/**
+	 * 
+	 * @return buzam
+	 */
 	public Buzam getBuzam(){
 		return buzam;
 	}
-	
+	/**
+	 * 
+	 * @param pixelX 
+	 * @param pixelY
+	 * @return TileObject(pixelX.intValue(),pixelY.intValue(),GeologicalFeature.numberTypeToGeologicalFeature(geoFeature))
+	 */
 	public TileObject getTileObject(Double pixelX,Double pixelY){
 		int geoFeature =this.getGeologicalFeature(new int[]{pixelX.intValue(),pixelY.intValue()});
 		return new TileObject(pixelX.intValue(),pixelY.intValue(),GeologicalFeature.numberTypeToGeologicalFeature(geoFeature));
 	}
 	
+	/**
+	 * 
+	 * @return 	|
+	 *	int[][] positions = getTilePositionsIn(0, 0, width, height);
+	 *	ArrayList<TileObject> tileObjects = new ArrayList<TileObject>()
+	 *	for(int[] pos:positions)
+	 *		tileObjects.add(new TileObject(pos[0], pos[1],GeologicalFeature.numberTypeToGeologicalFeature(getGeologicalFeature(pos))))
+	 *	return tileObjects;
+	 */
 	public ArrayList<TileObject> getAllTileObjects(){
 		int[][] positions = getTilePositionsIn(0, 0, width, height);
 		ArrayList<TileObject> tileObjects = new ArrayList<TileObject>();

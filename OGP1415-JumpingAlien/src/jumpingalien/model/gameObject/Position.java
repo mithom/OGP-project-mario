@@ -12,18 +12,6 @@ import jumpingalien.model.World;
 public class Position {
 	private final double[] position;//in meters!, pixel is 0.01m = 1cm
 	private World world; 
-	/*
-	public Position(World world,double[] coordinates) throws PositionOutOfBoundsException{
-		positions = new ArrayList<double[]>();
-		this.world = world;
-		for(double[] coordinate:coordinates){
-			if(isValidCoordinate(coordinate)){
-				positions.add(coordinate);
-			}else{
-				throw new PositionOutOfBoundsException(coordinate[0],coordinate[1]);
-			}
-		}
-	}*/
 	
 	/**
 	 * 
@@ -35,11 +23,6 @@ public class Position {
 	 * 			| new.getPositions = coordinate
 	 */		
 	public Position(double[] coordinate){
-		/*if(isValidCoordinate(coordinate)){
-			position = coordinate;
-		}else{
-			throw new PositionOutOfBoundsException(coordinate[0],coordinate[1]);
-		}*/
 		position = coordinate;
 	}
 	
@@ -60,7 +43,7 @@ public class Position {
 			if(isValidCoordinate(coordinate)){
 				position = coordinate;
 			}else{
-				throw new PositionOutOfBoundsException(coordinate[0],coordinate[1]);
+				throw new PositionOutOfBoundsException(coordinate[0],coordinate[1],world);
 			}
 		}else{
 			position =coordinate;
