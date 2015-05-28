@@ -6,7 +6,7 @@ import jumpingalien.model.gameObject.TileObject;
 import jumpingalien.program.internal.Value;
 import jumpingalien.program.internal.Expression;
 
-public enum ActionFor2{//TODO check for overflow errors etc
+public enum ActionFor2{
 	ADDITION{
 		public Value<?> evaluate(Expression<?,? extends Value<?>> expression,double[] dt){
 			Value<?> left = (Value<?>)expression.getExpressions()[0];
@@ -15,7 +15,13 @@ public enum ActionFor2{//TODO check for overflow errors etc
 			Double variable2 = (Double)right.evaluate(dt);
 			if(dt[0]>0.0){
 				expression.setDoneTrue(dt);
-				return new Value<Double>(variable1 +variable2);
+				//check for overflow errors
+				if (Math.signum(variable1)==Math.signum(variable2) && Math.signum(variable1)!=Math.signum(variable1+variable2)){
+					throw new UnsupportedOperationException();
+				}
+				else{
+					return new Value<Double>(variable1 +variable2);
+				}
 			}else
 				return new Value<Object>(null);
 			
@@ -29,7 +35,12 @@ public enum ActionFor2{//TODO check for overflow errors etc
 			Double variable2 = (Double)right.evaluate(dt);
 			if(dt[0]>0.0){
 				expression.setDoneTrue(dt);
-				return new Value<Double>(variable1 - variable2);
+				if (Math.signum(variable1)!=Math.signum(variable2) && Math.signum(variable1)!=Math.signum(variable1-variable2)){
+					throw new UnsupportedOperationException();
+				}
+				else{
+					return new Value<Double>(variable1 - variable2);
+				}
 			}else
 				return new Value<Object>(null);
 		}
@@ -42,7 +53,13 @@ public enum ActionFor2{//TODO check for overflow errors etc
 			Double variable2 = (Double)right.evaluate(dt);
 			if(dt[0]>0.0){
 				expression.setDoneTrue(dt);
-				return new Value<Double>(variable1 *variable2);
+				if (Math.signum(variable1)==Math.signum(variable2) && Math.signum(variable1*variable2)!=Math.signum(1d) || 
+						Math.signum(variable1) != Math.signum(variable2) && Math.signum(variable1*variable2)!=Math.signum(-1d) ){
+					throw new UnsupportedOperationException();
+				}
+				else{
+					return new Value<Double>(variable1 *variable2);
+				}
 			}else
 				return new Value<Object>(null);
 		}
@@ -55,7 +72,13 @@ public enum ActionFor2{//TODO check for overflow errors etc
 			Double variable2 = (Double)right.evaluate(dt);
 			if(dt[0]>0.0){
 				expression.setDoneTrue(dt);
-				return new Value<Double>(variable1 /variable2);
+				if (Math.signum(variable1)==Math.signum(variable2) && Math.signum(variable1*variable2)!=Math.signum(1d) || 
+						Math.signum(variable1) != Math.signum(variable2) && Math.signum(variable1*variable2)!=Math.signum(-1d) ){
+					throw new UnsupportedOperationException();
+				}
+				else{
+					return new Value<Double>(variable1 /variable2);
+				}
 			}else
 				return new Value<Object>(null);
 		}

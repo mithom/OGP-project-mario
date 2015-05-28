@@ -9,15 +9,7 @@ import jumpingalien.program.util.ActionFor2;
 public class Expression<R,G extends Value<?>> extends Value<R> {
 	private final Object[] expressions;
 	private Object action;
-	private Value<R> lastState; 
-	
-	//used for variable reading (and constants->straight at value)//TODO: this function has to be done otherwise (check program factory)
-	public Expression(Value<R> value){
-		super();
-		//this.value = value;
-		this.expressions = new Object[]{value};
-		action=null;
-	}
+	private Value<R> lastState; 	
 	
 	public Expression(G value, ActionFor1 action){
 		super();
@@ -42,8 +34,7 @@ public class Expression<R,G extends Value<?>> extends Value<R> {
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	//TODO: only works if correct program, still need to catch errors
-	public R evaluate(double[] dt){//TODO: aanpassen voor previousStatement en dt!
+	public R evaluate(double[] dt){
 		if(isDone()){
 			return lastState.evaluate(dt);
 		}else{

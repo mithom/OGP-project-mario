@@ -98,8 +98,10 @@ public class Statement {
 		return program;
 	}
 	
-	public Statement(Category category){//TODO add checkers (niet null, acion of foreach)
-		this.setCategory(category);
+	public Statement(Category category){
+		if (isValidCategory()){
+			this.setCategory(category);
+		}
 	}
 	
 	public Statement(Action action){//when category is Action
@@ -124,17 +126,19 @@ public class Statement {
 		return sortAscending;
 	}
 	
-	public void addNextStatement(Statement statement){//TODO: add checkers
-		if(nextStatements[0]==null){
-			nextStatements[0] = statement;
-		}else{
-			if(nextStatements[1]==null){
-				nextStatements[1] = statement;
+	public void addNextStatement(Statement statement){
+		if (statement!=null){
+			if(nextStatements[0]==null){
+				nextStatements[0] = statement;
 			}else{
-				if(nextStatements[2]==null){
-					nextStatements[2] = statement;
-				}else
-					System.out.println("error, zou niet mogen voorkomen");
+				if(nextStatements[1]==null){
+					nextStatements[1] = statement;
+				}else{
+					if(nextStatements[2]==null){
+						nextStatements[2] = statement;
+					}else
+						System.out.println("error, zou niet mogen voorkomen");
+				}
 			}
 		}
 	}
@@ -185,8 +189,7 @@ public class Statement {
 	private void execute(double[] dt){
 		try{
 			category.execute(this,dt);
-		}catch(Exception e){//TODO: make a specific error for this!
-			//System.out.println("error catched: "+ Arrays.toString(getExpressions()));
+		}catch(Exception e){
 			getProgram().setError();
 		}
 	}
@@ -307,5 +310,12 @@ public class Statement {
 	
 	public boolean getNoBreak(){
 		return noBreak;
+	}
+	
+	public boolean isValidCategory(){
+		if (getCategory()==null || getCategory()==Category.ACTION || getCategory()==Category.FOREACH ){
+				return false;
+		}
+		return true;
 	}
 }

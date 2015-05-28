@@ -800,6 +800,7 @@ public class MazubTestPart2 {
 	 * this test checks everything that has to do with hp loss on collisions
 	 * 
 	 */
+	
 	@Test
 	public void hpLossAtCollision(){
 		
