@@ -235,7 +235,6 @@ public class Shark extends GameObject{
 		if(getProgram() != null){
 			if(actionTime>0){
 				actionTime = getProgram().executeTime(actionTime);
-				//actionTime = getProgram().executeTime(0.002d);
 			}
 		}else{
 			if(actionTime == actionDuration){
@@ -679,7 +678,7 @@ public class Shark extends GameObject{
 
 	@Override
 	public void endMove(Direction direction) {
-		endMove();//TODO: make direction specific for program!
+		endMove();
 		
 	}
 	

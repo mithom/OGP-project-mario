@@ -77,8 +77,6 @@ public class Program {
 	
 	public double executeTime(double dt){
 		double[] dt2 = new double[]{dt};
-		//if (getGameObject() instanceof Buzam)
-			//System.out.println(hasError());
 		while(dt2[0]>0 && !hasError()){
 			executeNext(dt2);
 		}

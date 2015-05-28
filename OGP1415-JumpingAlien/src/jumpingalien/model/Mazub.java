@@ -106,8 +106,6 @@ public class Mazub extends GameObject{
 		direction= Direction.STALLED;
 	}*/
 	
-	//TODO waarom is het vorige in commentaar? moet ge de snelheden niet meer kunnen meegeven???
-	
 	public Mazub(int pixelLeftX, int pixelBottomY, Sprite[] sprites,Program program) throws PositionOutOfBoundsException{
 		super(pixelLeftX, pixelBottomY, sprites,0,500,100,program);
 		this.maxHorizontalVelocity = 3d;
@@ -275,7 +273,7 @@ public class Mazub extends GameObject{
 			}
 			executeEndDuck();
 			for(GameObject gameObject:getOverlappingGameObjects()){
-				if(gameObject instanceof Slime || gameObject instanceof Shark || gameObject instanceof Buzam){//TODO: implement function "public boolean bounceagainst()"
+				if(gameObject instanceof Slime || gameObject instanceof Shark || gameObject instanceof Buzam){
 					setPositionX(oldPosition.getPositions()[0]);
 					setPositionY(oldPosition.getPositions()[1]);
 					boolean[] sides = sideOverlappingBetween(gameObject);

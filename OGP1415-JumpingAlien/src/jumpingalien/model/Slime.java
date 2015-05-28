@@ -638,7 +638,7 @@ public class Slime extends GameObject{
 	public void endDuck() {}
 
 	@Override
-	public void endMove(Direction direction) {//TODO: make direction specific for program
+	public void endMove(Direction direction) {
 		endMove();
 	};
 	
