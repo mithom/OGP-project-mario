@@ -662,8 +662,8 @@ public class Shark extends GameObject{
 			}
 		}
 		else{
-			System.out.println("unknown type of gameobject");
-			gameObject.EffectOnCollisionWithReversed(this);
+			if(!(gameObject instanceof Plant || gameObject instanceof Shark))
+				gameObject.EffectOnCollisionWithReversed(this);
 		}
 	}
 
@@ -703,6 +703,7 @@ public class Shark extends GameObject{
 
 	@Override
 	public void EffectOnCollisionWithReversed(GameObject gameObject) {
+		System.out.println("unknown type of gameobject");
 		return ;
 	}
 }

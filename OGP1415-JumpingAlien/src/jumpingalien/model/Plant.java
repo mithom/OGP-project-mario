@@ -185,8 +185,8 @@ public class Plant extends GameObject{
 			consume((Mazub)gameObject);
 		}
 		else{
-			System.out.println("unknown type of gameobject");
-			gameObject.EffectOnCollisionWithReversed(this);
+			if(!(gameObject instanceof Plant || gameObject instanceof Shark || gameObject instanceof Slime))
+					gameObject.EffectOnCollisionWithReversed(this);
 		}
 	}
 
@@ -241,6 +241,7 @@ public class Plant extends GameObject{
 
 	@Override
 	public void EffectOnCollisionWithReversed(GameObject gameObject) {
+		System.out.println("unknown type of gameobject");
 		return ;
 	}
 }

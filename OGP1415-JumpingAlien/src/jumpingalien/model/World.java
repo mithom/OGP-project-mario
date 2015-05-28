@@ -85,13 +85,13 @@ public class World {
 			((Slime)gameObject).setSchool(null);
 		}
 		if(gameObject instanceof Mazub){
-			if(gameObject instanceof Buzam)
-				buzam = null;
-			else
 				mazub = null;
 		}
 		if(gameObject instanceof Shark)
 			sharks.remove(gameObject);
+		if(gameObject instanceof Buzam){
+			buzam = null;
+		}
 	}
 
 	/**

@@ -125,8 +125,8 @@ public abstract class GameObject {//TODO: make TileObject
 	public void loseHp(int amount){
 		hitPoint.loseHP(amount);
 		if(isDead() && !isTerminated()){
-			world.removeGameObject(this);
 			terminated = true;
+			world.removeGameObject(this);
 		}
 	}
 	
@@ -274,7 +274,10 @@ public abstract class GameObject {//TODO: make TileObject
 	 * 			
 	 */
 	public void setPositionX(double x) throws PositionOutOfBoundsException{
-		position = new Position(world,new double[]{x,getPositionY()}); 
+		if(!isTerminated())
+			position = new Position(world,new double[]{x,getPositionY()});
+		else
+			position = new Position(new double[]{x,getPositionY()});
 	}
 	
 	/**
@@ -288,7 +291,10 @@ public abstract class GameObject {//TODO: make TileObject
 	 */
 	
 	public void setPositionY(double y) throws PositionOutOfBoundsException{
-		position = new Position(world,new double[]{getPositionX(),y}); 
+		if(!isTerminated())
+			position = new Position(world,new double[]{getPositionX(),y});
+		else
+			position = new Position(new double[]{getPositionX(),y});
 	}
 
 	/**
