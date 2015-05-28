@@ -797,6 +797,9 @@ public class MazubTestPart2 {
 	
 	@Test
 	public void hpLossAtCollision(){
+		
+		//Buzam isn't tested here, cause the hpLoss part of the code of Buzam is EXACTLY the same as Mazub's
+		
 		IFacadePart3 facade = new jumpingalien.part3.facade.Facade();
 		World world = facade.createWorld(70, 10, 10, 1, 1, 0, 1);
 		for(int i=0;i<10;i++){
@@ -807,13 +810,84 @@ public class MazubTestPart2 {
 		for(int i=0;i<10;i++){
 				facade.setGeologicalFeature(world, i, 0, 1);//to Walk On
 		}
-		ParseOutcome<?> outcome = facade.parse("startrun left;");
+		ParseOutcome<?> outcome = facade.parse("start_run right;");
 		assertTrue(outcome.isSuccess());
 		Program program = (Program) outcome.getResult();
+		ParseOutcome<?> outcome2 = facade.parse("start_run left;");
+		assertTrue(outcome2.isSuccess());
+		Program program2 = (Program) outcome2.getResult();
 		//two slimes
 		Slime slime1 = facade.createSlimeWithProgram(0, 70, spriteArrayForSize(70, 40, 2), facade.createSchool(),program);
-		Slime slime2 = facade.createSlimeWithProgram(70, 100, spriteArrayForSize(70, 40, 2), facade.createSchool(),program);
+		Slime slime2 = facade.createSlimeWithProgram(100, 70, spriteArrayForSize(70, 40, 2), facade.createSchool(),program2);
+		assertEquals(100,slime1.getNbHitPoints());
+		assertEquals(100,slime2.getNbHitPoints());
+		facade.advanceTime(world, 0.2d);
+		assertEquals(100,slime1.getNbHitPoints());
+		assertEquals(100,slime2.getNbHitPoints());
+		world.removeGameObject(slime1);
+		world.removeGameObject(slime2);
+		//slime and Mazub
+		Slime slime3 = facade.createSlimeWithProgram(0, 70, spriteArrayForSize(70, 40, 2), facade.createSchool(),program);
+		Mazub mazub = facade.createMazub(100, 70, spriteArrayForSize(70, 40, 20));
+		facade.advanceTime(world, 0.2d);
+		assertEquals(50,slime3.getNbHitPoints());
+		assertEquals(50,mazub.getNbHitPoints());
+		world.removeGameObject(slime3);
+		world.removeGameObject(mazub);
+		//shark and Slime
+		Slime slime4  = facade.createSlimeWithProgram(0, 70, spriteArrayForSize(70, 40, 2), facade.createSchool(),program);
+		Shark shark = facade.createShark(100, 70, spriteArrayForSize(70, 40, 2));
+		facade.advanceTime(world, 0.2d);
+		assertEquals(50,slime4.getNbHitPoints());
+		assertEquals(50,shark.getNbHitPoints());
+		world.removeGameObject(slime4);
+		world.removeGameObject(shark);
+		//mazub en shark
+		Mazub mazub2 = facade.createMazub(0,70,spriteArrayForSize(70, 70, 20));
+		Shark shark2 = facade.createShark(100, 70, spriteArrayForSize(70, 40, 2));
+		mazub2.startMove(Direction.RIGHT);
+		facade.advanceTime(world,0.2d);
+		//shark loses hp in air, so to be sure, we test if its hp is between 40 and 50
+		assertTrue(shark2.getNbHitPoints()>30 && shark2.getNbHitPoints()<=50);
+		assertEquals(50,mazub2.getNbHitPoints());
+		world.removeGameObject(mazub2);
+		world.removeGameObject(shark2);
+		//shark en shark (we let them fall on each other, cause there isn't any water in the world in which they can move
+		Shark shark3 = facade.createShark(0, 70, spriteArrayForSize(70, 40, 2));
+		Shark shark4 = facade.createShark(0, 150, spriteArrayForSize(70, 40, 2));
+		facade.advanceTime(world, 0.2d);
+		assertTrue(shark3.getNbHitPoints()>90 && shark3.getNbHitPoints()<=100);
+		assertTrue(shark4.getNbHitPoints()>90 && shark4.getNbHitPoints()<=100);
+		world.removeGameObject(shark3);
+		world.removeGameObject(shark4);
 		
+		//all possible and useful collisions have been tested, only thing to check is the immunity time, since this is the 
+		//same for all gameobjects, we will test one case (mazub against a slime)
+		Slime slime5 = facade.createSlimeWithProgram(0, 70, spriteArrayForSize(70, 40, 2), facade.createSchool(),program);
+		Mazub mazub3 = facade.createMazub(100, 70, spriteArrayForSize(70, 40, 20));
+		facade.advanceTime(world, 0.2d);
+		assertEquals(50,slime5.getNbHitPoints());
+		assertEquals(50,mazub3.getNbHitPoints());
+		facade.advanceTime(world, 0.2d);
+		assertEquals(50,slime5.getNbHitPoints());
+		assertEquals(50,mazub3.getNbHitPoints());
+		facade.advanceTime(world, 0.2d);
+		assertEquals(50,slime5.getNbHitPoints());
+		assertEquals(50,mazub3.getNbHitPoints());
+		facade.advanceTime(world, 0.2d);
+		assertEquals(0,slime5.getNbHitPoints());
+		assertEquals(0,mazub3.getNbHitPoints());
+		world.removeGameObject(slime5);
+		world.removeGameObject(mazub3);
+		
+		//now only one thing to test remains: does mazub lose hp if it lands ON TOP of another gameobject. Since the implementation 
+		//for this is for every object, it doesn't matter on which kind of object mazub lands, so we chose a shark without a program here
+		Shark shark5 = facade.createShark(0, 70, spriteArrayForSize(70, 40, 2));
+		Mazub mazub4 = facade.createMazub(100, 70, spriteArrayForSize(70, 40, 20));
+		facade.advanceTime(world, 0.2d);
+		assertEquals(100,mazub4.getNbHitPoints());
+		assertTrue(shark5.getNbHitPoints()>30 && shark4.getNbHitPoints()<=50);
+			
 	}
 	
 }
