@@ -824,12 +824,15 @@ public class MazubTestPart2 {
 		assertEquals(100,slime1.getNbHitPoints());
 		assertEquals(100,slime2.getNbHitPoints());
 		facade.advanceTime(world, 0.2d);
+		facade.advanceTime(world, 0.2d);
+		facade.advanceTime(world, 0.2d);
+		facade.advanceTime(world, 0.2d);
 		assertEquals(100,slime1.getNbHitPoints());
 		assertEquals(100,slime2.getNbHitPoints());
 		world.removeGameObject(slime1);
 		world.removeGameObject(slime2);
 		//slime and Mazub
-		Slime slime3 = facade.createSlimeWithProgram(0, 70, spriteArrayForSize(70, 40, 2), facade.createSchool(),program);
+		Slime slime3 = facade.createSlime(0, 70, spriteArrayForSize(70, 40, 2), facade.createSchool());
 		Mazub mazub = facade.createMazub(100, 70, spriteArrayForSize(70, 40, 20));
 		facade.addSlime(world, slime3);
 		facade.setMazub(world, mazub);
@@ -841,16 +844,18 @@ public class MazubTestPart2 {
 		world.removeGameObject(slime3);
 		world.removeGameObject(mazub);
 		//shark and Slime
-		Slime slime4  = facade.createSlimeWithProgram(0, 70, spriteArrayForSize(70, 40, 2), facade.createSchool(),program);
+		ParseOutcome<?> outcome3 = facade.parse("start_run right;");
+		assertTrue(outcome3.isSuccess());
+		Program program3 = (Program) outcome3.getResult();
+		Slime slime4  = facade.createSlimeWithProgram(0, 70, spriteArrayForSize(70, 40, 2), facade.createSchool(),program3);
 		Shark shark = facade.createShark(100, 70, spriteArrayForSize(70, 40, 2));
 		facade.addSlime(world, slime4);
 		facade.addShark(world, shark);
 		facade.advanceTime(world, 0.2d);
-		System.out.println(slime4.getNbHitPoints());
 		facade.advanceTime(world, 0.2d);
-		System.out.println(slime4.getNbHitPoints());
 		facade.advanceTime(world, 0.2d);
-		System.out.println(slime4.getNbHitPoints());
+		facade.advanceTime(world, 0.2d);
+		facade.advanceTime(world, 0.2d);
 		assertEquals(50,slime4.getNbHitPoints());
 		assertTrue(shark.getNbHitPoints()>30 && shark.getNbHitPoints()<=50);
 		world.removeGameObject(slime4);
@@ -862,7 +867,7 @@ public class MazubTestPart2 {
 		facade.setMazub(world, mazub2);
 		mazub2.startMove(Direction.RIGHT);
 		facade.advanceTime(world,0.2d);
-		//shark loses hp in air, so to be sure, we test if its hp is between 40 and 50
+		//shark loses hp in air, so to be sure, we test if its hp is between 30 and 50
 		assertTrue(shark2.getNbHitPoints()>30 && shark2.getNbHitPoints()<=50);
 		assertEquals(50,mazub2.getNbHitPoints());
 		world.removeGameObject(mazub2);
