@@ -456,12 +456,10 @@ public abstract class GameObject {
 		ArrayList<GameObject> gameObjects = world.getAllGameObjects();
 		ArrayList<GameObject> overlappingObjects = new ArrayList<GameObject>();
 		for (int i=0 ; i < gameObjects.size() ; i++){
-			System.out.println("checking "+gameObjects.get(i)+"->"+overlaps(gameObjects.get(i)));
 			if(overlaps(gameObjects.get(i)) && gameObjects.get(i) != this){
 				overlappingObjects.add(gameObjects.get(i));
 			}
 		}
-		System.out.println(overlappingObjects+":blah");
 		return overlappingObjects;
 	}
 	/**

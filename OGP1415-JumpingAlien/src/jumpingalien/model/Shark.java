@@ -153,7 +153,7 @@ public class Shark extends GameObject{
 			Position oldPosition = getPosition();
 			setPositionY(moveVertical(smallDt));
 			//bot
-			if ((this.overlapsWithWall()[0]==true || this.placeOverlapsWithGameObject()[1]==true) && getVerticalVelocity()<0.0d){
+			if ((this.overlapsWithWall()[0]==true) && getVerticalVelocity()<0.0d){
 				this.setVerticalVelocity(0.0d);
 				setPositionY(oldPosition.getPositions()[1]-0.01d);
 				groundState = GroundState.GROUNDED;
@@ -167,30 +167,27 @@ public class Shark extends GameObject{
 				}
 			}
 			//top
-			if( (overlapsWithWall()[2]==true || this.placeOverlapsWithGameObject()[3]==true) && getVerticalVelocity()>0){
+			if( (overlapsWithWall()[2]==true) && getVerticalVelocity()>0){
 				this.setVerticalVelocity(0.0d);
 				setPositionY(oldPosition.getPositions()[1]);
 			}
 			setPositionX(moveHorizontal(smallDt));
 			//left
-			if((this.overlapsWithWall()[1]==true || this.placeOverlapsWithGameObject()[0]==true) && getHorizontalVelocity()<0){
+			if((this.overlapsWithWall()[1]==true) && getHorizontalVelocity()<0){
 				this.setHorizontalVelocity(0.0d);
 				setPositionX(oldPosition.getPositions()[0]);
 			}
 			//right
-			if( (overlapsWithWall()[3]==true || this.placeOverlapsWithGameObject()[2]==true) && getHorizontalVelocity()>0){
+			if( (overlapsWithWall()[3]==true) && getHorizontalVelocity()>0){
 				this.setHorizontalVelocity(0.0d);
 				setPositionX(oldPosition.getPositions()[0]);
 			}
 			animate(smallDt);
-			System.out.println(getOverlappingGameObjects());
 			for(GameObject gameObject:getOverlappingGameObjects()){
-				System.out.println(gameObject);
 				if(gameObject instanceof Slime || gameObject instanceof Mazub|| gameObject instanceof Shark || gameObject instanceof Buzam){
 					setPositionX(oldPosition.getPositions()[0]);
 					setPositionY(oldPosition.getPositions()[1]);
 				}//don't bounce with plants
-				System.out.println("botsing met:"+gameObject);
 				EffectOnCollisionWith(gameObject);
 				gameObject.EffectOnCollisionWith(this);
 			}
@@ -663,7 +660,6 @@ public class Shark extends GameObject{
 	 */
 	
 	public void EffectOnCollisionWith(GameObject gameObject){
-		System.out.println("bots:"+gameObject);
 		if(gameObject instanceof Mazub || gameObject instanceof Slime){
 			if(!isImmune()){
 				this.loseHp(50);
@@ -672,7 +668,6 @@ public class Shark extends GameObject{
 		}
 		else{
 			if(!(gameObject instanceof Plant || gameObject instanceof Shark)){
-				System.out.println("bots met buzam");
 				gameObject.EffectOnCollisionWithReversed(this);
 			}
 		}
