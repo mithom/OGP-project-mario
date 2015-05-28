@@ -937,13 +937,13 @@ public class MazubTestPart2 {
 		
 		//one buzam test
 		Shark shark6 = facade.createSharkWithProgram(0, 70, spriteArrayForSize(70, 40, 2),(Program)facade.parse("skip;").getResult());
-		Buzam buzam = facade.createBuzam(100,70, spriteArrayForSize(70, 40, 20));
+		Buzam buzam = facade.createBuzamWithProgram(100,70, spriteArrayForSize(70, 40, 20),(Program)facade.parse("start_run left;").getResult());
 		facade.addShark(world, shark6);
 		facade.addBuzam(world, buzam);
 		facade.advanceTime(world, 0.2d);
 		facade.advanceTime(world, 0.2d);
-		assertEquals(100,buzam.getNbHitPoints());
-		assertTrue(shark5.getNbHitPoints()>30 && shark5.getNbHitPoints()<=50);
+		assertEquals(450,buzam.getNbHitPoints());
+		assertTrue(shark6.getNbHitPoints()>30 && shark6.getNbHitPoints()<=50);
 	
 	}
 	

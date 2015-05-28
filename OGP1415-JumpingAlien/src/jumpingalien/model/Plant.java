@@ -17,7 +17,10 @@ import jumpingalien.model.World;
 public class Plant extends GameObject{
 	private Direction direction;
 	private final double horizontalVelocity=0.5d;
-	private double actionTimer;
+	private double actionTime;
+	private double actionDuration=0.5d;
+	private boolean movingLeft = false;
+	private boolean movingRight = false;
 	
 	/**
 	 * 
@@ -33,13 +36,13 @@ public class Plant extends GameObject{
 	
 	public Plant(int x, int y, Sprite[] sprites) throws PositionOutOfBoundsException{
 		super(x,y,sprites,0,1,1);
-		actionTimer=0.0d;
+		actionTime=0.0d;
 		direction = Direction.RIGHT;
 	}
 	
 	public Plant(int x, int y, Sprite[] sprites,Program program) throws PositionOutOfBoundsException{
 		super(x,y,sprites,0,1,1,program);
-		actionTimer=0.0d;
+		actionTime=0.0d;
 		direction = Direction.RIGHT;
 	}
 	
@@ -59,14 +62,43 @@ public class Plant extends GameObject{
 	@Override
 	public void advanceTime(double dt)throws PositionOutOfBoundsException{
 		while(dt>0 && !isTerminated()){
-			double smallDt = Math.min(0.01d/Math.abs(horizontalVelocity),dt);
+			decideAction();
+			double smallDt;
+			if(getProgram()==null)
+				smallDt = Math.min(Math.min(0.01d/Math.abs(horizontalVelocity),dt),actionDuration-actionTime);
+			else
+				smallDt= Math.min(0.01d/Math.abs(horizontalVelocity),dt);
+			actionTime += smallDt;
+			System.out.println(dt+","+smallDt);
 			dt-= smallDt;
+			
 			moveHorizontal(smallDt);
 			for(GameObject gameObject:getOverlappingGameObjects()){
 				EffectOnCollisionWith(gameObject);
 				gameObject.EffectOnCollisionWith(this);
 			}
 			animate();
+		}
+	}
+	
+	public void decideAction(){
+		if(getProgram() != null){
+			if(actionTime>0){
+				actionTime = getProgram().executeTime(actionTime);
+			}
+		}else{
+			System.out.println("1");
+			if(actionTime>=actionDuration){
+				actionTime=0.0d;
+				if(direction == Direction.LEFT){
+					endMove(Direction.LEFT);
+					startMove(Direction.RIGHT);
+				}else{
+					endMove(Direction.RIGHT);
+					startMove(Direction.LEFT);
+				}
+			}
+			System.out.println("2");
 		}
 	}
 	
@@ -108,8 +140,8 @@ public class Plant extends GameObject{
 	 */
 	
 	public void moveHorizontal(double dt) throws PositionOutOfBoundsException{
-		if(actionTimer+dt < 0.5d){
-			actionTimer += dt;
+		//if(actionTime+dt < 0.5d){
+			actionTime += dt;
 			double oldPositionX = getPositionX();
 			double newPositionX = oldPositionX +dt*direction.getMultiplier()*horizontalVelocity;
 			setPositionX(newPositionX);
@@ -119,10 +151,10 @@ public class Plant extends GameObject{
 			if( overlapsWithWall()[3]==true && direction.getMultiplier()>0){
 				setPositionX(oldPositionX);
 			}
-		}else{
-			double oldDirTime = (0.5-actionTimer);
-			actionTimer = (actionTimer+dt)-0.5d;
-			double realMovementDt = oldDirTime - actionTimer;//can be negative, this means moving to the new side instead of the old one.
+		/*}else{
+			double oldDirTime = (0.5-actionTime);
+			actionTime = (actionTime+dt)-0.5d;
+			double realMovementDt = oldDirTime - actionTime;//can be negative, this means moving to the new side instead of the old one.
 			
 			//make the movement
 			double oldPositionX = getPositionX();
@@ -141,7 +173,7 @@ public class Plant extends GameObject{
 			else{
 				direction = Direction.RIGHT;
 			}
-		}
+		}*/
 	}
 	/**
 	 * 
@@ -204,13 +236,29 @@ public class Plant extends GameObject{
 
 	@Override
 	public void startMove(Direction direction) {
-		// TODO implement this functions!
+		this.direction=direction;
 		
 	}
 
 	@Override
 	public void endMove(Direction direction) {
-		// TODO implement this functions!
+		assert direction != null && direction != Direction.STALLED;
+		if(direction==Direction.RIGHT){
+			movingRight = false;
+			if(movingLeft){
+				this.direction=Direction.LEFT;
+			}else{
+				this.direction = Direction.STALLED;
+			}
+		}else{
+			movingLeft=false;
+			if(movingRight){
+				this.direction=Direction.RIGHT;
+			}else{
+				this.direction = Direction.STALLED;
+			}
+		}
+		this.direction=Direction.STALLED;
 		
 	}
 	
@@ -237,5 +285,10 @@ public class Plant extends GameObject{
 	public void EffectOnCollisionWithReversed(GameObject gameObject) {
 		System.out.println("unknown type of gameobject");
 		return ;
+	}
+	
+	@Override
+	public String toString(){
+		return "using program: "+(getProgram() != null);
 	}
 }
