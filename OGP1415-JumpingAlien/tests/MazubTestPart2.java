@@ -734,7 +734,6 @@ public class MazubTestPart2 {
 		facade.advanceTime(world, 0.1d);
 		assertTrue(buzamForWater.isInWater());
 		assertEquals(500, buzamForWater.getNbHitPoints());
-		assertFalse(world.isGameOver());
 		for(int i=0;i<250;i++){
 			facade.advanceTime(world, 0.2d);
 			assertEquals(500-(1+i)*2,buzamForWater.getNbHitPoints());
